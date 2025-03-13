@@ -22,6 +22,7 @@
 *.la
 *.lo
 node_modules/
+!models/*.js
 
 # Shared objects (inc. Windows DLLs)
 *.dll
