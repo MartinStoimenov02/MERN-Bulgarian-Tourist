@@ -1,0 +1,128 @@
+.container-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+}
+
+.image-container-login img {
+  width: 100%;
+  height: 60vh;
+  object-fit: cover;
+}
+
+.form-container-login {
+  padding: 20px;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.form-container-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-container-login input {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 20px; /* Заоблени инпути */
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.btn-login {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4da6ff; /* Светлосин бутон */
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px; /* Заоблен бутон */
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+  background-color: #007bff;
+}
+
+.message-container {
+  margin-top: 90px; /* Разстояние от хедъра */
+}
+
+.success-message, .error-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.success-message {
+  background-color: green;
+}
+
+.error-message {
+  background-color: red;
+}
+
+@media screen and (max-width: 768px) {
+  .image-container-login {
+    display: none;
+  }
+
+  .container-login table tr td:first-child {
+    display: none;
+  }
+}
+
+
+.password-container {
+  position: relative;
+}
+
+
+.password-container button {
+  position: absolute;
+  right: 10px; /* Position the button on the right */
+  top: 50%;
+  transform: translateY(-50%); /* Center the button vertically */
+  background: none; /* Remove background */
+  border: none; /* Remove border */
+  cursor: pointer; /* Change cursor to pointer */
+  padding: 0; /* Remove padding */
+  color: #4da6ff; /* Optional: set icon color */
+  font-size: 18px; /* Set size of the icon */
+}
+
+.password-container button:hover {
+  opacity: 0.8; /* Optional: add hover effect */
+}
+
+.forgot-password {
+  font-size: 16px;
+  color: #4da6ff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Email Info Styling */
+.email-info {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}

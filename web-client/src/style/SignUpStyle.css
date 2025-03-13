@@ -1,0 +1,147 @@
+.container-signup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.image-container-signup img {
+  width: 100%;
+  height: 70vh;
+  object-fit: cover;
+}
+
+.form-container-signup {
+  padding: 20px;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.form-container-signup form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-container-signup input {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 20px; /* Заоблени инпути */
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.btn-signup {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4da6ff; /* Светлосин бутон */
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px; /* Заоблен бутон */
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.btn-signup:hover {
+  background-color: #007bff;
+}
+
+.message-container {
+  margin-top: 90px; /* Разстояние от хедъра */
+}
+
+.success-message, .error-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.success-message {
+  background-color: green;
+}
+
+.error-message {
+  background-color: red;
+}
+
+@media screen and (max-width: 700px) {
+  .image-container-signup {
+    display: none;
+  }
+
+  .container-signup table tr td:first-child {
+    display: none;
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal input {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.modal button {
+  padding: 10px;
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 45%;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.modal button:hover {
+  background-color: #007bff;
+}
+
+
+.password-container {
+  position: relative;
+}
+
+
+.password-container button {
+  position: absolute;
+  right: 10px; /* Position the button on the right */
+  top: 50%;
+  transform: translateY(-50%); /* Center the button vertically */
+  background: none; /* Remove background */
+  border: none; /* Remove border */
+  cursor: pointer; /* Change cursor to pointer */
+  padding: 0; /* Remove padding */
+  color: #4da6ff; /* Optional: set icon color */
+  font-size: 18px; /* Set size of the icon */
+}
+
+.password-container button:hover {
+  opacity: 0.8; /* Optional: add hover effect */
+}

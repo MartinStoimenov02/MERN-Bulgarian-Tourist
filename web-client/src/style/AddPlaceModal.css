@@ -1,0 +1,184 @@
+.add-place-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.add-place-modal .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  width: 60%;
+  max-height: 90vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  overflow-y: auto;
+  position: relative;
+}
+
+.add-place-modal .modal-content h2 {
+  margin-bottom: 15px;
+}
+
+.add-place-modal .modal-input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.add-place-modal .input-container {
+  position: relative;
+  width: 100%; /* Ensure it takes full width on small screens */
+  display: flex; /* Align items horizontally */
+  align-items: center; /* Vertically center items */
+}
+
+.add-place-modal .modal-input {
+  flex-grow: 1; /* Allow input to take up remaining space */
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.add-place-modal .search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%; /* Vertically center the icon */
+  transform: translateY(-50%); /* Offset by 50% of its height */
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.add-place-modal .search-icon:hover {
+  color: #4da6ff;
+}
+
+.add-place-modal .modal-map {
+  width: 100%;
+  height: 400px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.add-place-modal .modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.add-place-modal .btn-primary {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #4da6ff;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  width: 100px;
+  transition: background-color 0.3s ease;
+}
+
+.add-place-modal .btn-primary:hover {
+  background-color: #007bff;
+}
+
+.add-place-modal .btn-cancel {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #ff4d4d;
+  color: white;
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  width: 100px;
+  transition: background-color 0.3s ease;
+}
+
+.add-place-modal .btn-cancel:hover {
+  background-color: #cc0000;
+}
+
+/* Description Textarea Styles */
+.add-place-modal .description-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  resize: vertical;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Close Button */
+.add-place-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  background: transparent;
+  border: none;
+  color: #333;
+  cursor: pointer;
+}
+
+.add-place-modal .close-button:hover {
+  color: #ff4d4d;
+}
+
+@media screen and (max-width: 768px) {
+  .add-place-modal .modal-content {
+    width: 90%; /* Make the modal content 90% width on small screens */
+  }
+
+  .add-place-modal .input-container {
+    width: 100%; /* Ensure input container takes full width on small screens */
+  }
+
+  .add-place-modal .modal-input {
+    width: 100%; /* Allow input to take up full width */
+    padding-right: 35px; /* Add extra space on the right for the icon */
+  }
+
+  .add-place-modal .search-icon {
+    right: 10px; /* Keep the icon aligned with the right edge of the input */
+    top: 50%; /* Vertically center the icon */
+    transform: translateY(-50%); /* Offset by 50% of its height */
+  }
+}
+
+.message-container {
+  margin-top: 90px; /* Разстояние от хедъра */
+}
+
+.success-message, .error-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.success-message {
+  background-color: green;
+}
+
+.error-message {
+  background-color: red;
+}

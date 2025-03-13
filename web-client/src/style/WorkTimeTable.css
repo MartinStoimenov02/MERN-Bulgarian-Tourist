@@ -1,0 +1,54 @@
+/* Стилове само за таблицата с работно време */
+.work-time-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .work-time-table th {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .work-time-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .work-time-table tr:nth-child(odd) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Стилизация за селектора на езика */
+  .language-selector {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+    font-weight: bold;
+  }
+  
+  .work-time-table td[colspan="2"] {
+    text-align: center;
+    color: #888;
+  }
+  
+  .work-time-table th, .work-time-table td {
+    font-size: 14px;
+  }
+  
+  .work-time-table td[colspan="2"]:empty {
+    color: #ff0000;
+    font-style: italic;
+  }
+  
+  .work-time-table td {
+    font-weight: bold;
+  }
+  

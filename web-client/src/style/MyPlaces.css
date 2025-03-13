@@ -1,0 +1,382 @@
+/* General Container */
+.my-places-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    padding: 20px;
+    height: 100vh;
+    background-color: #f5f7fa;
+    overflow: hidden;
+}
+
+.place-details-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70%;
+    font-size: 18px;
+    color: gray;
+    text-align: center;
+  }
+  
+
+/* Top Controls */
+.top-controls {
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 10px;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    transition: 0.3s ease-in-out;
+}
+
+.search-bar:focus {
+    border-color: #007bff;
+}
+
+/* Buttons */
+.add-btn, .sort-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    transition: background 0.3s ease;
+}
+
+.add-btn:hover, .sort-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Контейнер за заглавие и иконките */
+.title-icons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Иконки в заглавието */
+.icons-container {
+    display: flex;
+    gap: 15px;
+}
+
+.icon {
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.icon:hover {
+    color: #007bff;
+}
+
+.heart-icon {
+    color: red;
+    font-size: 24px !important;
+  }
+  
+  .delete-icon {
+    color: #d9534f;
+  }
+  
+  .location-icon {
+    color: #0275d8;
+  }
+  
+  .visit-icon {
+    color: #5cb85c;
+  }
+
+/* Контейнер за обобщената информация */
+.place-info-summary {
+    display: flex;
+    gap: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+/* Вертикална черта | */
+.place-info-summary span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.place-info-summary span:nth-child(odd) {
+    font-weight: normal;
+    color: #999;
+}
+
+/* Адрес на втори ред */
+.place-address {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.address-icon {
+    color: red;
+}
+
+/* Индивидуални стилове за различните иконки */
+.star-icon {
+    font-size: 24px;
+    color: gold;
+}
+
+.phone-icon {
+    font-size: 24px;
+    color: green;
+}
+
+.landmark-icon {
+    font-size: 24px;
+    color: brown;
+}
+
+
+/* Main Content */
+.content {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 160px); 
+    border-radius: 20px;
+    overflow: auto; 
+    flex-wrap: wrap; 
+    flex-direction: row;
+}
+
+/* Places List */
+.places-list {
+    flex: 1;
+    overflow-y: auto; /* Добавяме скролиране по вертикала */
+    padding: 15px;
+    border-right: 2px solid #ddd;
+    height: 100%; /* Използваме цялото пространство в контейнера */
+}
+
+.place-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #dddddd;
+    border-radius: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.place-item:hover {
+    background-color: #f3e7ff;
+}
+
+.place-name {
+    font-size: 1em;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Разстояние между иконите */
+}
+
+.national-symbol {
+    font-size: 1.2em;
+}
+
+.heart-icon {
+    font-size: 1.2em;
+}
+
+/* Stylish Divider */
+.divider {
+    width: 3px;
+    background: linear-gradient(to bottom, #007bff, #4da6ff);
+    height: 80%;
+    align-self: center;
+    border-radius: 5px;
+}
+
+/* Place Details */
+.place-details {
+    flex: 2;
+    padding: 20px;
+    text-align: left;
+    overflow-y: auto; /* Позволява скролиране на детайлите */
+    height: 100%; /* Използваме цялото пространство в контейнера */
+}
+
+.place-title {
+    text-align: left;
+    font-size: 45px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+.place-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.place-image-container {
+    width: 100%;
+    height: 70%;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.place-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.place-info {
+    flex: 1;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+.additional-info {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.additional-info h3 {
+    margin-top: 20px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 1000px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .places-list {
+        border-right: none;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .place-image-container {
+        width: 100%;
+        height: 50%;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    /* Hide text and show icons only */
+    .add-btn, .sort-btn {
+        font-size: 24px;
+        padding: 12px;
+    }
+
+    .add-btn::before {
+        content: "";
+    }
+
+    .sort-btn::before {
+        content: "";
+    }
+
+    /* Show icons */
+    .add-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sort-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+/* Ensure no overflow issues globally */
+* {
+    box-sizing: border-box; /* Включва padding и border в размера на елемента */
+}
+
+.message-container {
+  margin-top: 90px; /* Разстояние от хедъра */
+}
+
+.success-message, .error-message {
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.success-message {
+  background-color: green;
+}
+
+.error-message {
+  background-color: red;
+}
+
+.sort-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .sort-dropdown {
+    padding: 8px 12px;
+    border: 2px solid #007bff; /* Blue border */
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .sort-dropdown:hover {
+    border-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .sort-dropdown:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+  }
+  
+  .sort-dropdown option {
+    background-color: #fff;
+    color: #333;
+  }
+  

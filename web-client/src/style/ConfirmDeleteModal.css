@@ -1,0 +1,59 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal input {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.modal-actions {
+  margin-top: 15px;
+}
+
+.confirm-btn, .cancel-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  width: 45%;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.confirm-btn {
+  background-color: red;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: darkred;
+}
+
+.cancel-btn {
+  background-color: gray;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: darkgray;
+}

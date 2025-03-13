@@ -1,0 +1,67 @@
+/* Основен контейнер на приложението */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Поне височината на екрана */
+}
+
+/* Основно съдържание */
+.main-content {
+  flex-grow: 1; /* Запълва останалото пространство */
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Позволява скролиране на вътрешни елементи */
+}
+
+/* Контейнер за списъка */
+.list-container {
+  overflow-y: auto; /* Скролиране по вертикала */
+  max-height: 70vh; /* Може да промениш на желаната височина */
+  padding: 10px;
+}
+
+/* Контейнер за детайлите */
+.details-container {
+  overflow-y: auto;
+  max-height: 50vh; /* Променяй както ти е удобно */
+  padding: 10px;
+}
+
+/* Футър */
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  margin-top: auto;
+}
+
+/* Пример за стилове на success и error съобщения */
+.success-message, .error-message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.success-message {
+  background-color: green;
+}
+
+.error-message {
+  background-color: red;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}

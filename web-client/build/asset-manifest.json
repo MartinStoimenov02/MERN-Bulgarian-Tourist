@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.35db50eb.css",
+    "main.js": "/static/js/main.51855120.js",
+    "static/js/453.bc3a58b5.chunk.js": "/static/js/453.bc3a58b5.chunk.js",
+    "static/media/shipka.jpg": "/static/media/shipka.64ac2158078694830c10.jpg",
+    "index.html": "/index.html",
+    "main.35db50eb.css.map": "/static/css/main.35db50eb.css.map",
+    "main.51855120.js.map": "/static/js/main.51855120.js.map",
+    "453.bc3a58b5.chunk.js.map": "/static/js/453.bc3a58b5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.35db50eb.css",
+    "static/js/main.51855120.js"
+  ]
+}
