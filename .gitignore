@@ -6,7 +6,6 @@
 *.ko
 *.obj
 *.elf
-*.json
 
 # Linker output
 *.ilk
