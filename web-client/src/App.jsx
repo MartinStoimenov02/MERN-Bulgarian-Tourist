@@ -52,6 +52,7 @@ function App() {
             <Route path="/my-places" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/my-places/:id" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/national-sites" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
+            <Route path="/national-sites/:id" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/nearby-places" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/profile" element={isAuthenticated ? <Profile setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/feedback" element={isAuthenticated ? <Feedback setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />

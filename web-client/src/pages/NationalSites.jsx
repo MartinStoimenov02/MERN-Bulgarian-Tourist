@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaPlusCircle } from "react-icons/fa";
 import "../style/MyPlaces.css";
-import AddPlaceModal from "../pages/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal"; // Import it
 
 const NationalSites = () => {
   const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("name-asc");
+  const [sortOrder, setSortOrder] = useState("nto100");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [placeDetails, setPlaceDetails] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [placeToDelete, setPlaceToDelete] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
   
   useEffect(() => {
@@ -34,12 +29,10 @@ const NationalSites = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-            params: { email: user.email }
-          });
+          const response = await axios.get("http://localhost:3001/nationalSites/getActiveNationalSites");
           setPlaces(response.data);
         } catch (error) {
-          console.error("Error fetching places", error);
+          console.error("Error fetching national sites", error);
         }
       };
       fetchPlaces();
@@ -111,102 +104,88 @@ const NationalSites = () => {
     }
   };
   
+  // const sortedPlaces = [...places].sort((a, b) => {
+  //   switch (sortOrder) {
+  //     case "name-asc":
+  //       return a.name.localeCompare(b.name);
+  //     case "name-desc":
+  //       return b.name.localeCompare(a.name);
+  //     case "nto100":
+  //       return parseInt(a.numberInNationalList) - parseInt(b.numberInNationalList);
+  //       case "distance":
+  //         return (parseFloat(placeDistances[a._id]) || Infinity) - (parseFloat(placeDistances[b._id]) || Infinity);        
+  //     default:
+  //       return 0;
+  //   }
+  // });
+
   const sortedPlaces = [...places].sort((a, b) => {
     switch (sortOrder) {
       case "name-asc":
         return a.name.localeCompare(b.name);
       case "name-desc":
         return b.name.localeCompare(a.name);
-      case "favourites":
-        return (b.isFavourite ? 1 : 0) - (a.isFavourite ? 1 : 0) || a.name.localeCompare(b.name);
-      case "nto100":
-        return (b.nto100 ? 1 : 0) - (a.nto100 ? 1 : 0) || a.name.localeCompare(b.name);
-        case "distance":
-          return (parseFloat(placeDistances[a._id]) || Infinity) - (parseFloat(placeDistances[b._id]) || Infinity);        
+      case "nto100": {
+        const parseNumberWithSuffix = (str) => {
+          const match = str.match(/^(\d+)(\D*)$/);
+          return match ? [parseInt(match[1], 10), match[2] || ""] : [Infinity, ""];
+        };
+  
+        const [numA, suffixA] = parseNumberWithSuffix(a.numberInNationalList);
+        const [numB, suffixB] = parseNumberWithSuffix(b.numberInNationalList);
+  
+        if (numA !== numB) return numA - numB;
+        return suffixA.localeCompare(suffixB, 'bg'); // Сортиране по букви
+      }
+      case "distance":
+        return (parseFloat(placeDistances[a._id]) || Infinity) - (parseFloat(placeDistances[b._id]) || Infinity);
       default:
         return 0;
     }
   });
   
+  
+
+  // const sortedPlaces = [...places].sort((a, b) => {
+  //   function parseNumber(str) {
+  //     const match = str.match(/^(\d+)(\D*)$/);
+  //     return match ? [parseInt(match[1], 10), match[2] || ""] : [Infinity, ""];
+  //   }
+  
+  //   if (sortOrder === "nto100") {
+  //     const [numA, suffixA] = parseNumber(a.numberInNationalList);
+  //     const [numB, suffixB] = parseNumber(b.numberInNationalList);
+  
+  //     // Първо сравняваме числата
+  //     if (numA !== numB) return numA - numB;
+  
+  //     // После сравняваме азбучно буквената част (ако я има)
+  //     return suffixA.localeCompare(suffixB, 'bg');
+  //   }
+  
+  //   return 0; // Ако не сортираме по NTO100
+  // });  
+
+  const filteredPlaces = sortedPlaces.filter((place) => 
+    place.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const selectedPlace = places.find((place) => place._id.toString() === id);
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCloseModalSuccess = () => {
-    setIsModalOpen(false);
+  const addThePlace = async (newPlace) => {
+    try {
+    await axios.post("http://localhost:3001/nationalSites/addNationalSiteToMyList", {
+      nationalSite: newPlace,
+      email: user?.email
+    });
     setMessage("Мястото е добавено успешно!");
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
-  };
-
-  const toggleFavourite = async (placeId, currentStatus) => {
-    try {
-      const updatedStatus = !currentStatus; // Toggle the status
-      await axios.put("http://localhost:3001/places/updateFavourite", {
-        placeId,
-        isFavourite: updatedStatus,
-      });
-  
-      // Update the UI state immediately for a smoother experience
-      setPlaces((prevPlaces) =>
-        prevPlaces.map((place) =>
-          place._id === placeId ? { ...place, isFavourite: updatedStatus } : place
-        )
-      );
-    } catch (error) {
-      console.error("Error updating favourite status:", error);
-    }
-  };
-
-  const confirmDelete = async () => {
-    try {
-      await axios.delete("http://localhost:3001/places/deletePlace", {
-        data: { placeId: placeToDelete } 
-      });      
-      const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-        params: { email: user.email }
-      });
-      setPlaces(response.data);
-      closeDeleteModal();
-      setMessage("Мястото е изтрито успешно!");
-      setSuccess(true);
-      setTimeout(() => setMessage(""), 3000);
-    } catch (error) {
-      setMessage("Проблем с изтриване на мястото!");
-      setSuccess(false);
-      setTimeout(() => setMessage(""), 3000);
-      console.error("Error:", error);
-    }
-  };
-
-  const openDeleteModal = (placeId) => {
-    setPlaceToDelete(placeId);
-    setShowDeleteModal(true);
-  };
-  
-  const closeDeleteModal = () => {
-    setShowDeleteModal(false);
-    setPlaceToDelete(null);
-  };
-
-  const visitThePlace = async (placeId) => {
-    try {
-    const isVisitSuccess = await axios.put("http://localhost:3001/places/visitPlace", {
-      placeId: placeId,
-      placeDistance: placeDistances[selectedPlace._id]
-    });
-    const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-      params: { email: user.email }
-    });
+    const response = await axios.get("http://localhost:3001/nationalSites/getActiveNationalSites");
     setPlaces(response.data);
-    setMessage("Мястото е посетено успешно!");
-    setSuccess(true);
-    setTimeout(() => setMessage(""), 3000);
     } catch (error) {
-      setMessage(error?.response?.data?.error);
+      console.log("error: ", error?.response?.data?.error);
+      setMessage("Грешка при добавяне на мястото!");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
     }
@@ -219,9 +198,6 @@ const NationalSites = () => {
   return (
     <div className="my-places-container">
       <div className="top-controls">
-        <button className="add-btn" onClick={() => setIsModalOpen(true)}>
-          <FaPlus />
-        </button>
         <input
           type="text"
           placeholder="Търсене..."
@@ -236,10 +212,9 @@ const NationalSites = () => {
             value={sortOrder} 
             onChange={(e) => setSortOrder(e.target.value)}
           >
+            <option value="nto100">Национални 100</option>
             <option value="name-asc">Име (A-Z)</option>
             <option value="name-desc">Име (Z-A)</option>
-            <option value="favourites">Любими</option>
-            <option value="nto100">Национални 100</option>
             <option value="distance">Разстояние</option>
           </select>
         </div>        
@@ -249,22 +224,15 @@ const NationalSites = () => {
       <div className="content" style={{ flexDirection: isMobile && id ? "column" : "row" }}>
         {!isMobile || !id ? (
           <div className="places-list">
-          {sortedPlaces.length === 0 ? (
-          <p className="place-details-placeholder">Нямате активни места за посещение!</p>
+          {filteredPlaces.length === 0 ? (
+          <p className="place-details-placeholder">Няма активни национални обекти!</p>
           ) : (
-            sortedPlaces.map((place) => (
-              <div key={place._id} className="place-item" onClick={() => navigate(`/my-places/${place._id}`)}>
-                <span className="place-name">{place.name}</span>
+            filteredPlaces.map((place) => (
+              <div key={place._id} className="place-item" onClick={() => navigate(`/national-sites/${place._id}`)}>
+                
+                <span className="place-name">{place.numberInNationalList}. {place.name}</span>
                 <div className="icons">
-                  {place.nto100 && <span className="national-symbol">🏛️</span>}
-                  <FaHeart
-                    className="heart-icon"
-                    onClick={(e) => {
-                      e.stopPropagation(); 
-                      toggleFavourite(place._id, place.isFavourite);
-                    }}
-                    style={{ color: place.isFavourite ? "red" : "gray", cursor: "pointer" }}
-                  />
+                  <span className="national-symbol">🏛️</span>
                 </div>
               </div>
             ))
@@ -284,30 +252,14 @@ const NationalSites = () => {
           </div>
     
           <div className="title-icons-container">
-            <h2 className="place-title">{selectedPlace.name}</h2>
+            <h2 className="place-title">{selectedPlace.numberInNationalList}. {selectedPlace.name}</h2>
             <div className="icons-container">
-              <FaHeart
-                className="icon heart-icon"
-                onClick={(e) => {
-                  e.stopPropagation(); 
-                  toggleFavourite(selectedPlace._id, selectedPlace.isFavourite);
-                }}
-                style={{ color: selectedPlace.isFavourite ? "red" : "gray", cursor: "pointer" }}
-              />
-              <FaTrash
-                className="icon delete-icon"
-                title="Изтрий"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openDeleteModal(selectedPlace._id);
-                }}
-              />
-              <FaCompass 
+              <FaPlusCircle  
                 className="icon visit-icon" 
                 title="Посети мястото" 
                 onClick={(e) => {
                   e.stopPropagation();
-                  visitThePlace(selectedPlace._id);
+                  addThePlace(selectedPlace);
                 }}
               />
             </div>
@@ -332,14 +284,10 @@ const NationalSites = () => {
                 </span>
               </>
             )}
-            {selectedPlace?.nto100 !==undefined && (
-              <>
                 <span>|</span>
                 <span>
                   <FaLandmark className="landmark-icon" /> National 100
                 </span>
-              </>
-            )}
           </div>
     
           {/* Адрес на нов ред с иконка */}
@@ -371,23 +319,6 @@ const NationalSites = () => {
       </div>
 
       {message && <p className={success ? "success-message" : "error-message"}>{message}</p>}
-      {isModalOpen && (
-        <AddPlaceModal
-          setIsModalOpen={handleCloseModal}
-          setIsModalOpenSuccess={handleCloseModalSuccess}
-          userEmail={user?.email}
-          setPlaces={setPlaces}
-          setSuccess={setSuccess}
-        />
-      )}
-
-      {showDeleteModal && (
-        <ConfirmDeleteModal
-          onConfirm={confirmDelete}
-          onCancel={closeDeleteModal}
-        />
-      )}
-
     </div>
   );
 };

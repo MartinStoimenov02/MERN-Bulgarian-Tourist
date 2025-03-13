@@ -29,6 +29,8 @@ export const getPlaceById = async (req, res) => {
 export const addPlace = async (req, res) => {
   try {
     const { name, google_external_id, email, description, location } = req.body;
+
+    console.log("location: ", location);
     
     const imageResponse = await getRandomImageHelper(name);
     if (!imageResponse || !imageResponse.imageUrl) {

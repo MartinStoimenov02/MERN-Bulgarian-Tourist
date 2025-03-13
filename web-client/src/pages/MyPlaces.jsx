@@ -128,7 +128,10 @@ const MyPlaces = () => {
     }
   });
   
-
+  const filteredPlaces = sortedPlaces.filter((place) => 
+    place.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
   const selectedPlace = places.find((place) => place._id.toString() === id);
 
   const handleCloseModal = () => {
@@ -249,10 +252,10 @@ const MyPlaces = () => {
       <div className="content" style={{ flexDirection: isMobile && id ? "column" : "row" }}>
         {!isMobile || !id ? (
           <div className="places-list">
-          {sortedPlaces.length === 0 ? (
+          {filteredPlaces.length === 0 ? (
           <p className="place-details-placeholder">Нямате активни места за посещение!</p>
           ) : (
-            sortedPlaces.map((place) => (
+            filteredPlaces.map((place) => (
               <div key={place._id} className="place-item" onClick={() => navigate(`/my-places/${place._id}`)}>
                 <span className="place-name">{place.name}</span>
                 <div className="icons">

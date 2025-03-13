@@ -2,6 +2,7 @@ import userRoutes from './routes/user.route.js';
 import emailRoutes from './routes/email.route.js';
 import googleRoutes from "./routes/google.route.js";
 import placesRoutes from "./routes/place.route.js";
+import nationalSitesRoutes from "./routes/nationalSite.route.js";
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -30,10 +31,16 @@ app.use((err, req,res,next) => {
   });
 });
 
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
+
 app.use("/users", userRoutes);
 app.use('/email', emailRoutes);
 app.use("/google", googleRoutes);
 app.use("/places", placesRoutes);
+app.use("/nationalSites", nationalSitesRoutes);
 
 app.listen(3001, () => {
     console.log("server runs perfectly!");

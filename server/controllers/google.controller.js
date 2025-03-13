@@ -30,7 +30,6 @@ export const getPlaceDetails = async (req, res) => {
             phone: placeDetails.internationalPhoneNumber || null,
             workingHours: placeDetails.regularOpeningHours?.weekdayDescriptions || null,
             rating: placeDetails.rating || null,
-            location: placeDetails.location || null,
             googleMapsUri: placeDetails.googleMapsUri || null
         });
 
