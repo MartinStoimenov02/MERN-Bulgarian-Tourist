@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+*.json
 
 # Linker output
 *.ilk
@@ -21,6 +22,7 @@
 *.a
 *.la
 *.lo
+node_modules/
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -28,6 +30,7 @@
 *.so.*
 *.dylib
 *.env
+*.lock
 
 # Executables
 *.exe
