@@ -11,7 +11,6 @@ import MyPlaces from "./pages/MyPlaces";
 import NationalSites from "./pages/NationalSites";
 import Nearby from "./pages/Nearby";
 import Profile from "./pages/Profile";
-import Feedback from "./pages/Feedback";
 import Help from "./pages/Help";
 import Notifications from "./pages/Notifications";
 
@@ -55,7 +54,6 @@ function App() {
             <Route path="/national-sites/:id" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/nearby-places" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/profile" element={isAuthenticated ? <Profile setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/feedback" element={isAuthenticated ? <Feedback setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/help" element={isAuthenticated ? <Help setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
             <Route path="/notifications" element={isAuthenticated ? <Notifications setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
           </Routes>

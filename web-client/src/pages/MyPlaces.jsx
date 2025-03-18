@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
 import "../style/MyPlaces.css";
-import AddPlaceModal from "../pages/AddPlaceModal";
+import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal"; // Import it
 
@@ -374,6 +374,7 @@ const MyPlaces = () => {
       </div>
 
       {message && <p className={success ? "success-message" : "error-message"}>{message}</p>}
+      
       {isModalOpen && (
         <AddPlaceModal
           setIsModalOpen={handleCloseModal}

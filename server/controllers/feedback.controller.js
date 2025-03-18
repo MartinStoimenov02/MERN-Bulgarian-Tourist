@@ -1,0 +1,29 @@
+import FeedbackModel from '../models/feedback.model.js';
+import mongoose from 'mongoose';
+
+export const createFeedback = async (req, res, next) => {
+    const { user, feedbackType, message, rating } = req.body;
+
+    try {
+        const newFeedback = new FeedbackModel({
+            userEmail: user.email, // user._id е ID-то на потребителя, който изпраща обратната връзка
+            feedbackType,
+            message,
+            rating,
+        });
+
+        await newFeedback.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'Обратната връзка е успешно записана!',
+        });
+    } catch (err) {
+        next(err);
+        console.error("Error creating feedback:", err);
+        res.status(500).json({
+            success: false,
+            message: 'Грешка при записването на обратната връзка!',
+        });
+    }
+};

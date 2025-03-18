@@ -1,0 +1,164 @@
+.feedback-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+
+  .feedback-modal .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    width: 40%;
+    max-height: 90vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .feedback-modal .modal-content h2 {
+    margin-bottom: 45px;
+  }
+  
+  /* Подравняване на "Тип" и "Рейтинг" в един ред, центрирани */
+  .feedback-type-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Центрираме елементите */
+    gap: 40px; /* Увеличавам разстоянието още малко */
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Контейнер за "Тип", за да остане текстът отляво */
+  .feedback-type-container {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    text-align: left;
+  }
+  
+  /* Селектът остава в нормална позиция */
+  .feedback-modal .modal-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+    /* Текстово поле за съобщение */
+  .feedback-modal .description-textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+  }
+  
+  /* Подравняване на звездите */
+  .feedback-type-rating .star-rating {
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+    justify-content: center;
+    width: 50%;
+  }
+  
+  .feedback-modal .star {
+    font-size: 22px;
+    color: #ccc;
+    transition: color 0.2s;
+  }
+  
+  .feedback-modal .star.active {
+    color: #f5c518;
+  }
+  
+  .feedback-modal .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
+  }
+  
+  .feedback-modal .btn-primary,
+  .feedback-modal .btn-cancel {
+    padding: 10px 15px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    width: 100px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .feedback-modal .btn-primary {
+    background-color: #4da6ff;
+  }
+  
+  .feedback-modal .btn-primary:hover {
+    background-color: #007bff;
+  }
+  
+  .feedback-modal .btn-cancel {
+    background-color: #ff4d4d;
+  }
+  
+  .feedback-modal .btn-cancel:hover {
+    background-color: #cc0000;
+  }
+  
+  .feedback-modal .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    background: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .feedback-modal .close-button:hover {
+    color: #ff4d4d;
+  }
+  
+  /* Responsive за мобилни устройства */
+  @media screen and (max-width: 800px) {
+    .feedback-modal .modal-content {
+      width: 90%;
+    }
+  
+    .feedback-type-rating {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px; /* Няма да бъде толкова голямо като на десктоп */
+    }
+  
+    .feedback-type-container {
+      width: 100%;
+    }
+  
+    .feedback-type-rating .star-rating {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  

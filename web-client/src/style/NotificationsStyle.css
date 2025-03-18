@@ -1,0 +1,40 @@
+.notification-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.notificationCard {
+    display: flex;
+    flex-direction: column; /* Стекване на съобщението и датата вертикално */
+    align-items: flex-start; /* Подравняване на съобщението и датата вляво */
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff; /* Стандартен бял фон */
+}
+
+.message {
+    color: black;
+    font-size: 1em;
+    font-weight: normal;
+    width: 100%; /* Съобщението да заема пълната ширина */
+    text-align: left; /* Подравняване на съобщението вляво */
+}
+
+.date {
+    margin-top: 5px; /* Разстояние между съобщението и датата */
+    font-size: 0.9em;
+    color: #888;
+    width: 100%; /* Датата да заема пълната ширина */
+    text-align: left; /* Подравняване на датата вляво */
+}
+
+.boldMessage {
+    font-weight: bold; /* Удебелен стил за непрочетени съобщения */
+}
+
+/* Фонът да е сив за непрочетени съобщения */
+.notificationCard.unread {
+    background-color: #f0f0f0; /* Сив фон за непрочетени съобщения */
+}

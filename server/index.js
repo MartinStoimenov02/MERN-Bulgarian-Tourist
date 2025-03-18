@@ -3,6 +3,9 @@ import emailRoutes from './routes/email.route.js';
 import googleRoutes from "./routes/google.route.js";
 import placesRoutes from "./routes/place.route.js";
 import nationalSitesRoutes from "./routes/nationalSite.route.js";
+import feedbackRoutes from "./routes/feedback.routes.js";
+import logRoutes from "./routes/log.routes.js";
+import notificationRoutes from './routes/notification.route.js';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -41,6 +44,9 @@ app.use('/email', emailRoutes);
 app.use("/google", googleRoutes);
 app.use("/places", placesRoutes);
 app.use("/nationalSites", nationalSitesRoutes);
+app.use("/feedback", feedbackRoutes);
+app.use("/logs", logRoutes);
+app.use('/notifications', notificationRoutes);
 
 app.listen(3001, () => {
     console.log("server runs perfectly!");
