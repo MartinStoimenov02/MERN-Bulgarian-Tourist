@@ -10,7 +10,6 @@ const SignupScreen = ({ navigation }) => {
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
-        // TODO: Connect this with your backend API
         Alert.alert("Success", `Signed up with: ${email}`);
     };
 

@@ -1,7 +1,8 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import logError from '../utils/logger.js';
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const API_KEY = process.env.GOOGLE_API_KEY;
 const CX = process.env.GOOGLE_CX;
@@ -34,6 +35,7 @@ export const getPlaceDetails = async (req, res) => {
         });
 
     } catch (error) {
+        logError(error, req, { className: 'google.controller', functionName: 'getPlaceDetails' });
         console.error("Грешка при извличане на детайлите за мястото:", error);
         res.status(500).json({ message: "Грешка при обработката на заявката." });
     }
@@ -56,7 +58,7 @@ export const getDistance = async (req, res) => {
             return res.status(400).json({ message: "Липсват координати на дестинацията." });
         }
 
-        // 📌 Изчисляваме разстоянието с Routes API
+        // 📌 Изчислява разстоянието с Routes API
         const routesResponse = await axios.post(
             "https://routes.googleapis.com/directions/v2:computeRoutes",
             {
@@ -84,11 +86,10 @@ export const getDistance = async (req, res) => {
         const distance = routesResponse.data.routes?.[0]?.distanceMeters
             ? `${(routesResponse.data.routes[0].distanceMeters / 1000).toFixed(2)} km`
             : null;
-
-        // 📌 Връщаме разстоянието
         res.json({ distance });
 
     } catch (error) {
+        logError(error, req, { className: 'google.controller', functionName: 'getDistance' });
         console.error("Грешка при изчисляване на разстоянието:", error);
         res.status(500).json({ message: "Грешка при обработката на заявката." });
     }
@@ -97,7 +98,6 @@ export const getDistance = async (req, res) => {
 
 
 export const getRandomImage = async (req, res) => {
-    console.log("get random image!");
     try {
         const { query } = req.query; // Get query from request
         if (!query) {
@@ -115,6 +115,7 @@ export const getRandomImage = async (req, res) => {
 
         res.status(404).json({ message: "No images found" });
     } catch (error) {
+        logError(error, req, { className: 'google.controller', functionName: 'getRandomImage' });
         console.error("Error fetching image:", error);
         res.status(500).json({ message: "Error fetching image" });
     }

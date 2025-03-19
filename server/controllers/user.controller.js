@@ -1,6 +1,7 @@
 import UserModel from '../models/user.model.js';
 import crypto from "crypto";
 import mongoose from "mongoose";
+import logError from '../utils/logger.js';
 
 const hashPassword = (password) => {
     return crypto.createHash("sha256").update(password).digest("hex");
@@ -18,7 +19,8 @@ export const checkUserExists = async (req, res, next) => {
         }
     } catch (err) {
         next(err);
-        console.error(err);
+        logError(err, req, { className: 'user.controller', functionName: 'checkUserExists', userEmail: email });
+        console.error("checkUserExists: ", err);
         return res.status(500).json({ success: false, message: "Грешка при проверката на имейла" });
     }
 };
@@ -55,11 +57,11 @@ export const getUser = async (req, res, next) => {
 
     } catch (err) {
         next(err);
-        console.error(err);
+        logError(err, req, { className: 'user.controller', functionName: 'getUser', userEmail: email });
+        console.error("error getting user: ", err);
     }
 };
 
-// Проверяваме дали записът може да бъде създаден, без да го комитваме
 export const validateUser = async (req, res, next) => {
     const session = await mongoose.startSession();
     session.startTransaction(); 
@@ -75,16 +77,13 @@ export const validateUser = async (req, res, next) => {
             phoneNumber
         });
 
-        // Опитваме да създадем потребителя, но няма да комитваме транзакцията
         await newUser.save({ session });
-
-        // Ако стигнем дотук, значи данните са валидни и можем да изпратим верификационен код
-        await session.abortTransaction(); // Отменяме транзакцията, за да не се запише
-
+        await session.abortTransaction(); 
         res.status(200).json({ success: true, message: "Данните са валидни." });
     } catch (err) {
-        console.error("err: ", err);
-        await session.abortTransaction(); // Отменяме транзакцията при грешка
+        logError(err, req, { className: 'user.controller', functionName: 'validateUser', userEmail: email });
+        console.error("validateUser: ", err);
+        await session.abortTransaction(); 
         res.status(400).json({ success: false, message: "Невалидни данни: " + err.message });
     } finally {
         session.endSession();
@@ -111,13 +110,48 @@ export const createUser = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
-        console.log(err);
+        logError(err, req, { className: 'user.controller', functionName: 'createUser', userEmail: email });
+        console.error("createUser: ", err);
         return res.status(404).json({
             success: false,
             message: err.message + "!"
         });
     }
 };
+
+export const updatePoints = async (req, res, next) => {
+    try {
+        const { email, nto100 } = req.body;
+        const addingPoints = nto100!=null ? 5 : 2;
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Потребителят не е намерен!"
+            });
+        }
+
+        const totalPoints = user.points+addingPoints;
+        user.points = totalPoints;
+        
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Точките са добавени успешно!"
+        });
+
+    } catch (err) {
+        next(err);
+        logError(err, req, { className: 'user.controller', functionName: 'updatePoints', userEmail: email });
+        console.error("Error updating points:", err);
+        res.status(500).json({
+            success: false,
+            message: "Грешка при добавяне на точките!"
+        });
+    }
+};
+
 
 export const resetPassword = async (req, res, next) => {
     try {
@@ -131,11 +165,7 @@ export const resetPassword = async (req, res, next) => {
                 message: "Потребителят не е намерен!"
             });
         }
-
-        // Hash the new password
         const hashedPassword = hashPassword(password);
-
-        // Update the user's password
         user.password = hashedPassword;
         await user.save();
 
@@ -146,6 +176,7 @@ export const resetPassword = async (req, res, next) => {
 
     } catch (err) {
         next(err);
+        logError(err, req, { className: 'user.controller', functionName: 'resetPassword', userEmail: email });
         console.error("Error resetting password:", err);
         res.status(500).json({
             success: false,
@@ -185,6 +216,7 @@ export const googleAuth = async (req, res, next) => {
         });
 
     } catch (err) {
+        logError(err, req, { className: 'user.controller', functionName: 'googleAuth', userEmail: email });
         console.error("Error in Google Auth:", err);
         res.status(500).json({
             success: false,

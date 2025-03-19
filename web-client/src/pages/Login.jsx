@@ -54,6 +54,7 @@ function Login({ setIsAuthenticated }) {
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
+      console.error("login error: ", error);
       setMessage(error.response?.data?.message || "Грешка при вход");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -69,7 +70,7 @@ function Login({ setIsAuthenticated }) {
     };
     
     if (decoded.phone_number) { 
-        userData.phoneNumber = decoded.phone_number;  // ✅ Only add phoneNumber if it exists
+        userData.phoneNumber = decoded.phone_number; 
     }
 
       const res = await Axios.post("http://localhost:3001/users/googleAuth", { userData });
@@ -78,7 +79,7 @@ function Login({ setIsAuthenticated }) {
       setIsAuthenticated(true);
       navigate("/home");
     } catch (error) {
-      console.error("error: ",error);
+      console.error("error google login: ",error);
       setMessage("Грешка при Google вход");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -106,6 +107,7 @@ function Login({ setIsAuthenticated }) {
       setMessage("Имейл с код за верификация е изпратен.");
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
+      console.error("error sending code: ", error);
       setMessage(error.response?.data?.message || "Грешка при изпращане на кода");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -127,6 +129,7 @@ function Login({ setIsAuthenticated }) {
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
+      console.error("error verifying code: ", error);
       setMessage("Грешка при проверката на кода");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);

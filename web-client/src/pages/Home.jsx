@@ -10,7 +10,7 @@ function Home({ setIsAuthenticated }) {
     const userSession = localStorage.getItem("userSession");
     if (userSession) {
       const user = JSON.parse(userSession);
-      setUserName(user.name); // Set the user's name
+      setUserName(user.name);
     }
   }, []);
 
@@ -18,8 +18,8 @@ function Home({ setIsAuthenticated }) {
     // Clear session
     localStorage.removeItem("userSession");
     localStorage.removeItem("loginTime");
-    setIsAuthenticated(false); // Update session state
-    navigate("/login"); // Redirect to login page
+    setIsAuthenticated(false);
+    navigate("/login"); 
   };
 
   return (

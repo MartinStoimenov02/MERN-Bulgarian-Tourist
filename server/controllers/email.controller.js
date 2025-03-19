@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import logError from '../utils/logger.js';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const verificationCodes = {}; // Temporary storage for verification codes
+const verificationCodes = {};
 
 export const sendVerificationCode = async (req, res) => {
     try {
@@ -34,15 +35,15 @@ export const sendVerificationCode = async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: "Verification code sent successfully." });
     } catch (err) {
+        logError(err, req, { className: 'email.controller', functionName: 'sendVerificationCode', userEmail: email });
         console.error("Error sending email:", err);
         res.status(500).json({ message: "Error sending verification code." });
     }
 };
 
 export const verifyCode = async (req, res) => {
+    const { email, code } = req.body;
     try {
-        const { email, code } = req.body;
-
         if (verificationCodes[email] && verificationCodes[email] == code) {
             delete verificationCodes[email];
             res.status(200).json({ success: true, message: "Code is valid." });
@@ -50,6 +51,7 @@ export const verifyCode = async (req, res) => {
             res.status(400).json({ success: false, message: "Invalid code." });
         }
     } catch (err) {
+        logError(err, req, { className: 'email.controller', functionName: 'verifyCode', userEmail: email });
         console.error("Error verifying code:", err);
         res.status(500).json({ message: "Error verifying code." });
     }

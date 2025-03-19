@@ -9,7 +9,7 @@ const Footer = () => {
 }
 
 const footerStyle = {
-  backgroundColor: '#0066CC',  // Същия син цвят като хедъра
+  backgroundColor: '#0066CC', 
   color: '#fff',
   textAlign: 'center',
   padding: '10px'

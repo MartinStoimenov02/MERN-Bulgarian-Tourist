@@ -5,7 +5,7 @@ import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLa
 import "../style/MyPlaces.css";
 import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
-import ConfirmDeleteModal from "../components/ConfirmDeleteModal"; // Import it
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const MyPlaces = () => {
   const [user, setUser] = useState(null);
@@ -178,6 +178,7 @@ const MyPlaces = () => {
       setSuccess(true);
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
+      console.error("error deleting place: ", error);
       setMessage("Проблем с изтриване на мястото!");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -195,12 +196,20 @@ const MyPlaces = () => {
     setPlaceToDelete(null);
   };
 
-  const visitThePlace = async (placeId) => {
+  const visitThePlace = async (placeId, nto100) => {
     try {
     const isVisitSuccess = await axios.put("http://localhost:3001/places/visitPlace", {
       placeId: placeId,
       placeDistance: placeDistances[selectedPlace._id]
     });
+
+    if(isVisitSuccess){
+      const updatePoints = await axios.put("http://localhost:3001/users/updatePoints", {
+         email: user.email, 
+         nto100: nto100
+      });
+    }
+    
     const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
       params: { email: user.email }
     });
@@ -209,6 +218,7 @@ const MyPlaces = () => {
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
     } catch (error) {
+      console.error("error visiting place: ", error);
       setMessage(error?.response?.data?.error);
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -310,7 +320,7 @@ const MyPlaces = () => {
                 title="Посети мястото" 
                 onClick={(e) => {
                   e.stopPropagation();
-                  visitThePlace(selectedPlace._id);
+                  visitThePlace(selectedPlace._id, selectedPlace.nto100);
                 }}
               />
             </div>

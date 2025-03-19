@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../style/WorkTimeTable.css'; // Импортиране на CSS файла
+import '../style/WorkTimeTable.css'; 
 
 // Превод на дните на седмицата на български
 const daysTranslation = {
@@ -91,7 +91,7 @@ const WorkTimeTable = ({ workTime }) => {
       {/* <select
         onChange={(e) => setLanguage(e.target.value)}
         value={language}
-        className="language-selector"  // Уверяваме се, че класът е точно зададен
+        className="language-selector" 
       >
         <option value="bg">Български</option>
         <option value="en">English</option>

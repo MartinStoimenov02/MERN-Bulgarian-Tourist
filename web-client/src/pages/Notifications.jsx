@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../style/NotificationsStyle.css';  // Importing the CSS file
+import '../style/NotificationsStyle.css';  
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -15,13 +15,11 @@ const Notifications = () => {
 
   useEffect(() => {
     if (user) {
-      console.log("user.email: ", user );
       const fetchNotifications = async () => {
         try {
           const response = await axios.get('http://localhost:3001/notifications/getNotificationsForUser', {
             params: { userEmail: user.email }
           }); 
-          console.log("response: ", response.data.data);
           setNotifications(response.data.data);
         } catch (error) {
           console.error('Error fetching notifications:', error);
@@ -38,7 +36,6 @@ const Notifications = () => {
   };
 
   const handleNotificationClick = async (notificationId) => {
-    console.log("notificationId: ", notificationId);
     try {
       await axios.patch('http://localhost:3001/notifications/markAsRead', {
          notificationId: notificationId
@@ -64,7 +61,7 @@ const Notifications = () => {
           <div
             key={index}
             className={`notificationCard ${!notification.isRead ? 'unread' : ''}`}
-            onClick={() => handleNotificationClick(notification._id)} // Handle click
+            onClick={() => handleNotificationClick(notification._id)}
           >
             <div
               className={`message ${!notification.isRead ? 'boldMessage' : ''}`}

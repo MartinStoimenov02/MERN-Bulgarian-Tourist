@@ -79,6 +79,7 @@ function ForgotPassword() {
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
+      console.error("error changing password: ", error);
       setMessage("Грешка при промяната на паролата.");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);

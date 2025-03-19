@@ -156,14 +156,12 @@ const NationalSites = () => {
   //     const [numA, suffixA] = parseNumber(a.numberInNationalList);
   //     const [numB, suffixB] = parseNumber(b.numberInNationalList);
   
-  //     // Първо сравняваме числата
   //     if (numA !== numB) return numA - numB;
   
-  //     // После сравняваме азбучно буквената част (ако я има)
   //     return suffixA.localeCompare(suffixB, 'bg');
   //   }
   
-  //   return 0; // Ако не сортираме по NTO100
+  //   return 0; 
   // });  
 
   const filteredPlaces = sortedPlaces.filter((place) => 

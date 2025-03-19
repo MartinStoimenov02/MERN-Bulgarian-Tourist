@@ -5,8 +5,8 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import "../style/SignUpStyle.css";
 import { Link } from "react-router-dom";
-import shipkaImage from "../images/shipka.jpg"; // Default image
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import shipkaImage from "../images/shipka.jpg";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function SignUp({ setIsAuthenticated }) {
   const [formData, setFormData] = useState({
@@ -21,10 +21,10 @@ function SignUp({ setIsAuthenticated }) {
   const [success, setSuccess] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-  const [imageUrl, setImageUrl] = useState(shipkaImage); // Default image
+  const [imageUrl, setImageUrl] = useState(shipkaImage); 
   const [loading, setLoading] = useState(true);
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
+  const [showPassword, setShowPassword] = useState(false); 
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,7 +91,7 @@ function SignUp({ setIsAuthenticated }) {
       setTimeout(() => setMessage(""), 3000);
       setShowModal(true);
     } catch (error) {
-      console.error("error: ", error);
+      console.error("error sending verification code: ", error);
       setMessage(error.response.data.message);
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -107,7 +107,7 @@ function SignUp({ setIsAuthenticated }) {
     };
     
     if (decoded.phone_number) { 
-        userData.phoneNumber = decoded.phone_number;  // ✅ Only add phoneNumber if it exists
+        userData.phoneNumber = decoded.phone_number; 
     }
 
       const res = await Axios.post("http://localhost:3001/users/googleAuth", { userData });
@@ -116,7 +116,7 @@ function SignUp({ setIsAuthenticated }) {
       setIsAuthenticated(true);
       navigate("/home");
     } catch (error) {
-      console.error("error: ",error);
+      console.error("error google login: ",error);
       setMessage("Грешка при Google вход");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
@@ -146,6 +146,7 @@ function SignUp({ setIsAuthenticated }) {
         setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
+      console.error("error verifying code/creating user: ", error);
       setSuccess(false);
       setMessage(error.response.data.message);
       setTimeout(() => setMessage(""), 3000);

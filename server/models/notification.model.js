@@ -4,10 +4,6 @@ const NotificationSchema = new mongoose.Schema({
   message: {
     type: String,
     required: true,
-  },
-  datetime: {
-    type: Date,
-    default: Date.now,
   }
 }, { timestamps: true });
 

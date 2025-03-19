@@ -1,5 +1,6 @@
 import FeedbackModel from '../models/feedback.model.js';
 import mongoose from 'mongoose';
+import logError from '../utils/logger.js';
 
 export const createFeedback = async (req, res, next) => {
     const { user, feedbackType, message, rating } = req.body;
@@ -20,6 +21,7 @@ export const createFeedback = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
+        logError(err, req, { className: 'feedback.controller', functionName: 'createFeedback', userEmail: user.email });
         console.error("Error creating feedback:", err);
         res.status(500).json({
             success: false,

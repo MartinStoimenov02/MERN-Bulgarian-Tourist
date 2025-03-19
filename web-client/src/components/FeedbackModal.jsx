@@ -18,15 +18,12 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        console.log("rating: ", rating);
-
         if (!feedbackType) {
             setMessageAlert("Моля, изберете тип обратна връзка!");
             setSuccess(false);
     
             setTimeout(() => {
-              setMessageAlert(""); // Празно съобщение след 3 секунди
+              setMessageAlert("");
             }, 3000);
             return;
         }
@@ -36,7 +33,7 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
             setSuccess(false);
     
             setTimeout(() => {
-              setMessageAlert(""); // Празно съобщение след 3 секунди
+              setMessageAlert("");
             }, 3000);
             return;
         }
@@ -66,19 +63,16 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
               setSuccess(false);
       
               setTimeout(() => {
-                setMessageAlert(""); // Празно съобщение след 3 секунди
+                setMessageAlert("");
               }, 3000);
             }
     
         } catch (error) {
             console.error("Error submitting feedback:", error);
-        }
-
-        console.log("Submitting feedback:", feedbackData);
-    
+        }    
         setMessage("");
         setRating(0);
-        setFeedbackType(""); // Reset type selection
+        setFeedbackType(""); 
     };
 
   if (!isOpen) return null;

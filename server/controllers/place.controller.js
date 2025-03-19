@@ -1,14 +1,16 @@
 import PlaceModel from "../models/place.model.js";
 import axios from "axios";
+import logError from '../utils/logger.js';
 
 // Get all places for a specific user
 export const getUserPlaces = async (req, res) => {
   try {
-    const { email } = req.query;  // Change this to req.query
+    const { email } = req.query; 
     const places = await PlaceModel.find({ userEmail: email, isVisited: false });
     res.status(200).json(places);
   } catch (error) {
-    console.log(error);
+    logError(err, req, { className: 'place.controller', functionName: 'getUserPlaces', userEmail: email });
+    console.error("Error fetching place: ", error);
     res.status(500).json({ message: "Error fetching places", error });
   }
 };
@@ -21,6 +23,8 @@ export const getPlaceById = async (req, res) => {
 
     res.status(200).json(place);
   } catch (error) {
+    logError(err, req, { className: 'place.controller', functionName: 'getPlaceById', userEmail: email });
+    console.error("Error fetching place:", error);
     res.status(500).json({ message: "Error fetching place", error });
   }
 };
@@ -28,10 +32,7 @@ export const getPlaceById = async (req, res) => {
 // Add a new place
 export const addPlace = async (req, res) => {
   try {
-    const { name, google_external_id, email, description, location } = req.body;
-
-    console.log("location: ", location);
-    
+    const { name, google_external_id, email, description, location } = req.body;    
     const imageResponse = await getRandomImageHelper(name);
     if (!imageResponse || !imageResponse.imageUrl) {
       return res.status(500).json({ message: "Failed to fetch image" });
@@ -50,6 +51,8 @@ export const addPlace = async (req, res) => {
     await newPlace.save();
     res.status(201).json({ message: "Place added successfully", place: newPlace });
   } catch (error) {
+    logError(err, req, { className: 'place.controller', functionName: 'addPlace', userEmail: email });
+    console.error("Error adding place:", error);
     res.status(500).json({ message: "Error adding place", error });
   }
 };
@@ -63,6 +66,8 @@ export const deletePlace = async (req, res) => {
 
     res.status(200).json({ message: "Place deleted successfully" });
   } catch (error) {
+    logError(err, req, { className: 'place.controller', functionName: 'deletePlace' });
+    console.error("Error deleting place:", error);
     res.status(500).json({ message: "Error deleting place", error });
   }
 };
@@ -77,7 +82,8 @@ export const visitPlace = async (req, res) => {
       res.status(500).json({ error: "Разстоянието до мястото е повече от 1 км!" });
     }
   } catch (error) {
-    console.error("error: ", error);
+    logError(err, req, { className: 'place.controller', functionName: 'visitPlace' });
+    console.error("Failed to visit: ", error);
     res.status(500).json({ error: "Failed to visit" });
   }
 };
@@ -91,7 +97,8 @@ export const updateFavourite = async (req, res) => {
     await PlaceModel.findByIdAndUpdate(placeId, { isFavourite });
     res.json({ success: true });
   } catch (error) {
-    console.error("error: ", error);
+    logError(err, req, { className: 'place.controller', functionName: 'updateFavourite' });
+    console.error("Failed to update favourite status: ", error);
     res.status(500).json({ error: "Failed to update favourite status" });
   }
 };
@@ -114,6 +121,7 @@ const getRandomImageHelper = async (query) => {
 
     return null;
   } catch (error) {
+    logError(err, req, { className: 'place.controller', functionName: 'getRandomImageHelper' });
     console.error("Error fetching image:", error);
     return null;
   }

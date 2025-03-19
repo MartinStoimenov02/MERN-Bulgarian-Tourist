@@ -1,7 +1,27 @@
 import mongoose from 'mongoose';
 
 const LogSchema = new mongoose.Schema({
-    
+    userEmail: {
+        type: String
+    },
+    errorStatus: {
+        type: String
+    },
+    errorMessage: {
+        type: String,
+    },
+    stackTrace: { 
+        type: String, required: true 
+    },
+    className: {
+        type: String,
+    },
+    functionName: {
+        type: String,
+    },
+    requestData: { 
+        type: mongoose.Schema.Types.Mixed, required: false 
+    }
 }, {timestamps: true});
 
 const LogModel = mongoose.model('logs', LogSchema);

@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { FaSearch } from "react-icons/fa"; // Importing search icon from react-icons
+import { FaSearch } from "react-icons/fa"; 
 import "../style/AddPlaceModal.css";
 
 const mapContainerStyle = {
@@ -20,7 +20,7 @@ const AddPlaceModal = ({ setIsModalOpen, userEmail, setPlaces, setIsModalOpenSuc
   const [placeName, setPlaceName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
-  const [description, setDescription] = useState(""); // State for the description
+  const [description, setDescription] = useState(""); 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();

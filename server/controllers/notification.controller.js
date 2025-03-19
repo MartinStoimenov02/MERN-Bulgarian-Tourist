@@ -1,5 +1,6 @@
 import NotificationModel from '../models/notification.model.js';
 import UserNotificationModel from '../models/userNotification.model.js';
+import logError from '../utils/logger.js';
 
 export const addNotification = async (req, res, next) => {
   const { message } = req.body;
@@ -14,6 +15,8 @@ export const addNotification = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+    logError(err, req, { className: 'notification.controller', functionName: 'addNotification' });
+    console.error("Error adding notification: ", err);
     res.status(500).json({
       success: false,
       message: 'Error adding notification!',
@@ -38,6 +41,8 @@ export const addUserNotification = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+    logError(err, req, { className: 'notification.controller', functionName: 'addUserNotification', userEmail: email });
+    console.error("Error adding user notification: ", err);
     res.status(500).json({
       success: false,
       message: 'Error adding user notification!',
@@ -47,40 +52,33 @@ export const addUserNotification = async (req, res, next) => {
 
 export const getNotificationsForUser = async (req, res, next) => {
   const { userEmail } = req.query;
-  console.log("userEmail: ", userEmail);
-
   try {
-    // Get the user notifications for the provided email
     const userNotifications = await UserNotificationModel
       .find({ userEmail })
-      .populate('notificationId')  // Populate notificationId with the notification data
+      .populate('notificationId') 
       .exec();
 
-    // Sort the notifications into two groups: unread and read
     const unreadNotifications = userNotifications
-      .filter(uns => !uns.isRead)  // Filter by userNotification isRead field
+      .filter(uns => !uns.isRead) 
       .sort((a, b) => new Date(a.notificationId.createdAt) - new Date(b.notificationId.createdAt));
 
     const readNotifications = userNotifications
-      .filter(uns => uns.isRead)  // Filter by userNotification isRead field
+      .filter(uns => uns.isRead)  
       .sort((a, b) => new Date(a.notificationId.createdAt) - new Date(b.notificationId.createdAt));
 
-    // Concatenate unread first, then read
     const allNotifications = [...unreadNotifications, ...readNotifications];
-    console.log("allNotifications: ", allNotifications);
-
-    // You can return the full notifications, or just the message part, depending on the requirement.
     res.status(201).json({
       success: true,
       message: 'User and Notification linked successfully!',
       data: allNotifications.map(uns => ({
-        _id: uns._id,  // Add userNotification _id to the response
+        _id: uns._id, 
         message: uns.notificationId.message,
         createdAt: uns.notificationId.createdAt,
         isRead: uns.isRead,
       })),
     });
   } catch (err) {
+    logError(err, req, { className: 'notification.controller', functionName: 'getNotificationsForUser', userEmail: userEmail });
     console.error('Error fetching notifications:', err);
     throw new Error('Failed to fetch notifications');
   }
@@ -88,8 +86,6 @@ export const getNotificationsForUser = async (req, res, next) => {
 
 export const markAsRead = async (req, res, next) => {
   const { notificationId } = req.body;
-  console.log("notificationId: ", notificationId);
-
   try {
     const userNotification = await UserNotificationModel.findById(notificationId);
 
@@ -110,6 +106,8 @@ export const markAsRead = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+    logError(err, req, { className: 'notification.controller', functionName: 'markAsRead' });
+    console.error('Error marking notification as read:', err);
     res.status(500).json({
       success: false,
       message: 'Error marking notification as read!',
