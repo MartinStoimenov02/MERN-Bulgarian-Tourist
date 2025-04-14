@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const LogSchema = new mongoose.Schema({
-    userEmail: {
+    user: {
         type: String
     },
     errorStatus: {
@@ -11,7 +11,8 @@ const LogSchema = new mongoose.Schema({
         type: String,
     },
     stackTrace: { 
-        type: String, required: true 
+        type: String, 
+        required: true 
     },
     className: {
         type: String,
@@ -20,7 +21,8 @@ const LogSchema = new mongoose.Schema({
         type: String,
     },
     requestData: { 
-        type: mongoose.Schema.Types.Mixed, required: false 
+        type: mongoose.Schema.Types.Mixed, 
+        required: false 
     }
 }, {timestamps: true});
 

@@ -9,7 +9,7 @@ const logError = async (error, req = null, customInfo = {}) => {
             className: customInfo.className || 'Unknown',
             functionName: customInfo.functionName || 'Unknown',
             requestData: req ? { body: req.body, params: req.params, query: req.query } : null,
-            userEmail: customInfo.userEmail,
+            user: customInfo.user,
         };
 
         await LogModel.create(logData);

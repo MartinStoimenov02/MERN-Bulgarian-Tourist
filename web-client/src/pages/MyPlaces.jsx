@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
@@ -22,6 +22,44 @@ const MyPlaces = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [placeToDelete, setPlaceToDelete] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
+
+  const host = process.env.REACT_APP_HOST;
+  const port = process.env.REACT_APP_PORT;
+
+  const userCoordsRef = useRef(null);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const last = userCoordsRef.current;
+          console.log("last: ", last);
+          console.log("position.coords: ", position.coords);
+
+          const isSame =
+            last &&
+            Math.abs(last.latitude - latitude) < 0.0001 &&
+            Math.abs(last.longitude - longitude) < 0.0001;
+
+          if (isSame) return;
+
+          userCoordsRef.current = { latitude, longitude };
+          updateAllDistances( position.coords );
+        },
+        (error) => {
+          console.error("Грешка при взимане на локацията:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 5000,
+        }
+      );
+    }, 2000); // проверка на всеки 2 секунди
+
+    return () => clearInterval(intervalId);
+  }, [places]);
   
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -34,8 +72,10 @@ const MyPlaces = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-            params: { email: user.email }
+          console.log("user PLACESSSS: ", user);
+          console.log("user PLACESSSS: ", user.id);
+          const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+            params: { userId: user.id }
           });
           setPlaces(response.data);
         } catch (error) {
@@ -44,7 +84,7 @@ const MyPlaces = () => {
       };
       fetchPlaces();
     }
-  }, [user]);
+  }, [user, host, port]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1000);
@@ -62,27 +102,11 @@ const MyPlaces = () => {
       setPlaceDetails(null);
     }
   }, [id, places]);
-
-  useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        updateAllDistances(position.coords);
-      },
-      (error) => console.error("Грешка при получаване на локация:", error),
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
-    );
-  
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, [places]);
   
   const fetchPlaceDetails = async (place) => {
 
     try {
-      const response = await axios.post("http://localhost:3001/google/place-details", {
+      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
         place
       });
       setPlaceDetails(response.data);
@@ -96,8 +120,10 @@ const MyPlaces = () => {
     try {
       const distances = {};  
       for (const place of places) {
+        console.log(userCoordinates);
+        console.log(place.location);
         if (place.location) {
-          const response = await axios.post("http://localhost:3001/google/place-distance", {
+          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
             userLocation: userCoordinates,
             placeLocation: place.location,
           });
@@ -148,7 +174,7 @@ const MyPlaces = () => {
   const toggleFavourite = async (placeId, currentStatus) => {
     try {
       const updatedStatus = !currentStatus; // Toggle the status
-      await axios.put("http://localhost:3001/places/updateFavourite", {
+      await axios.put("http://"+host+":"+port+"/places/updateFavourite", {
         placeId,
         isFavourite: updatedStatus,
       });
@@ -166,11 +192,11 @@ const MyPlaces = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete("http://localhost:3001/places/deletePlace", {
+      await axios.delete("http://"+host+":"+port+"/places/deletePlace", {
         data: { placeId: placeToDelete } 
       });      
-      const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-        params: { email: user.email }
+      const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+        params: { userId: user.id }
       });
       setPlaces(response.data);
       closeDeleteModal();
@@ -198,20 +224,21 @@ const MyPlaces = () => {
 
   const visitThePlace = async (placeId, nto100) => {
     try {
-    const isVisitSuccess = await axios.put("http://localhost:3001/places/visitPlace", {
+    const isVisitSuccess = await axios.put("http://"+host+":"+port+"/places/visitPlace", {
       placeId: placeId,
       placeDistance: placeDistances[selectedPlace._id]
     });
 
     if(isVisitSuccess){
-      const updatePoints = await axios.put("http://localhost:3001/users/updatePoints", {
-         email: user.email, 
+      console.log("user.id: ", user.id);
+      const updatePoints = await axios.put("http://"+host+":"+port+"/users/updatePoints", {
+         id: user.id, 
          nto100: nto100
       });
     }
     
-    const response = await axios.get("http://localhost:3001/places/getUserPlaces", {
-      params: { email: user.email }
+    const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+      params: { userId: user.id }
     });
     setPlaces(response.data);
     setMessage("Мястото е посетено успешно!");
@@ -389,7 +416,7 @@ const MyPlaces = () => {
         <AddPlaceModal
           setIsModalOpen={handleCloseModal}
           setIsModalOpenSuccess={handleCloseModalSuccess}
-          userEmail={user?.email}
+          user={user}
           setPlaces={setPlaces}
           setSuccess={setSuccess}
         />

@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 
 const userNotificationSchema = new mongoose.Schema({
-  userEmail: {
-    type: String,
-    required: true
-  },
+  user: {
+          type: mongoose.Types.ObjectId,
+          ref: "model.user",
+          required:[true, "user is required."]
+      },
   notificationId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'notification',
@@ -17,7 +18,7 @@ const userNotificationSchema = new mongoose.Schema({
 });
 
 // Adding a compound index to ensure the combination is unique
-userNotificationSchema.index({ userEmail: 1, notificationId: 1 }, { unique: true });
+userNotificationSchema.index({ user: 1, notificationId: 1 }, { unique: true });
 
 const userNotificationModel = mongoose.model('userNotification', userNotificationSchema);
 

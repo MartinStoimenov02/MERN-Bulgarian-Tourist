@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, Bell } from 'lucide-react';
+import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import Notifications from '../pages/Notifications';
 import '../style/HeaderStyle.css';
 
@@ -18,11 +19,26 @@ const Header = () => {
 
   return (
     <header className="header">
-      <nav className={isForgotPasswordPage ? 'nav' : 'hidden'}>
-        <Link to="/Home" className="nav-link">
-          Вход
-        </Link>
-      </nav>
+      {isAuthPage && (
+        <div className='header-notAuth'>
+          <div className="header-title">Български турист</div>
+
+          <div className="auth-buttons">
+            <nav>
+              <Link to="/Home" className="nav-link small-auth-button">
+                <FaSignInAlt style={{ marginRight: "8px" }} />
+                Вход
+              </Link>
+            </nav>
+
+            <nav>
+              <Link to="/signup" className="nav-link small-auth-button">
+                Регистрация
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
 
       {!isAuthPage && (
         <div className="menu-container">
@@ -42,22 +58,36 @@ const Header = () => {
         </div>
       )}
 
-      {isAuthPage && !isForgotPasswordPage && (
+      {/* {isAuthPage && !isForgotPasswordPage && (
         <h1 className={isAuthPage ? 'title-center' : 'title'}>Български Турист</h1>
-      )}
+      )} */}
 
       {!isAuthPage && (
-        <div className="notification">
-          <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
-            <Bell size={30} color="#fff" />
-          </button>
-          {notificationsOpen && (
-            <div className="notifications-dropdown">
-              <Notifications />
-            </div>
-          )}
+        <div className="header-right">
+          <div className="notification">
+            <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
+              <Bell size={30} color="#fff" />
+            </button>
+            {notificationsOpen && (
+              <div className="notifications-dropdown">
+                <Notifications />
+              </div>
+            )}
+          </div>
+
+          <div className="logout-button">
+            <button onClick={() => {
+              localStorage.removeItem("userSession");
+              localStorage.removeItem("loginTime");
+              window.location.href = "/login";
+            }} className="small-logout-button">
+              <FaSignOutAlt style={{ marginRight: "8px" }} />
+              Изход
+            </button>
+          </div>
         </div>
       )}
+
     </header>
   );
 };

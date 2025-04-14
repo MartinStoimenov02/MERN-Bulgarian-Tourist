@@ -26,7 +26,7 @@ export const getActiveNationalSites = async (req, res) => {
 
     res.status(200).json(nationalSites);
   } catch (error) {
-    logError(err, req, { className: 'nationalSite.controller', functionName: 'getActiveNationalSites' });
+    logError(error, req, { className: 'nationalSite.controller', functionName: 'getActiveNationalSites' });
     console.error("Error fetching national sites", error);
     res.status(500).json({ message: "Error fetching national sites", error });
   }
@@ -34,7 +34,7 @@ export const getActiveNationalSites = async (req, res) => {
 
 export const addNationalSiteToMyList = async (req, res) => {
   try {
-    const { nationalSite, email } = req.body;
+    const { nationalSite, userId } = req.body;
     const { _id, name, description, imgPath, isActive, numberInNationalList, google_external_id, location } = nationalSite;
     const locationParsed = {
       lat: parseFloat(location?.lat),
@@ -45,7 +45,7 @@ export const addNationalSiteToMyList = async (req, res) => {
           description: description,
           imgPath: imgPath,
           location: locationParsed,
-          userEmail: email,
+          user: userId,
           nto100: _id,
           google_external_id: google_external_id
   });
@@ -55,7 +55,7 @@ export const addNationalSiteToMyList = async (req, res) => {
       site: savedNewPlace,
     });
   } catch (error) {
-    logError(err, req, { className: 'nationalSite.controller', functionName: 'addNationalSiteToMyList' });
+    logError(error, req, { className: 'nationalSite.controller', functionName: 'addNationalSiteToMyList', user: req.body.userId });
     console.error('Error adding place:', error);
     res.status(500).json({
       message: 'Failed to add place.',
@@ -66,14 +66,24 @@ export const addNationalSiteToMyList = async (req, res) => {
 
 export const addNationalSite = async (req, res) => {
   try {
-    const newNationalSite = new NationalSiteModel(req.body);
+    const { adminId, nationalSiteData } = req.body;
+
+    const user = await UserModel.findById( adminId );
+    if(!user.isAdmin){
+      res.status(403).json({
+        success: false,
+        message: 'Достъп отказан!',
+      });
+    }
+
+    const newNationalSite = new NationalSiteModel(nationalSiteData);
     const savedNationalSite = await newNationalSite.save();
     res.status(201).json({
       message: 'National site added successfully!',
       site: savedNationalSite,
     });
   } catch (error) {
-    logError(err, req, { className: 'nationalSite.controller', functionName: 'addNationalSite' });
+    logError(error, req, { className: 'nationalSite.controller', functionName: 'addNationalSite' });
     console.error('Error adding national site:', error);
     res.status(500).json({
       message: 'Failed to add national site.',

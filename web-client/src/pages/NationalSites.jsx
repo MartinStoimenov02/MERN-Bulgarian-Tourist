@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaPlusCircle } from "react-icons/fa";
@@ -18,6 +18,44 @@ const NationalSites = () => {
   const [placeDetails, setPlaceDetails] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
   
+  const host = process.env.REACT_APP_HOST;
+  const port = process.env.REACT_APP_PORT;
+
+  const userCoordsRef = useRef(null);
+  
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const last = userCoordsRef.current;
+            console.log("last: ", last);
+            console.log("position.coords: ", position.coords);
+  
+            const isSame =
+              last &&
+              Math.abs(last.latitude - latitude) < 0.0001 &&
+              Math.abs(last.longitude - longitude) < 0.0001;
+  
+            if (isSame) return;
+  
+            userCoordsRef.current = { latitude, longitude };
+            updateAllDistances( position.coords );
+          },
+          (error) => {
+            console.error("Грешка при взимане на локацията:", error);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 5000,
+          }
+        );
+      }, 2000); // проверка на всеки 2 секунди
+  
+      return () => clearInterval(intervalId);
+    }, [places]);
+
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
     if (userSession) {
@@ -29,7 +67,7 @@ const NationalSites = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://localhost:3001/nationalSites/getActiveNationalSites");
+          const response = await axios.get("http://"+host+":"+port+"/nationalSites/getActiveNationalSites");
           setPlaces(response.data);
         } catch (error) {
           console.error("Error fetching national sites", error);
@@ -55,27 +93,11 @@ const NationalSites = () => {
       setPlaceDetails(null);
     }
   }, [id, places]);
-
-  useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        updateAllDistances(position.coords);
-      },
-      (error) => console.error("Грешка при получаване на локация:", error),
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
-    );
-  
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, [places]);
   
   const fetchPlaceDetails = async (place) => {
 
     try {
-      const response = await axios.post("http://localhost:3001/google/place-details", {
+      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
         place
       });
       setPlaceDetails(response.data);
@@ -90,7 +112,7 @@ const NationalSites = () => {
       const distances = {};  
       for (const place of places) {
         if (place.location) {
-          const response = await axios.post("http://localhost:3001/google/place-distance", {
+          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
             userLocation: userCoordinates,
             placeLocation: place.location,
           });
@@ -172,14 +194,14 @@ const NationalSites = () => {
 
   const addThePlace = async (newPlace) => {
     try {
-    await axios.post("http://localhost:3001/nationalSites/addNationalSiteToMyList", {
+    await axios.post("http://"+host+":"+port+"/nationalSites/addNationalSiteToMyList", {
       nationalSite: newPlace,
-      email: user?.email
+      userId: user.id
     });
     setMessage("Мястото е добавено успешно!");
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
-    const response = await axios.get("http://localhost:3001/nationalSites/getActiveNationalSites");
+    const response = await axios.get("http://"+host+":"+port+"/nationalSites/getActiveNationalSites");
     setPlaces(response.data);
     } catch (error) {
       console.log("error: ", error?.response?.data?.error);

@@ -7,7 +7,10 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(0);
   const [messageAlert, setMessageAlert] = useState("");
-    const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const host = process.env.REACT_APP_HOST;
+  const port = process.env.REACT_APP_PORT;
 
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -39,14 +42,14 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
         }
     
         const feedbackData = {
-            user,
+            userId: user.id,
             feedbackType,
             message,
             rating,
         };
     
         try {
-            const response = await fetch('http://localhost:3001/feedback/createFeedback', {
+            const response = await fetch('http://'+host+':'+port+'/feedback/createFeedback', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

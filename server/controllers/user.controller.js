@@ -1,4 +1,5 @@
 import UserModel from '../models/user.model.js';
+import PlaceModel from '../models/place.model.js';
 import crypto from "crypto";
 import mongoose from "mongoose";
 import logError from '../utils/logger.js';
@@ -19,7 +20,7 @@ export const checkUserExists = async (req, res, next) => {
         }
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'checkUserExists', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'checkUserExists', user: email });
         console.error("checkUserExists: ", err);
         return res.status(500).json({ success: false, message: "Грешка при проверката на имейла" });
     }
@@ -47,17 +48,20 @@ export const getUser = async (req, res, next) => {
             success: true,
             message: "Успешно влизане!",
             user: {
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
                 points: user.points,
-                firstLogin: user.firstLogin
+                firstLogin: user.firstLogin,
+                isGoogleAuth: user.isGoogleAuth,
+                hasPassword: user.password!=undefined ? true : false
             }
         });
 
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'getUser', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'getUser', user: email });
         console.error("error getting user: ", err);
     }
 };
@@ -81,7 +85,7 @@ export const validateUser = async (req, res, next) => {
         await session.abortTransaction(); 
         res.status(200).json({ success: true, message: "Данните са валидни." });
     } catch (err) {
-        logError(err, req, { className: 'user.controller', functionName: 'validateUser', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'validateUser', user: email });
         console.error("validateUser: ", err);
         await session.abortTransaction(); 
         res.status(400).json({ success: false, message: "Невалидни данни: " + err.message });
@@ -110,7 +114,7 @@ export const createUser = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'createUser', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'createUser', user: email });
         console.error("createUser: ", err);
         return res.status(404).json({
             success: false,
@@ -121,9 +125,9 @@ export const createUser = async (req, res, next) => {
 
 export const updatePoints = async (req, res, next) => {
     try {
-        const { email, nto100 } = req.body;
+        const { id, nto100 } = req.body;
         const addingPoints = nto100!=null ? 5 : 2;
-        const user = await UserModel.findOne({ email });
+        const user = await UserModel.findById( id );
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -143,7 +147,7 @@ export const updatePoints = async (req, res, next) => {
 
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'updatePoints', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'updatePoints', user: req.body.id });
         console.error("Error updating points:", err);
         res.status(500).json({
             success: false,
@@ -151,7 +155,6 @@ export const updatePoints = async (req, res, next) => {
         });
     }
 };
-
 
 export const resetPassword = async (req, res, next) => {
     try {
@@ -176,7 +179,7 @@ export const resetPassword = async (req, res, next) => {
 
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'resetPassword', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'resetPassword', user: req.body.email });
         console.error("Error resetting password:", err);
         res.status(500).json({
             success: false,
@@ -209,18 +212,97 @@ export const googleAuth = async (req, res, next) => {
             success: true,
             message: "Google login successful!",
             user: {
+                id: user.id,
                 name: user.name,
                 email: user.email,
-                phoneNumber: user.phoneNumber || null
+                phoneNumber: user.phoneNumber || null,
+                isGoogleAuth: user.isGoogleAuth,
+                hasPassword: user.password!=undefined ? true : false
             }
         });
 
     } catch (err) {
-        logError(err, req, { className: 'user.controller', functionName: 'googleAuth', userEmail: email });
+        logError(err, req, { className: 'user.controller', functionName: 'googleAuth', user: email });
         console.error("Error in Google Auth:", err);
         res.status(500).json({
             success: false,
             message: "Google login error!"
         });
     }
+};
+
+export const updateField = async (req, res, next) => {
+    const { id, field, newValue } = req.body;
+
+    try {
+      const user = await UserModel.findById( id );
+  
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "Потребителят не е намерен!"
+        });
+      }
+  
+      if (field === "password") {
+        user.password = hashPassword(newValue);
+      } else if (["name", "phoneNumber", "email"].includes(field)) {
+        user[field] = newValue;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Невалидно поле за обновяване."
+        });
+      }
+  
+      await user.save();
+  
+      res.status(200).json({
+        success: true,
+        message: `${field === "password" ? "Паролата" : "Полето"} е успешно обновено!`
+      });
+    } catch (err) {
+      next(err);
+      console.error(err.message);
+      logError(err, req, { className: 'user.controller', functionName: 'updateUserField', user: req.body.id });
+      console.error("Error updating user field:", err);
+      res.status(500).json({
+        success: false,
+        message: err.message
+      });
+    }
+  };
+  
+export const deleteAccount = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { userId } = req.body;
+
+    const deletedPlaces = await PlaceModel.deleteMany({ user: userId }).session(session);
+    if (deletedPlaces.deletedCount === 0) {
+      console.log("No places found for this user.");
+    } else {
+      console.log(`${deletedPlaces.deletedCount} places deleted for user ${userId}`);
+    }
+
+    const deletedUser = await UserModel.findByIdAndDelete(userId).session(session);
+    if (!deletedUser) {
+      throw new Error("User not found");
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(200).json({ message: "User and associated places deleted successfully", success: true });
+  } catch (error) {
+    next(error);
+    await session.abortTransaction();
+    session.endSession();
+
+    logError(error, req, { className: 'user.controller', functionName: 'deleteAccount', user: req.body.userId });
+    console.error("Error deleting user and associated places:", error);
+    res.status(500).json({ message: "Error deleting user and related places", error });
+  }
 };

@@ -6,6 +6,59 @@
     color: #fff;
     padding: 10px;
   }
+
+  .header-notAuth {
+    display: flex;
+    justify-content: space-between; /* заглавие вляво, бутони вдясно */
+    align-items: center;
+    background-color: #0066CC;
+    color: #fff;
+    padding: 10px 20px;
+    width: 100%;
+  }
+  
+  .header-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .auth-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .small-auth-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }  
+  
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .small-auth-button:not(:last-child) {
+    margin-right: 10px;
+  }  
+  
+  .logout-button .small-logout-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
   
   .nav {
     display: flex;

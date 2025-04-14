@@ -3,9 +3,18 @@ import UserNotificationModel from '../models/userNotification.model.js';
 import logError from '../utils/logger.js';
 
 export const addNotification = async (req, res, next) => {
-  const { message } = req.body;
+  const { message, adminId } = req.body;
 
   try {
+    const user = await UserModel.findById( adminId );
+
+    if(!user.isAdmin){
+      res.status(403).json({
+        success: false,
+        message: 'Достъп отказан!',
+      });
+    }
+
     const newNotification = new NotificationModel({ message });
     await newNotification.save();
 
@@ -25,12 +34,21 @@ export const addNotification = async (req, res, next) => {
 };
 
 export const addUserNotification = async (req, res, next) => {
-  const { email, notificationId } = req.body;
+  const { adminId, userId, notificationId } = req.body;
 
   try {
+    const user = await UserModel.findById( adminId );
+
+    if(!user.isAdmin){
+      res.status(403).json({
+        success: false,
+        message: 'Достъп отказан!',
+      });
+    }
+
     // Create a new junction record
     const userNotification = await UserNotificationModel.create({
-      userEmail: email,
+      user: userId,
       notificationId,
     });
 
@@ -41,7 +59,7 @@ export const addUserNotification = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
-    logError(err, req, { className: 'notification.controller', functionName: 'addUserNotification', userEmail: email });
+    logError(err, req, { className: 'notification.controller', functionName: 'addUserNotification', user: req.body.userId });
     console.error("Error adding user notification: ", err);
     res.status(500).json({
       success: false,
@@ -51,11 +69,12 @@ export const addUserNotification = async (req, res, next) => {
 };
 
 export const getNotificationsForUser = async (req, res, next) => {
-  const { userEmail } = req.query;
+  const { userId } = req.query;
+  console.log("userId: ", userId);
   try {
     const userNotifications = await UserNotificationModel
-      .find({ userEmail })
-      .populate('notificationId') 
+      .find({ user: userId })
+      .populate('notificationId') //Заменя notificationId с пълния документ от свързаната колекция (например NotificationModel)
       .exec();
 
     const unreadNotifications = userNotifications
@@ -78,7 +97,7 @@ export const getNotificationsForUser = async (req, res, next) => {
       })),
     });
   } catch (err) {
-    logError(err, req, { className: 'notification.controller', functionName: 'getNotificationsForUser', userEmail: userEmail });
+    logError(err, req, { className: 'notification.controller', functionName: 'getNotificationsForUser', user: req.query.userId });
     console.error('Error fetching notifications:', err);
     throw new Error('Failed to fetch notifications');
   }

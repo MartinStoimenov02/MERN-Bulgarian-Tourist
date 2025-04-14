@@ -6,6 +6,9 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [user, setUser] = useState(null);
 
+  const host = process.env.REACT_APP_HOST;
+  const port = process.env.REACT_APP_PORT;
+
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
     if (userSession) {
@@ -17,8 +20,9 @@ const Notifications = () => {
     if (user) {
       const fetchNotifications = async () => {
         try {
-          const response = await axios.get('http://localhost:3001/notifications/getNotificationsForUser', {
-            params: { userEmail: user.email }
+          console.log("user NOTIFICATINS: ", user.id);
+          const response = await axios.get('http://'+host+':'+port+'/notifications/getNotificationsForUser', {
+            params: { userId: user.id }
           }); 
           setNotifications(response.data.data);
         } catch (error) {
@@ -28,7 +32,7 @@ const Notifications = () => {
 
       fetchNotifications();
     }
-  }, [user]);
+  }, [user, host, port]);
 
   const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -37,7 +41,7 @@ const Notifications = () => {
 
   const handleNotificationClick = async (notificationId) => {
     try {
-      await axios.patch('http://localhost:3001/notifications/markAsRead', {
+      await axios.patch('http://'+host+':'+port+'/notifications/markAsRead', {
          notificationId: notificationId
       });
       // Update the state to reflect that the notification is read

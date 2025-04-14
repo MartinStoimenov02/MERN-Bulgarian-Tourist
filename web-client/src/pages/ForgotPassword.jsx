@@ -20,6 +20,9 @@ function ForgotPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const host = process.env.REACT_APP_HOST;
+  const port = process.env.REACT_APP_PORT;
+
   // Redirect if accessed directly
   useEffect(() => {
     if (!isAllowed) {
@@ -33,7 +36,7 @@ function ForgotPassword() {
       try {
         const query = "tourist sites in Bulgaria";
         const res = await Axios.get(
-          `http://localhost:3001/google/random-image?query=${encodeURIComponent(query)}`
+          `http://`+host+`:`+port+`/google/random-image?query=${encodeURIComponent(query)}`
         );
         setImageUrl(res.data.imageUrl);
       } catch (error) {
@@ -43,7 +46,7 @@ function ForgotPassword() {
       }
     };
     fetchImage();
-  }, []);
+  }, [host, port]);
 
   const validatePassword = (password) => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\W_]{8,}$/.test(password);
@@ -64,7 +67,7 @@ function ForgotPassword() {
     }
 
     try {
-      const res = await Axios.post("http://localhost:3001/users/resetPassword", {
+      const res = await Axios.post("http://"+host+":"+port+"/users/resetPassword", {
         email,
         password,
       });

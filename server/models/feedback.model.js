@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
 const FeedbackSchema = new mongoose.Schema({
-    userEmail: {
-        type: String,
-        required:[true, "userEmail is required."]
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "model.user",
+        required:[true, "user is required."]
     },
     feedbackType: {
         type: String,

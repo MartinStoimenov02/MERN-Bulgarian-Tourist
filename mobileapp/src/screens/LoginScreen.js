@@ -5,6 +5,9 @@ import {
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 
+const host = process.env.HOST;
+const port = process.env.PORT;
+
 const LoginScreen = ({ setIsAuthenticated }) => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [message, setMessage] = useState("");
@@ -41,7 +44,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
 
     const handleForgotPassword = async () => {
         try {
-            const userCheck = await axios.post("http://localhost:3001/users/checkUserExists", {
+            const userCheck = await axios.post("http://"+host+":"+port+"/users/checkUserExists", {
                 email: formData.email
             });
 
@@ -50,7 +53,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
                 return;
             }
 
-            await axios.post("http://localhost:3001/email/sendVerificationCode", {
+            await axios.post("http://"+host+":"+port+"/email/sendVerificationCode", {
                 email: formData.email
             });
 
@@ -62,7 +65,7 @@ const LoginScreen = ({ setIsAuthenticated }) => {
 
     const handleVerifyCode = async () => {
         try {
-            const res = await axios.post("http://localhost:3001/email/verifyCode", {
+            const res = await axios.post("http://"+host+":"+port+"/email/verifyCode", {
                 email: formData.email,
                 code: verificationCode
             });

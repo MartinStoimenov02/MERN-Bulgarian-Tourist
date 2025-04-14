@@ -22,9 +22,10 @@ const PlaceScheme = new mongoose.Schema({
     location: {
         type: Object
     },
-    userEmail: {
-        type: String,
-        required:[true, "userEmail is required."]
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "model.user",
+        required:[true, "user is required."]
     },
     nto100: {
         type: mongoose.Types.ObjectId,

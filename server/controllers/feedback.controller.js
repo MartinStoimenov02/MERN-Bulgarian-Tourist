@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 import logError from '../utils/logger.js';
 
 export const createFeedback = async (req, res, next) => {
-    const { user, feedbackType, message, rating } = req.body;
+    const { userId, feedbackType, message, rating } = req.body;
 
     try {
         const newFeedback = new FeedbackModel({
-            userEmail: user.email, // user._id е ID-то на потребителя, който изпраща обратната връзка
+            user: userId, // user._id е ID-то на потребителя, който изпраща обратната връзка
             feedbackType,
             message,
             rating,
@@ -21,7 +21,7 @@ export const createFeedback = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'feedback.controller', functionName: 'createFeedback', userEmail: user.email });
+        logError(err, req, { className: 'feedback.controller', functionName: 'createFeedback', user: req.body.userId });
         console.error("Error creating feedback:", err);
         res.status(500).json({
             success: false,

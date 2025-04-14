@@ -1,0 +1,90 @@
+/* Modal for Delete Account */
+.delete-account-modal .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .delete-account-modal .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .delete-account-modal .modal-content h2 {
+    margin-top: 0;
+    text-align: center;
+  }
+  
+  .delete-account-modal input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+
+  /* Common modal button styles */
+  .modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+/* Primary action button (e.g., "Add", "Delete") */
+.btn-primary {
+  background-color: #f44336; /* червен за изтриване */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: #d32f2f;
+}
+
+.btn-cancel {
+  background-color: gray; /* син за отказ */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-cancel:hover {
+  background-color: darkgray;
+}
+
+  .success-message, .error-message {
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 80px;
+  }
+  
+  .success-message {
+    background-color: green;
+  }
+  
+  .error-message {
+    background-color: red;
+  }

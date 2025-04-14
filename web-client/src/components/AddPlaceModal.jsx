@@ -16,7 +16,10 @@ const center = {
   lng: 23.319941,
 };
 
-const AddPlaceModal = ({ setIsModalOpen, userEmail, setPlaces, setIsModalOpenSuccess }) => {
+const host = process.env.REACT_APP_HOST;
+const port = process.env.REACT_APP_PORT;
+
+const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess }) => {
   const [placeName, setPlaceName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
@@ -79,17 +82,17 @@ const AddPlaceModal = ({ setIsModalOpen, userEmail, setPlaces, setIsModalOpenSuc
     }  
     try {
       // Make the API request to add the place
-      const response = await axios.post("http://localhost:3001/places/addPlace", {
+      const response = await axios.post("http://"+host+":"+port+"/places/addPlace", {
         name: placeName,
         google_external_id: selectedPlaceId,
-        email: userEmail,
+        userId: user.id,
         description: description,
         location: selectedLocation
       });
   
       // Notify the parent component to refresh the places list
-      const updatedPlacesResponse = await axios.get("http://localhost:3001/places/getUserPlaces", {
-        params: { email: userEmail }
+      const updatedPlacesResponse = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+        params: { userId: user.id }
       });
   
       // Update the places in the parent component

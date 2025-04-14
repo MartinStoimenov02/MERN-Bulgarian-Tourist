@@ -10,6 +10,7 @@ function Home({ setIsAuthenticated }) {
     const userSession = localStorage.getItem("userSession");
     if (userSession) {
       const user = JSON.parse(userSession);
+      console.log("user: ", user);
       setUserName(user.name);
     }
   }, []);
