@@ -164,7 +164,31 @@ const MyPlaces = () => {
     setIsModalOpen(false);
   };
 
-  const handleCloseModalSuccess = () => {
+  const handleCloseModalSuccess = async (newPlace) => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const distances = placeDistances;  
+        if (newPlace.location) {
+          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
+            userLocation: position.coords,
+            placeLocation: newPlace.location,
+          });
+  
+          distances[newPlace._id] = response.data.distance;
+        }
+      setPlaceDistances(distances);
+
+      },
+      (error) => {
+        console.error("Грешка при взимане на локацията:", error);
+      },
+      {
+        enableHighAccuracy: true, // използва GPS ако има
+        timeout: 5000,            // макс време за отговор
+        maximumAge: 0             // не използвай кеширана локация
+      }
+    );
+
     setIsModalOpen(false);
     setMessage("Мястото е добавено успешно!");
     setSuccess(true);

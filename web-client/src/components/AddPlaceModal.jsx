@@ -106,7 +106,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess 
   
       // Close the modal and show success message
       setIsModalOpen(false);
-      setIsModalOpenSuccess(true);
+      setIsModalOpenSuccess(newPlace);
     } catch (error) {
       console.error("Error adding place", error);
     }
