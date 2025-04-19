@@ -34,6 +34,9 @@ const PlaceScheme = new mongoose.Schema({
     google_external_id: {
         type: String
     },
+    dateOfVisit: {
+        type: Date
+    },
 }, {timestamps:true});
 
 const PlaceModel = mongoose.model("places", PlaceScheme);

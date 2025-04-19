@@ -92,7 +92,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess 
   
       // Notify the parent component to refresh the places list
       const updatedPlacesResponse = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-        params: { userId: user.id }
+        params: { userId: user.id, visited: false }
       });
   
       // Update the places in the parent component

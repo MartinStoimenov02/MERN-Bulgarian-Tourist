@@ -11,8 +11,7 @@ import MyPlaces from "./pages/MyPlaces";
 import NationalSites from "./pages/NationalSites";
 import Nearby from "./pages/Nearby";
 import Profile from "./pages/Profile";
-import Help from "./pages/Help";
-import Notifications from "./pages/Notifications";
+import GuestPage from "./pages/GuestPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,19 +42,19 @@ function App() {
         <Header />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/home" element={isAuthenticated ? <Home setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
+            {/* <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> */}
+            <Route path="/home" element={isAuthenticated ? <Home setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
             <Route path="/signup" element={<SignUp setIsAuthenticated={setIsAuthenticated} />} />
-            <Route path="/my-places" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/my-places/:id" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/national-sites" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/national-sites/:id" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/nearby-places" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/profile" element={isAuthenticated ? <Profile setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/help" element={isAuthenticated ? <Help setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
-            <Route path="/notifications" element={isAuthenticated ? <Notifications setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />} />
+            <Route path="/my-places" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/my-places/:id" element={isAuthenticated ? <MyPlaces setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/national-sites" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/national-sites/:id" element={isAuthenticated ? <NationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/nearby-places" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/nearby-places/:id" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/profile" element={isAuthenticated ? <Profile setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/" element={<GuestPage/>} />
           </Routes>
         </main>
         <Footer />

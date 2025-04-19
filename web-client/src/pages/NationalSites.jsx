@@ -276,7 +276,7 @@ const NationalSites = () => {
             <div className="icons-container">
               <FaPlusCircle  
                 className="icon visit-icon" 
-                title="Посети мястото" 
+                title="Добави мястото" 
                 onClick={(e) => {
                   e.stopPropagation();
                   addThePlace(selectedPlace);

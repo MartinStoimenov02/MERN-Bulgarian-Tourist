@@ -5,12 +5,12 @@ import logError from '../utils/logger.js';
 // Get all places for a specific user
 export const getUserPlaces = async (req, res) => {
   try {
-    const { userId } = req.query; 
+    const { userId, visited } = req.query; 
     console.log("userId: ", userId);
     if (!userId) {
       throw new Error("User ID is required to fetch places.");
     }
-    const places = await PlaceModel.find({ user: userId, isVisited: false });
+    const places = await PlaceModel.find({ user: userId, isVisited: visited });
     res.status(200).json(places);
   } catch (error) {
     logError(error, req, { className: 'place.controller', functionName: 'getUserPlaces', user: req.query.userId });
@@ -80,7 +80,7 @@ export const visitPlace = async (req, res) => {
   try {
     const { placeId, placeDistance } = req.body;
     if(parseFloat(parseFloat(placeDistance))<1){
-      await PlaceModel.findByIdAndUpdate(placeId, { isVisited:true });
+      await PlaceModel.findByIdAndUpdate(placeId, { isVisited:true, dateOfVisit: new Date() });
       res.status(200).json({ message: "Place visited successfully" }); 
     } else{
       res.status(500).json({ error: "Разстоянието до мястото е повече от 1 км!" });

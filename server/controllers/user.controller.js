@@ -54,6 +54,7 @@ export const getUser = async (req, res, next) => {
                 phoneNumber: user.phoneNumber,
                 points: user.points,
                 firstLogin: user.firstLogin,
+                points: user.points,
                 isGoogleAuth: user.isGoogleAuth,
                 hasPassword: user.password!=undefined ? true : false
             }
@@ -141,6 +142,7 @@ export const updatePoints = async (req, res, next) => {
         await user.save();
 
         res.status(200).json({
+            totalPoints: totalPoints,
             success: true,
             message: "Точките са добавени успешно!"
         });
@@ -217,6 +219,8 @@ export const googleAuth = async (req, res, next) => {
                 email: user.email,
                 phoneNumber: user.phoneNumber || null,
                 isGoogleAuth: user.isGoogleAuth,
+                firstLogin: user.firstLogin,
+                points: user.points,
                 hasPassword: user.password!=undefined ? true : false
             }
         });
@@ -246,9 +250,10 @@ export const updateField = async (req, res, next) => {
   
       if (field === "password") {
         user.password = hashPassword(newValue);
-      } else if (["name", "phoneNumber", "email"].includes(field)) {
+      } else if (["name", "phoneNumber", "email", "firstLogin"].includes(field)) {
         user[field] = newValue;
-      } else {
+      }
+       else {
         return res.status(400).json({
           success: false,
           message: "Невалидно поле за обновяване."

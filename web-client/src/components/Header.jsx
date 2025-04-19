@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, HelpCircle } from 'lucide-react';
 import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import Notifications from '../pages/Notifications';
+import Help from '../components/Help';
 import '../style/HeaderStyle.css';
 
 const Header = () => {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const isAuthPage =
     location.pathname === '/login' ||
@@ -25,7 +27,7 @@ const Header = () => {
 
           <div className="auth-buttons">
             <nav>
-              <Link to="/Home" className="nav-link small-auth-button">
+              <Link to="/login" className="nav-link small-auth-button">
                 <FaSignInAlt style={{ marginRight: "8px" }} />
                 Вход
               </Link>
@@ -52,7 +54,6 @@ const Header = () => {
               <Link to="/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Национални обекти</Link>
               <Link to="/nearby-places" className="menu-item" onClick={() => setMenuOpen(false)}>Места в близост</Link>
               <Link to="/profile" className="menu-item" onClick={() => setMenuOpen(false)}>Профил</Link>
-              <Link to="/help" className="menu-item" onClick={() => setMenuOpen(false)}>Помощ</Link>
             </div>
           )}
         </div>
@@ -64,6 +65,23 @@ const Header = () => {
 
       {!isAuthPage && (
         <div className="header-right">
+          <div className="help">
+            <button onClick={() => setHelpOpen(!helpOpen)} className="help-icon">
+            <HelpCircle size={30} color="#fff" />
+            </button>
+              {helpOpen && (
+                <div className="help-modal-overlay" onClick={() => setHelpOpen(false)}>
+                  <div className="help-modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h2>Помощ и Често Задавани Въпроси</h2>
+                    <button className="close-button" onClick={() => setHelpOpen(false)}>✕</button>
+                  </div>
+                  <Help />
+                  </div>
+                </div>
+              )}
+          </div>
+
           <div className="notification">
             <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
               <Bell size={30} color="#fff" />

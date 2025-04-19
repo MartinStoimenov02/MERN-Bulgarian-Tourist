@@ -5,6 +5,7 @@ import logError from '../utils/logger.js';
 dotenv.config();
 
 const API_KEY = process.env.GOOGLE_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const CX = process.env.GOOGLE_CX;
 
 // Функция за извличане на детайли за място
@@ -118,5 +119,40 @@ export const getRandomImage = async (req, res) => {
         logError(error, req, { className: 'google.controller', functionName: 'getRandomImage' });
         console.error("Error fetching image:", error);
         res.status(500).json({ message: "Error fetching image" });
+    }
+};
+
+export const gemini = async (req, res) => {
+    try {
+        const prompt = req.body.prompt || "Кое е най-доброто място за посещение в България?";
+        //const prompt = "Кое е най-доброто място за посещение в България?";
+
+
+        const geminiResponse = await axios.post(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
+            {
+                contents: [
+                    {
+                        parts: [{ text: prompt }]
+                    }
+                ]
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const text = geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+            res.json({ response: text });
+        } else {
+            res.status(404).json({ message: "Не е намерен отговор от модела." });
+        }
+    } catch (error) {
+        logError(error, req, { className: 'google.controller', functionName: 'gemini' });
+        console.error("Грешка при заявката към Gemini:", error);
+        res.status(500).json({ message: "Грешка при заявката към модела Gemini." });
     }
 };

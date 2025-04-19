@@ -3,20 +3,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
 import "../style/MyPlaces.css";
-import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const Nearby = () => {
   const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
+  const [newPlaces, setNewPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("distance");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const [placeholderMessage, setPlaceholderMessage] = useState("Моля изчакайте, разстоянието се изчислява...");
   const [success, setSuccess] = useState(false);
   const [placeDetails, setPlaceDetails] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -60,13 +60,6 @@ const Nearby = () => {
 
     return () => clearInterval(intervalId);
   }, [places]);
-  
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -75,7 +68,7 @@ const Nearby = () => {
           console.log("user PLACESSSS: ", user);
           console.log("user PLACESSSS: ", user.id);
           const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-            params: { userId: user.id }
+            params: { userId: user.id, visited: false }
           });
           setPlaces(response.data);
         } catch (error) {
@@ -85,6 +78,13 @@ const Nearby = () => {
       fetchPlaces();
     }
   }, [user, host, port]);
+  
+  useEffect(() => {
+    const userSession = localStorage.getItem("userSession");
+    if (userSession) {
+      setUser(JSON.parse(userSession));
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1000);
@@ -94,14 +94,14 @@ const Nearby = () => {
 
   useEffect(() => {
     if (id) {
-      const selectedPlace = places.find((place) => place._id.toString() === id);
+      const selectedPlace = newPlaces.find((place) => place._id.toString() === id);
       if (selectedPlace) {
         fetchPlaceDetails(selectedPlace);
       }
     } else {
       setPlaceDetails(null);
     }
-  }, [id, places]);
+  }, [id, newPlaces]);
   
   const fetchPlaceDetails = async (place) => {
 
@@ -128,16 +128,28 @@ const Nearby = () => {
             placeLocation: place.location,
           });
   
-          distances[place._id] = response.data.distance;
+          console.log("response.data.distance: ", parseFloat(response.data.distance));
+          if(parseFloat(response.data.distance)<10){
+            distances[place._id] = response.data.distance;
+            console.log("distances[place._id]: ", distances[place._id]);
+          }
         }
       }
       setPlaceDistances(distances);
+
+      const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+          params: { userId: user.id, visited: false }
+      });
+
+      const filteredPlaces = response.data.filter(place => distances.hasOwnProperty(place._id));
+      setNewPlaces(filteredPlaces);
+      setPlaceholderMessage("Нямате активни места за посещение!");
     } catch (error) {
       console.error("Грешка при изчисляване на разстоянията:", error);
     }
   };
   
-  const sortedPlaces = [...places].sort((a, b) => {
+  const sortedPlaces = [...newPlaces].sort((a, b) => {
     switch (sortOrder) {
       case "name-asc":
         return a.name.localeCompare(b.name);
@@ -158,7 +170,7 @@ const Nearby = () => {
     place.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  const selectedPlace = places.find((place) => place._id.toString() === id);
+  const selectedPlace = newPlaces.find((place) => place._id.toString() === id);
 
   const toggleFavourite = async (placeId, currentStatus) => {
     try {
@@ -169,7 +181,7 @@ const Nearby = () => {
       });
   
       // Update the UI state immediately for a smoother experience
-      setPlaces((prevPlaces) =>
+      setNewPlaces((prevPlaces) =>
         prevPlaces.map((place) =>
           place._id === placeId ? { ...place, isFavourite: updatedStatus } : place
         )
@@ -184,10 +196,13 @@ const Nearby = () => {
       await axios.delete("http://"+host+":"+port+"/places/deletePlace", {
         data: { placeId: placeToDelete } 
       });      
+
+      delete placeDistances[placeToDelete];
       const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-        params: { userId: user.id }
+        params: { userId: user.id, visited: false }
       });
-      setPlaces(response.data);
+      const filteredPlaces = response.data.filter(place => placeDistances.hasOwnProperty(place._id));
+      setNewPlaces(filteredPlaces);
       closeDeleteModal();
       setMessage("Мястото е изтрито успешно!");
       setSuccess(true);
@@ -225,11 +240,13 @@ const Nearby = () => {
          nto100: nto100
       });
     }
-    
+
+    delete placeDistances[placeId];
     const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-      params: { userId: user.id }
+      params: { userId: user.id, visited: false }
     });
-    setPlaces(response.data);
+    const filteredPlaces = response.data.filter(place => placeDistances.hasOwnProperty(place._id));
+    setNewPlaces(filteredPlaces);
     setMessage("Мястото е посетено успешно!");
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
@@ -276,10 +293,10 @@ const Nearby = () => {
         {!isMobile || !id ? (
           <div className="places-list">
           {filteredPlaces.length === 0 ? (
-          <p className="place-details-placeholder">Нямате активни места за посещение!</p>
+          <p className="place-details-placeholder">{placeholderMessage}</p>
           ) : (
             filteredPlaces.map((place) => (
-              <div key={place._id} className="place-item" onClick={() => navigate(`/my-places/${place._id}`)}>
+              <div key={place._id} className="place-item" onClick={() => navigate(`/nearby-places/${place._id}`)}>
                 <span className="place-name">{place.name}</span>
                 <div className="icons">
                   {place.nto100 && <span className="national-symbol">🏛️</span>}

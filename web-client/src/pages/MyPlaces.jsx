@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
+import { FaPlus, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
 import "../style/MyPlaces.css";
 import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
@@ -75,7 +75,7 @@ const MyPlaces = () => {
           console.log("user PLACESSSS: ", user);
           console.log("user PLACESSSS: ", user.id);
           const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-            params: { userId: user.id }
+            params: { userId: user.id, visited: false }
           });
           setPlaces(response.data);
         } catch (error) {
@@ -176,17 +176,17 @@ const MyPlaces = () => {
   
           distances[newPlace._id] = response.data.distance;
         }
-      setPlaceDistances(distances);
+        setPlaceDistances(distances);
 
-      },
-      (error) => {
-        console.error("Грешка при взимане на локацията:", error);
-      },
-      {
-        enableHighAccuracy: true, // използва GPS ако има
-        timeout: 5000,            // макс време за отговор
-        maximumAge: 0             // не използвай кеширана локация
-      }
+        },
+        (error) => {
+          console.error("Грешка при взимане на локацията:", error);
+        },
+        {
+          enableHighAccuracy: true, // използва GPS ако има
+          timeout: 5000,            // макс време за отговор
+          maximumAge: 0             // не използвай кеширана локация
+        }
     );
 
     setIsModalOpen(false);
@@ -220,7 +220,7 @@ const MyPlaces = () => {
         data: { placeId: placeToDelete } 
       });      
       const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-        params: { userId: user.id }
+        params: { userId: user.id, visited: false }
       });
       setPlaces(response.data);
       closeDeleteModal();
@@ -259,10 +259,14 @@ const MyPlaces = () => {
          id: user.id, 
          nto100: nto100
       });
+
+      console.log("updatePoints: ", updatePoints);
+      user.points = updatePoints.data.totalPoints;
+      localStorage.setItem("userSession", JSON.stringify(user));
     }
     
     const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
-      params: { userId: user.id }
+      params: { userId: user.id, visited: false }
     });
     setPlaces(response.data);
     setMessage("Мястото е посетено успешно!");
@@ -284,7 +288,7 @@ const MyPlaces = () => {
     <div className="my-places-container">
       <div className="top-controls">
         <button className="add-btn" onClick={() => setIsModalOpen(true)}>
-          <FaPlus />
+          <FaPlus title="Добави място" />
         </button>
         <input
           type="text"
