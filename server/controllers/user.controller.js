@@ -311,3 +311,25 @@ export const deleteAccount = async (req, res, next) => {
     res.status(500).json({ message: "Error deleting user and related places", error });
   }
 };
+
+export const getTopUsers = async (req, res, next) => {
+    try {
+        const topUsers = await UserModel.find({})
+            .sort({ points: -1 })
+            .limit(3)
+            .select('_id name points'); 
+
+        res.status(200).json({
+            success: true,
+            topUsers
+        });
+    } catch (err) {
+        next(err);
+        logError(err, req, { className: 'user.controller', functionName: 'getTopUsers' });
+        console.error("Error getting top users:", err);
+        res.status(500).json({
+            success: false,
+            message: "Грешка при извличането на топ потребителите!"
+        });
+    }
+};

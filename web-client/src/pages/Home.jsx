@@ -10,7 +10,7 @@ function Home({ setIsAuthenticated }) {
   // 🔥 Нови състояния
   const [visitedPlaces, setVisitedPlaces] = useState([]);
   const [topUsers, setTopUsers] = useState([]);
-  const [userRank, setUserRank] = useState(null);
+  const [foundInTop , setFoundInTop ] = useState(false);
   const [geminiSuggestion, setGeminiSuggestion] = useState("Зареждане...");
   const [geminiCitat, setGeminiCitat] = useState("Зареждане...");
 
@@ -47,18 +47,46 @@ function Home({ setIsAuthenticated }) {
 
     if (user) {
       fetchPlaces();
-
-      // 🏆 Класация
-      // Axios.get(`http://${host}:${port}/users/leaderboard`).then(res => {
-      //   setTopUsers(res.data.top3);
-      //   setUserRank(res.data.rank);
-      // });
-
-      // 🤖 Gemini бот
+      fetchTopUsers();
       askGemini();
       getCitat();
     }
   }, [user, host, port]);
+
+  const fetchTopUsers = async () => {
+    try {
+      const response = await Axios.get(`http://${host}:${port}/users/getTopUsers`);
+      
+      if (response.data.success) {
+        let topUsers = response.data.topUsers;
+        console.log("topUsers: ", topUsers);
+        let foundInTop = false;
+  
+        console.log("user: ", user);
+        topUsers.forEach((u, i) => {
+          if (u._id === user.id) {
+            console.log('u._id === user._id: ', u._id === user._id);
+            topUsers[i] = {
+              ...u,
+              me: true
+            };
+            foundInTop = true;
+          }
+        });
+  
+        console.log('topUsers 2: ', topUsers);
+        console.log('foundInTop 2: ', foundInTop);
+        setTopUsers(topUsers);
+        setFoundInTop(foundInTop);
+  
+      } else {
+        console.error("Failed to fetch top users");
+      }
+    } catch (error) {
+      console.error("Error fetching top users:", error);
+    }
+  };
+  
 
   const getCitat = async () => {
     try {
@@ -171,10 +199,16 @@ function Home({ setIsAuthenticated }) {
             <h4>Класация</h4>
             <ol>
               {topUsers.map((u, idx) => (
-                <li key={idx}>{u.name} — {u.points} т.</li>
+                <li key={idx}>
+                  {u.me ? (
+                    <b>{u.name} — {u.points} т.</b>
+                  ) : (
+                    `${u.name} — ${u.points} т.`
+                  )}
+                </li>
               ))}
             </ol>
-            {userRank > 3 && <p>Вашата позиция: #{userRank}</p>}
+            {!foundInTop && <p><b>{user?.name} — {user?.points} т.</b></p>}
           </div>
 
           <div className="gemini-widget">
