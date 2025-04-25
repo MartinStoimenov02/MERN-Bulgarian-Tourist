@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Help from '../components/Help';
 import '../style/HomeStyle.css';
+import VisitedPlaces from "../components/VisitedPlaces";
 import Axios from "axios";
 
 function Home({ setIsAuthenticated }) {
@@ -126,7 +127,7 @@ function Home({ setIsAuthenticated }) {
 
   const askGemini = async () => {
     try {
-      const prompt = "ИСКАМ РАЗЛИЧНИ ДЕСТИНАЦИИ, ТИ ДИ ДАВАШ ЕДНО И СЪЩО, ПРЕСТАНИ БЕ! СТИГА С ТОВ АСЕЛО КОВАЧЕВИЦА, ДАЙ МИ НЕЩО ДРУГО, НЕ Е ДНО И СЪЩО... Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, БЕЗ ИЗВИНЕНИЯ, БЕЗ НИЩО, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
+      const prompt = "Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
 
       const res = await Axios.post(`http://${host}:${port}/google/gemini`, { prompt });
       console.log("response from gemini: ", res);
@@ -158,7 +159,7 @@ function Home({ setIsAuthenticated }) {
   };
 
   return (
-    <div className="home-container">
+    <div className="page-style">
       {helpOpen && (
         <div className="help-modal-overlay" onClick={() => setHelpOpen(false)}>
           <div className="help-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -176,42 +177,42 @@ function Home({ setIsAuthenticated }) {
       </center>
 
       <center>
-        <p>{geminiCitat}</p>
+        <p><i>{geminiCitat}</i></p>
       </center>
 
       {/* 💡 Новата част */}
       <div className="home-content">
-        <section className="visited-places">
-          <h2>Посетени места</h2>
-          <div className="visited-places-list">
-            {visitedPlaces.map((place, idx) => (
-              <div className="visited-place-item" key={idx}>
-                <div className="visited-place-name">{place.name}</div>
-                <div className="visited-place-date">{formatDate(place.dateOfVisit)}</div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <div className="visited-places"><VisitedPlaces visitedPlaces={visitedPlaces} /></div>
 
         <aside className="right-widgets">
-          <div className="points-widget">
-            <h3>Вашите точки: {user?.points ?? 0}</h3>
-            <h4>Класация</h4>
-            <ol>
-              {topUsers.map((u, idx) => (
-                <li key={idx}>
-                  {u.me ? (
-                    <b>{u.name} — {u.points} т.</b>
-                  ) : (
-                    `${u.name} — ${u.points} т.`
-                  )}
-                </li>
-              ))}
-            </ol>
-            {!foundInTop && <p><b>{user?.name} — {user?.points} т.</b></p>}
-          </div>
+        <div className="points-widget widget-box">
+  <h3>Вашите точки: {user?.points ?? 0}</h3>
+  <ul>
+    {topUsers.map((u, idx) => {
+      let rankClass = "rank-box";
+      if (idx === 0) rankClass += " rank-gold"; // Първо място - златно
+      else if (idx === 1) rankClass += " rank-silver"; // Второ място - сребърно
+      else if (idx === 2) rankClass += " rank-bronze"; // Трето място - бронзово
 
-          <div className="gemini-widget">
+      if (u.me) rankClass += " rank-user"; // Ако потребителят е текущия, да има стил за 'rank-user'
+
+      return (
+        <li key={idx} className={rankClass}>
+          {u.name} — {u.points} т.
+        </li>
+      );
+    })}
+  </ul>
+
+  {!foundInTop && (
+    <p className="rank-box rank-user">
+      {user?.name} — {user?.points} т.
+    </p>
+  )}
+</div>
+
+
+          <div className="gemini-widget widget-box">
             <h4>Gemini Бот: Препоръка</h4>
             <p>{geminiSuggestion}</p>
           </div>

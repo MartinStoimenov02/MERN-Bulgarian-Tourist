@@ -69,13 +69,49 @@
   background-color: red;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 700px), (max-height: 600px)  {
   .image-container-signup {
     display: none;
   }
 
   .container-signup table tr td:first-child {
     display: none;
+  }
+
+  .container-signup {
+    flex-direction: column;
+    padding: 20px;
+    margin-top: 20px;
+    height: auto;
+    overflow-y: auto; 
+    height: 80vh;
+  }
+
+  .container-signup table {
+    width: 100%;
+    border: none;
+  }
+
+  .container-signup table tr,
+  .container-signup table tr td {
+    display: block;
+    width: 100%;
+    border: none;
+  }
+
+  .image-container-signupn {
+    display: none;
+  }
+
+  .form-container-signup {
+    margin-top: 0;
+    padding: 10px;
+  }
+}
+
+@media screen and (max-height: 600px)  {
+  .container-signup {
+    padding-top: 180px;
   }
 }
 

@@ -5,10 +5,55 @@
   margin-top: 20px;
 }
 
+.widget-box {
+  padding: 20px;
+  transition: transform 0.2s ease;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.rank-box {
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin: 5px 0;
+  font-weight: normal;
+  background-color: #f0f0f0;
+  border: 2px solid transparent; /* Добави прозрачен бордер, който ще бъде променян */
+}
+
+.rank-user {
+  background-color: #d2f8d2; /* светло зелено */
+  font-weight: bold;
+  border: 2px solid #000; /* Болднат бордер за текущия потребител */
+}
+
+.rank-gold {
+  background-color: #ffd700;
+}
+
+.rank-silver {
+  background-color: #c0c0c0;
+}
+
+.rank-bronze {
+  background-color: #cd7f32;
+}
+
+.points-widget ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
 .visited-places {
+  margin-left: 20px;
   flex: 1;
   padding-right: 20px;
-  border-right: 1px solid #ddd;
+  transition: transform 0.2s ease;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .right-widgets {
@@ -16,18 +61,50 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-right: 20px;
+  height: calc(100vh - 260px);
+
+  overflow-y: auto; 
 }
 
-@media (max-width: 768px) {
+.visited-places-title {
+  text-align: center;
+}
+
+@media (max-width: 768px)  or (max-height: 600px) {
   .home-content {
-    flex-direction: column-reverse;
+    flex-direction: column;
+  }
+
+
+
+  .page-style {
+    overflow-y: auto; 
+    height: 84vh;
+  }
+
+  .right-widgets {
+    margin-right: 0px;
+  }
+
+  .visited-places-title {
+    display: none;
   }
 
   .visited-places {
-    border-right: none;
-    border-top: 1px solid #ccc;
-    padding-top: 20px;
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0;
+    margin: 0 15px;
+    box-shadow: none;
   }
+
+  .visited-places-list {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 0;
+  }
+
 }
 
 .help-modal-overlay {
@@ -90,7 +167,7 @@
     flex: 1;
     overflow-y: auto; 
     padding: 15px;
-    height: calc(100vh - 290px);
+    height: calc(100vh - 370px);
   }
   
   .visited-place-item {
@@ -99,7 +176,7 @@
     align-items: center;
     padding: 12px;
     background-color: #dddddd;
-    border-radius: 10px;
+    border-radius: 12px;
     margin: 5px 0;
     cursor: pointer;
     transition: background 0.3s;
@@ -123,3 +200,84 @@
     font-size: 0.9em;
   }
   
+
+  /* ########################### */
+
+  /* За модалния прозорец на посетените места */
+.visited-places-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.visited-places-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  width: 90%;
+  height: 90%;
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.visited-places-list-modal {
+  overflow-y: auto;
+  padding: 15px;
+  max-height: 70vh;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+.desktop-list {
+  display: block;
+}
+
+.mobile-button button {
+  background-color: #007bff; /* лилав тон като в visited-place hover */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s, transform 0.2s;
+  width: 100%;
+  display:none;
+}
+
+@media (max-width: 768px) or (max-height: 600px) {
+  .desktop-list {
+    display: none;
+  }
+
+  .mobile-button button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }    
+}
