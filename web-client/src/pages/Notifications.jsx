@@ -59,7 +59,6 @@ const Notifications = () => {
 
   return (
     <div className="notification-container">
-      <h1>Notifications</h1>
       {notifications.length > 0 ? (
         notifications.map((notification, index) => (
           <div

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, Bell, HelpCircle } from 'lucide-react';
 import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
@@ -11,6 +11,15 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 600);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isAuthPage =
     location.pathname === '/login' ||
@@ -83,15 +92,30 @@ const Header = () => {
           </div>
 
           <div className="notification">
-            <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
-              <Bell size={30} color="#fff" />
-            </button>
-            {notificationsOpen && (
-              <div className="notifications-dropdown">
-                <Notifications />
-              </div>
-            )}
-          </div>
+              <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
+                <Bell size={30} color="#fff" />
+              </button>
+
+              {/* Падащо меню за десктоп */}
+              {!isMobile && notificationsOpen && (
+                <div className="notifications-dropdown">
+                  <Notifications />
+                </div>
+              )}
+
+              {/* Модален прозорец за мобилни */}
+              {isMobile && notificationsOpen && (
+                <div className="help-modal-overlay" onClick={() => setNotificationsOpen(false)}>
+                  <div className="help-modal-content" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal-header">
+                      <h2>Уведомления</h2>
+                      <button className="close-button" onClick={() => setNotificationsOpen(false)}>✕</button>
+                    </div>
+                    <Notifications />
+                  </div>
+                </div>
+              )}
+            </div>
 
           <div className="logout-button">
             <button onClick={() => {

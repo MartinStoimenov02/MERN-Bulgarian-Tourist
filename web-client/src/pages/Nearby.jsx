@@ -5,6 +5,8 @@ import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLa
 import "../style/MyPlaces.css";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import Modal from "react-modal";
+import SortOrderModal from '../components/SortOrderModal'
 
 const Nearby = () => {
   const [user, setUser] = useState(null);
@@ -13,6 +15,8 @@ const Nearby = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("distance");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -114,6 +118,11 @@ const Nearby = () => {
       setPlaceDetails(null);
       console.error("Грешка при извличане на детайлите:", error);
     }
+  };
+
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+    setIsSortModalOpen(false); // Затваря модала след избора
   };
 
   const updateAllDistances = async (userCoordinates) => {
@@ -272,22 +281,39 @@ const Nearby = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-bar"
         />
-        {!isMobile || !id ? (
+        {/* Падащо меню за десктоп */}
+        {!isMobile && (
           <div className="sort-container">
-          <select 
-            className="sort-dropdown" 
-            value={sortOrder} 
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <option value="name-asc">Име (A-Z)</option>
-            <option value="name-desc">Име (Z-A)</option>
-            <option value="favourites">Любими</option>
-            <option value="nto100">Национални 100</option>
-            <option value="distance">Разстояние</option>
-          </select>
-        </div>        
-        ) : null}
+            <select
+              className="sort-dropdown"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="name-asc">Име (A-Z)</option>
+              <option value="name-desc">Име (Z-A)</option>
+              <option value="favourites">Любими</option>
+              <option value="nto100">Национални 100</option>
+              <option value="distance">Разстояние</option>
+            </select>
+          </div>
+        )}
+
+        {/* Бутон за сортиране за мобилни екрани */}
+        {isMobile && (
+          <button className="sort-btn" onClick={() => setIsSortModalOpen(true)}>
+            <FaSort />
+          </button>
+        )}
       </div>
+
+      {/* Модално прозорче за сортиране */}
+      {isSortModalOpen && (
+        <SortOrderModal
+          sortOrder={sortOrder} 
+          handleSortChange={handleSortChange} 
+          setIsSortModalOpen={setIsSortModalOpen} 
+        />
+      )}
 
       <div className="content" style={{ flexDirection: isMobile && id ? "column" : "row" }}>
         {!isMobile || !id ? (

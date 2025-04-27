@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FaPlus, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
+import { FaPlus, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass, FaSort } from "react-icons/fa";
 import "../style/MyPlaces.css";
 import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import Modal from "react-modal";
+import SortOrderModal from '../components/SortOrderModal'
 
 const MyPlaces = () => {
   const [user, setUser] = useState(null);
@@ -14,6 +16,7 @@ const MyPlaces = () => {
   const [sortOrder, setSortOrder] = useState("name-asc");
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -34,8 +37,6 @@ const MyPlaces = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           const last = userCoordsRef.current;
-          console.log("last: ", last);
-          console.log("position.coords: ", position.coords);
 
           const isSame =
             last &&
@@ -72,8 +73,6 @@ const MyPlaces = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          console.log("user PLACESSSS: ", user);
-          console.log("user PLACESSSS: ", user.id);
           const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
             params: { userId: user.id, visited: false }
           });
@@ -110,18 +109,22 @@ const MyPlaces = () => {
         place
       });
       setPlaceDetails(response.data);
+      console.log("place details: ", response.data);
     } catch (error) {
       setPlaceDetails(null);
       console.error("Грешка при извличане на детайлите:", error);
     }
   };
 
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+    setIsSortModalOpen(false); // Затваря модала след избора
+  };
+
   const updateAllDistances = async (userCoordinates) => {
     try {
       const distances = {};  
       for (const place of places) {
-        console.log(userCoordinates);
-        console.log(place.location);
         if (place.location) {
           const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
             userLocation: userCoordinates,
@@ -254,7 +257,6 @@ const MyPlaces = () => {
     });
 
     if(isVisitSuccess){
-      console.log("user.id: ", user.id);
       const updatePoints = await axios.put("http://"+host+":"+port+"/users/updatePoints", {
          id: user.id, 
          nto100: nto100
@@ -297,22 +299,39 @@ const MyPlaces = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-bar"
         />
-        {!isMobile || !id ? (
+        {/* Падащо меню за десктоп */}
+        {!isMobile && (
           <div className="sort-container">
-          <select 
-            className="sort-dropdown" 
-            value={sortOrder} 
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <option value="name-asc">Име (A-Z)</option>
-            <option value="name-desc">Име (Z-A)</option>
-            <option value="favourites">Любими</option>
-            <option value="nto100">Национални 100</option>
-            <option value="distance">Разстояние</option>
-          </select>
-        </div>        
-        ) : null}
+            <select
+              className="sort-dropdown"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="name-asc">Име (A-Z)</option>
+              <option value="name-desc">Име (Z-A)</option>
+              <option value="favourites">Любими</option>
+              <option value="nto100">Национални 100</option>
+              <option value="distance">Разстояние</option>
+            </select>
+          </div>
+        )}
+
+        {/* Бутон за сортиране за мобилни екрани */}
+        {isMobile && (
+          <button className="sort-btn" onClick={() => setIsSortModalOpen(true)}>
+            <FaSort />
+          </button>
+        )}
       </div>
+
+      {/* Модално прозорче за сортиране */}
+      {isSortModalOpen && (
+        <SortOrderModal
+          sortOrder={sortOrder} 
+          handleSortChange={handleSortChange} 
+          setIsSortModalOpen={setIsSortModalOpen} 
+        />
+      )}
 
       <div className="content" style={{ flexDirection: isMobile && id ? "column" : "row" }}>
         {!isMobile || !id ? (

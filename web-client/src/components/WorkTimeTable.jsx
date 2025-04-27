@@ -64,22 +64,25 @@ function convertTo24HourFormat(time) {
 }
 
 // Функция за обработване на времевия интервал
-function parseTimeRange(timeString) {
+function parseTimeRanges(timeString) {
   timeString = cleanTimeString(timeString);
 
   if (timeString.toLowerCase() === 'closed') {
-    return { startTime: 'Closed', endTime: 'Closed' };
+    return [{ startTime: 'Closed', endTime: 'Closed' }];
   }
   if (timeString.toLowerCase() === 'open 24 hours') {
-    return { startTime: 'Open 24 hours', endTime: 'Open 24 hours' };
+    return [{ startTime: 'Open 24 hours', endTime: 'Open 24 hours' }];
   }
 
-  const parts = timeString.split("–").map(part => part.trim());
+  const ranges = timeString.split(",").map(range => {
+    const parts = range.split("–").map(part => part.trim());
+    if (parts.length === 2) {
+      return { startTime: parts[0], endTime: parts[1] };
+    }
+    return { startTime: range, endTime: range };
+  });
 
-  if (parts.length === 2) {
-    return { startTime: parts[0], endTime: parts[1] };
-  }
-  return { startTime: timeString, endTime: timeString };
+  return ranges;
 }
 
 // Компонентът за работното време
@@ -115,38 +118,41 @@ const WorkTimeTable = ({ workTime }) => {
         );
       }
 
-      const { startTime, endTime } = parseTimeRange(time);
+      const timeRanges = parseTimeRanges(time);
       const translatedDay = language === 'bg' ? daysTranslation[day] : day;
-
-      const startFormatted = startTime === 'Closed' 
-        ? statusTranslation[language].closed 
-        : startTime === 'Open 24 hours' 
-        ? statusTranslation[language].open24 
-        : language === 'bg' 
-        ? convertTo24HourFormat(startTime) 
-        : startTime;
-
-      const endFormatted = endTime === 'Closed' 
-        ? statusTranslation[language].closed 
-        : endTime === 'Open 24 hours' 
-        ? statusTranslation[language].open24 
-        : language === 'bg' 
-        ? convertTo24HourFormat(endTime) 
-        : endTime;
-
-      if (startFormatted === statusTranslation[language].closed && endFormatted === statusTranslation[language].closed) {
-        return (
-          <tr key={index}>
-            <td>{translatedDay}</td>
-            <td>{statusTranslation[language].closed}</td>
-          </tr>
-        );
-      }
 
       return (
         <tr key={index}>
           <td>{translatedDay}</td>
-          <td>{startFormatted === endFormatted ? startFormatted : `${startFormatted} – ${endFormatted}`}</td>
+          <td>
+            {timeRanges.map((range, idx) => {
+              const startFormatted = range.startTime === 'Closed' 
+                ? statusTranslation[language].closed 
+                : range.startTime === 'Open 24 hours' 
+                ? statusTranslation[language].open24 
+                : language === 'bg' 
+                ? convertTo24HourFormat(range.startTime) 
+                : range.startTime;
+
+              const endFormatted = range.endTime === 'Closed' 
+                ? statusTranslation[language].closed 
+                : range.endTime === 'Open 24 hours' 
+                ? statusTranslation[language].open24 
+                : language === 'bg' 
+                ? convertTo24HourFormat(range.endTime) 
+                : range.endTime;
+
+              if (startFormatted === statusTranslation[language].closed && endFormatted === statusTranslation[language].closed) {
+                return <div key={idx}>{statusTranslation[language].closed}</div>;
+              }
+
+              return (
+                <div key={idx}>
+                  {startFormatted === endFormatted ? startFormatted : `${startFormatted} – ${endFormatted}`}
+                </div>
+              );
+            })}
+          </td>
         </tr>
       );
     })}

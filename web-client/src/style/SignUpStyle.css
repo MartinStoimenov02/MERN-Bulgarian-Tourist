@@ -162,20 +162,26 @@
 
 .password-container {
   position: relative;
+  display: flex;
+  align-items: center; /* Центрира съдържанието вертикално */
 }
 
+.password-container input {
+  padding-right: 40px; /* Дай място за окото вътре в инпута */
+}
 
 .password-container button {
   position: absolute;
-  right: 10px; /* Position the button on the right */
-  top: 50%;
-  transform: translateY(-50%); /* Center the button vertically */
-  background: none; /* Remove background */
-  border: none; /* Remove border */
-  cursor: pointer; /* Change cursor to pointer */
-  padding: 0; /* Remove padding */
-  color: #4da6ff; /* Optional: set icon color */
-  font-size: 18px; /* Set size of the icon */
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #4da6ff;
+  font-size: 20px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
 }
 
 .password-container button:hover {

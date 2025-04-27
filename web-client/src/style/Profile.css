@@ -1,23 +1,27 @@
 /* Profile Page Styling */
 
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 5%;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
   
-  .profile-card {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-    width: 100%;
-  }
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+
+  /* Добавяме тези нови редове: */
+  max-height: calc(100vh - 150px); /* ограничаваме височината на самата карта */
+  overflow-y: auto; /* скрол само при нужда */
+}
+
   
   .profile-header {
     display: flex;
@@ -194,14 +198,21 @@
     }
   
     .buttons-row {
-        flex-direction: column;
-        align-items: center;
-      }
-    
-      .small-button {
-        width: 100%; /* да заемат цялата ширина на контейнера на мобилни */
-        min-width: unset;
-      }
+      flex-direction: column;
+      align-items: center;
+      width: 100%; /* Добавено */
+    }
+  
+    .buttons-row button {
+      width: 100%;
+      max-width: 264px; /* ограничава ги като текстовите полета */
+    }
+  }
+
+  @media screen and (max-height: 600px) {
+    .profile-avatar {
+      display: none;
+    }
   }
   
   /* Password Container */

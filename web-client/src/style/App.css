@@ -1,3 +1,7 @@
+body {
+  font-family: 'Inter';
+}
+
 /* Основен контейнер на приложението */
 .app-container {
   display: flex;

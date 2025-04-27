@@ -1,7 +1,16 @@
 .notification-container {
     padding: 20px;
     font-family: Arial, sans-serif;
+    max-height: 80vh; 
+    overflow-y: auto;
 }
+
+@media (max-width: 600px) {
+    .notification-container {
+        overflow-y: auto;
+        max-height: 90%;
+    }
+  }
 
 .notificationCard {
     display: flex;

@@ -80,7 +80,7 @@
 
   .page-style {
     overflow-y: auto; 
-    height: 84vh;
+    height: calc(100vh - 130px);
   }
 
   .right-widgets {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaPlusCircle } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaPlusCircle, FaSort } from "react-icons/fa";
 import "../style/MyPlaces.css";
 import WorkTimeTable from '../components/WorkTimeTable';
 
@@ -17,6 +17,7 @@ const NationalSites = () => {
   const [success, setSuccess] = useState(false);
   const [placeDetails, setPlaceDetails] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
+    const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
@@ -29,8 +30,6 @@ const NationalSites = () => {
           (position) => {
             const { latitude, longitude } = position.coords;
             const last = userCoordsRef.current;
-            console.log("last: ", last);
-            console.log("position.coords: ", position.coords);
   
             const isSame =
               last &&
@@ -93,6 +92,11 @@ const NationalSites = () => {
       setPlaceDetails(null);
     }
   }, [id, places]);
+
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+    setIsSortModalOpen(false); // Затваря модала след избора
+  };
   
   const fetchPlaceDetails = async (place) => {
 
@@ -101,6 +105,7 @@ const NationalSites = () => {
         place
       });
       setPlaceDetails(response.data);
+      console.log("place details: ", response.data);
     } catch (error) {
       setPlaceDetails(null);
       console.error("Грешка при извличане на детайлите:", error);
@@ -225,9 +230,14 @@ const NationalSites = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-bar"
         />
-        {!isMobile || !id ? (
+
+
+
+
+      {/* Падащо меню за десктоп */}
+      {!isMobile && (
           <div className="sort-container">
-          <select 
+            <select 
             className="sort-dropdown" 
             value={sortOrder} 
             onChange={(e) => setSortOrder(e.target.value)}
@@ -237,9 +247,64 @@ const NationalSites = () => {
             <option value="name-desc">Име (Z-A)</option>
             <option value="distance">Разстояние</option>
           </select>
-        </div>        
-        ) : null}
+          </div>
+        )}
+
+        {/* Бутон за сортиране за мобилни екрани */}
+        {isMobile && (
+          <button className="sort-btn" onClick={() => setIsSortModalOpen(true)}>
+            <FaSort />
+          </button>
+        )}
       </div>
+
+      {/* Модално прозорче за сортиране */}
+      {isSortModalOpen && (
+        <div className="sort-modal-overlay" onClick={() => setIsSortModalOpen(false)}>
+          <div className="sort-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="sort-modal-close" onClick={() => setIsSortModalOpen(false)}>×</button>
+            <h2 className="sort-modal-title">Изберете метод за сортиране</h2>
+            <div className="sort-modal-radio-group">
+            <label>
+                <input
+                  type="radio"
+                  value="nto100"
+                  checked={sortOrder === "nto100"}
+                  onChange={handleSortChange}
+                />
+                Национални 100
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="name-asc"
+                  checked={sortOrder === "name-asc"}
+                  onChange={handleSortChange}
+                />
+                Име (A-Z)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="name-desc"
+                  checked={sortOrder === "name-desc"}
+                  onChange={handleSortChange}
+                />
+                Име (Z-A)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  value="distance"
+                  checked={sortOrder === "distance"}
+                  onChange={handleSortChange}
+                />
+                Разстояние
+              </label>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="content" style={{ flexDirection: isMobile && id ? "column" : "row" }}>
         {!isMobile || !id ? (
