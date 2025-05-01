@@ -12,13 +12,13 @@ const CX = process.env.GOOGLE_CX;
 export const getPlaceDetails = async (req, res) => {
 
     try {
-        const { place } = req.body;
-        if (!place || !place.name) {
+        const google_external_id = req.body.externalId;
+        if (!google_external_id) {
             return res.status(400).json({ message: "'place' е задължително." });
         }
 
         const googleResponse = await axios.get (
-            "https://places.googleapis.com/v1/places/"+place.google_external_id+"?fields=*&key="+API_KEY
+            "https://places.googleapis.com/v1/places/"+google_external_id+"?fields=*&key="+API_KEY
         );
 
 

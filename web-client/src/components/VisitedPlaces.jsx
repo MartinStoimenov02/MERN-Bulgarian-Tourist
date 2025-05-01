@@ -11,7 +11,7 @@ const VisitedPlaces = ({ visitedPlaces }) => {
 
   return (
     <section>
-      <h2 className="visited-places-title">Посетени места</h2>
+      <h2 className="visited-places-title">Посетени места: {visitedPlaces.length}</h2>
       <div className="visited-places-list">
         {visitedPlaces.length > 0 ? (
           <>

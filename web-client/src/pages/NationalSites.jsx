@@ -101,8 +101,9 @@ const NationalSites = () => {
   const fetchPlaceDetails = async (place) => {
 
     try {
+      const externalId = place.google_external_id;
       const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
-        place
+        externalId
       });
       setPlaceDetails(response.data);
       console.log("place details: ", response.data);

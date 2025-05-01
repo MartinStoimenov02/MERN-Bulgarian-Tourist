@@ -24,15 +24,6 @@
   margin-bottom: 15px;
 }
 
-.add-place-modal .modal-input {
-  width: 80%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
 
 .add-place-modal .input-container {
   position: relative;
@@ -41,15 +32,6 @@
   align-items: center; /* Vertically center items */
 }
 
-.add-place-modal .modal-input {
-  flex-grow: 1; /* Allow input to take up remaining space */
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
 
 .add-place-modal .search-icon {
   position: absolute;
@@ -117,6 +99,7 @@
   height: 100px;
   padding: 10px;
   margin-top: 15px;
+  margin-bottom: 15px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 20px;
@@ -150,16 +133,46 @@
     width: 100%; /* Ensure input container takes full width on small screens */
   }
 
-  .add-place-modal .modal-input {
-    width: 100%; /* Allow input to take up full width */
-    padding-right: 35px; /* Add extra space on the right for the icon */
-  }
-
   .add-place-modal .search-icon {
     right: 10px; /* Keep the icon aligned with the right edge of the input */
     top: 50%; /* Vertically center the icon */
     transform: translateY(-50%); /* Offset by 50% of its height */
   }
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.modal-input {
+  flex: 1;
+  padding: 10px 40px 10px 10px; /* място вдясно за иконата */
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.search-button {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 30px;
+  cursor: pointer;
+  color: #999;
+  font-size: 20px;
+}
+
+.search-button:hover {
+  color: #4da6ff;
 }
 
 .message-container {

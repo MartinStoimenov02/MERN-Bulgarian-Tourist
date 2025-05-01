@@ -36,7 +36,15 @@ export const getPlaceById = async (req, res) => {
 // Add a new place
 export const addPlace = async (req, res) => {
   try {
-    const { name, google_external_id, userId, description, location } = req.body;    
+    const { name, google_external_id, userId, description, location } = req.body; 
+
+    const places = await PlaceModel.find({ user: userId });
+    const alreadyExists = places.some(place => place.google_external_id === google_external_id);
+
+    if (alreadyExists) {
+      return res.status(400).json({ message: "Мястото вече е добавено." });
+    }
+
     const imageResponse = await getRandomImageHelper(name);
     if (!imageResponse || !imageResponse.imageUrl) {
       return res.status(500).json({ message: "Failed to fetch image" });

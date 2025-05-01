@@ -94,22 +94,23 @@ const MyPlaces = () => {
   useEffect(() => {
     if (id) {
       const selectedPlace = places.find((place) => place._id.toString() === id);
-      if (selectedPlace) {
+      if (selectedPlace && (!placeDetails || placeDetails._id !== selectedPlace._id)) {
         fetchPlaceDetails(selectedPlace);
       }
     } else {
       setPlaceDetails(null);
     }
-  }, [id, places]);
+  }, [id, places, placeDetails]);
+  
   
   const fetchPlaceDetails = async (place) => {
 
     try {
+      const externalId = place.google_external_id;
       const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
-        place
+        externalId
       });
       setPlaceDetails(response.data);
-      console.log("place details: ", response.data);
     } catch (error) {
       setPlaceDetails(null);
       console.error("Грешка при извличане на детайлите:", error);
