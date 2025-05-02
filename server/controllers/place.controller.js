@@ -1,4 +1,5 @@
 import PlaceModel from "../models/place.model.js";
+import NationalSiteModel from "../models/nationalSites.model.js";
 import axios from "axios";
 import logError from '../utils/logger.js';
 
@@ -51,13 +52,19 @@ export const addPlace = async (req, res) => {
     }
     const imgPath = imageResponse.imageUrl;
 
+    const nationalSites = await NationalSiteModel.find({ isActive: true });
+    console.log("nationalSites: ", nationalSites);
+    const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
+    console.log("matchingSite: ", matchingSite);
+
     const newPlace = new PlaceModel({
       name,
       imgPath,
       description,
       user: userId,
       google_external_id: google_external_id, 
-      location: location
+      location: location,
+      nto100: matchingSite ? matchingSite._id : undefined
     });
 
     await newPlace.save();
