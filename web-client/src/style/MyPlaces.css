@@ -278,6 +278,29 @@
     margin-top: 20px;
 }
 
+.inactive-place {
+    color: #555; /* тъмно сиво */
+  }
+  
+  .place-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .place-info-summary .place-status.active {
+    color: green;
+  }
+  
+  .place-info-summary .place-status.inactive {
+    color: darkred;
+  }
+  
+  .status-icon {
+    vertical-align: middle;
+  }
+  
+
 /* Responsive Styles */
 @media screen and (max-width: 1000px) {
     .content {

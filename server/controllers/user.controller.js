@@ -56,7 +56,8 @@ export const getUser = async (req, res, next) => {
                 firstLogin: user.firstLogin,
                 points: user.points,
                 isGoogleAuth: user.isGoogleAuth,
-                hasPassword: user.password!=undefined ? true : false
+                hasPassword: user.password!=undefined ? true : false,
+                isAdmin: user.isAdmin
             }
         });
 
@@ -221,7 +222,8 @@ export const googleAuth = async (req, res, next) => {
                 isGoogleAuth: user.isGoogleAuth,
                 firstLogin: user.firstLogin,
                 points: user.points,
-                hasPassword: user.password!=undefined ? true : false
+                hasPassword: user.password!=undefined ? true : false,
+                isAdmin: user.isAdmin
             }
         });
 
@@ -286,11 +288,6 @@ export const deleteAccount = async (req, res, next) => {
     const { userId } = req.body;
 
     const deletedPlaces = await PlaceModel.deleteMany({ user: userId }).session(session);
-    if (deletedPlaces.deletedCount === 0) {
-      console.log("No places found for this user.");
-    } else {
-      console.log(`${deletedPlaces.deletedCount} places deleted for user ${userId}`);
-    }
 
     const deletedUser = await UserModel.findByIdAndDelete(userId).session(session);
     if (!deletedUser) {

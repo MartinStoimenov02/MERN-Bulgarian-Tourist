@@ -124,6 +124,16 @@
   color: #ff4d4d;
 }
 
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #333;
+  user-select: none;
+}
+
 @media screen and (max-width: 768px) {
   .add-place-modal .modal-content {
     width: 90%; /* Make the modal content 90% width on small screens */
@@ -138,6 +148,20 @@
     top: 50%; /* Vertically center the icon */
     transform: translateY(-50%); /* Offset by 50% of its height */
   }
+
+  .modal-input-number {
+    width: 100%;
+  }
+
+  .modal-input {
+    width: 100%;
+  }
+
+  .search-button {
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+  }
 }
 
 .input-wrapper {
@@ -146,11 +170,22 @@
   position: relative;
   width: 100%;
   margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
 .modal-input {
   flex: 1;
   padding: 10px 40px 10px 10px; /* място вдясно за иконата */
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 16px;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.modal-input-number {
+  width: 70px;
+  padding: 10px 10px 10px 10px; /* място вдясно за иконата */
   border: 1px solid #ccc;
   border-radius: 20px;
   font-size: 16px;

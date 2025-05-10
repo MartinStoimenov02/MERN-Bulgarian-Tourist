@@ -12,6 +12,11 @@ import NationalSites from "./pages/NationalSites";
 import Nearby from "./pages/Nearby";
 import Profile from "./pages/Profile";
 import GuestPage from "./pages/GuestPage";
+import AdminNationalSites from "./pages/AdminNationalSites";
+import AdminNotifications from "./pages/AdminNotifications";
+import AdminUsers from "./pages/AdminUsers";
+import AdminLogs from "./pages/AdminLogs";
+import AdminFeedback from "./pages/AdminFeedback";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,6 +59,12 @@ function App() {
             <Route path="/nearby-places" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/nearby-places/:id" element={isAuthenticated ? <Nearby setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/profile" element={isAuthenticated ? <Profile setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/national-sites" element={isAuthenticated ? <AdminNationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/national-sites/:id" element={isAuthenticated ? <AdminNationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/notifications" element={isAuthenticated ? <AdminNotifications setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/users" element={isAuthenticated ? <AdminUsers setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/logs" element={isAuthenticated ? <AdminLogs setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="//admin/feedback" element={isAuthenticated ? <AdminFeedback setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/" element={<GuestPage/>} />
           </Routes>
         </main>

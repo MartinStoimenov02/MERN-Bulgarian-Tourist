@@ -70,7 +70,6 @@ export const addUserNotification = async (req, res, next) => {
 
 export const getNotificationsForUser = async (req, res, next) => {
   const { userId } = req.query;
-  console.log("userId: ", userId);
   try {
     const userNotifications = await UserNotificationModel
       .find({ user: userId })

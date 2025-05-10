@@ -19,7 +19,7 @@ const center = {
 const host = process.env.REACT_APP_HOST;
 const port = process.env.REACT_APP_PORT;
 
-const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {
+const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {
   const [placeName, setPlaceName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
@@ -27,6 +27,9 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [numberInNationalList, setNumberInNationalList] = useState("");
+  const [isActive, setIsActive] = useState(true);
+
   const navigate = useNavigate();
   const mapRef = useRef(null);
   const centerButtonRef = useRef(null);
@@ -63,37 +66,37 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   }, [mapRef.current]);
 
   useEffect(() => {
+    console.log("initialData: ", initialData);
     if (editMode && initialData) {
       setPlaceName(initialData.name || "");
       setDescription(initialData.description || "");
       setSelectedLocation(initialData.location || null);
       setSelectedPlaceId(initialData.google_external_id || null);
+      setNumberInNationalList(initialData.numberInNationalList || "");
+      setIsActive(initialData.isActive ?? true);
     }
   }, [editMode, initialData]);
-  
-  const handleMapClick = async(event) => {
-    console.log("event: ", event);
+
+  const handleMapClick = async (event) => {
     setSelectedLocation({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     });
 
     const externalId = event.placeId;
-
     setSelectedPlaceId(externalId);
 
-  if (externalId) {
-    try {
-      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
-        externalId
-      });
-      console.log("response.data: ", response.data);
-      const placeName = response.data.name; // Името на мястото
-      setPlaceName(placeName); // Актуализирай текстовото поле за име
-    } catch (error) {
-      console.error("Error fetching place details", error);
+    if (externalId) {
+      try {
+        const response = await axios.post(`http://${host}:${port}/google/place-details`, {
+          externalId
+        });
+        const placeName = response.data.name;
+        setPlaceName(placeName);
+      } catch (error) {
+        console.error("Error fetching place details", error);
+      }
     }
-  }
   };
 
   const handleSearchPlace = async () => {
@@ -120,67 +123,61 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
         setMessage("Мястото не беше намерено.");
         setSuccess(false);
         setTimeout(() => setMessage(""), 3000);
-        return;
       }
     } catch (error) {
       console.error("Error searching place", error);
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
-      return;
     }
   };
 
   const handleSubmit = async () => {
-    if (!placeName || !selectedLocation) {
-      setMessage("Моля, въведете име и изберете локация!");
+    if (!placeName || !selectedLocation || !numberInNationalList) {
+      setMessage("Моля, попълнете всички задължителни полета!");
       setTimeout(() => setMessage(""), 3000);
       return;
     }
-  
+
     try {
+      const payload = {
+        name: placeName,
+        google_external_id: selectedPlaceId,
+        description,
+        location: selectedLocation,
+        numberInNationalList,
+        isActive,
+      };
+
       if (editMode) {
-        await axios.put(`http://${host}:${port}/places/updatePlace/${placeId}`, {
-          name: placeName,
-          description,
-          location: selectedLocation,
-          google_external_id: selectedPlaceId,
-        });
-  
-        const updatedPlacesResponse = await axios.get(`http://${host}:${port}/places/getUserPlaces`, {
-          params: { userId: user.id, visited: false }
-        });
-  
-        setPlaces(updatedPlacesResponse.data);
-        navigate(`/my-places/${placeId}`);
+        await axios.put(`http://${host}:${port}/nationalSites/updateNationalSite/${placeId}`, payload);
+        const updatedSitesResponse = await axios.get(`http://${host}:${port}/nationalSites/getAllNationalSites`);
+        setPlaces(updatedSitesResponse.data);
+        navigate(`/admin/national-sites/${placeId}`);
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        // текущата логика за добавяне
-        const response = await axios.post(`http://${host}:${port}/places/addPlace`, {
-          name: placeName,
-          google_external_id: selectedPlaceId,
-          userId: user.id,
-          description: description,
-          location: selectedLocation
-        });
-  
-        const updatedPlacesResponse = await axios.get(`http://${host}:${port}/places/getUserPlaces`, {
-          params: { userId: user.id, visited: false }
-        });
-  
-        setPlaces(updatedPlacesResponse.data);
-        const newPlace = updatedPlacesResponse.data[updatedPlacesResponse.data.length - 1];
-        navigate(`/my-places/${newPlace._id}`);
+        console.log("payload: ", payload);
+        console.log("user: ", user);
+
+        const response = await axios.post(`http://${host}:${port}/nationalSites/addNationalSite`, {
+            adminId: user.id,
+            nationalSiteData: payload,
+          });
+        console.log("response: ", response);
+        const updatedSitesResponse = await axios.get(`http://${host}:${port}/nationalSites/getAllNationalSites`);
+        setPlaces(updatedSitesResponse.data);
+        const newSite = updatedSitesResponse.data[updatedSitesResponse.data.length - 1];
+        navigate(`/admin/national-sites/${newSite._id}`);
         setIsModalOpen(false);
-        setIsModalOpenSuccess(newPlace);
+        setIsModalOpenSuccess(newSite);
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "Грешка при запис.");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
-      console.error("Error saving place", error);
+      console.error("Error saving national site", error);
     }
-  };  
+  };
 
   return (
     <Modal
@@ -189,16 +186,21 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
       className="modal-container add-place-modal"
     >
       <div className="modal-content">
-        <button className="close-button" onClick={() => setIsModalOpen(false)}>
-          &times;
-        </button>
+        <button className="close-button" onClick={() => setIsModalOpen(false)}>&times;</button>
 
-        <h2>Добавяне на място</h2>
+        <h2>{editMode ? "Редактиране" : "Добавяне"}</h2>
 
         <div className="input-wrapper">
+        <input
+          type="text"
+          placeholder="№"
+          value={numberInNationalList}
+          onChange={(e) => setNumberInNationalList(e.target.value)}
+          className="modal-input-number"
+        />
           <input
             type="text"
-            placeholder="Име на мястото"
+            placeholder="Име на обекта"
             value={placeName}
             onChange={(e) => setPlaceName(e.target.value)}
             className="modal-input"
@@ -208,6 +210,15 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
           </div>
         </div>
 
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={() => setIsActive(!isActive)}
+          />
+          Активен обект
+        </label>
+
         <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
@@ -216,21 +227,8 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
             onClick={handleMapClick}
             onLoad={(map) => {
               mapRef.current = map;
-            
-              // Центриране в editMode или към текуща локация
+
               if (editMode && selectedLocation) {
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    const userCoords = {
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude,
-                    };
-                    setCurrentLocation(userCoords);
-                  },
-                  () => {
-                    console.warn("Не може да се получи локацията на потребителя.");
-                  }
-                );
                 map.panTo(selectedLocation);
                 map.setZoom(15);
               } else if (navigator.geolocation) {
@@ -249,15 +247,13 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
                   }
                 );
               }
-            
-              // ✅ Добави бутона след като картата е заредена
+
               if (centerButtonRef.current) {
                 const controlDiv = document.createElement("div");
                 controlDiv.appendChild(centerButtonRef.current);
                 map.controls[window.google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
               }
             }}
-            
             options={{
               zoomControl: true,
               fullscreenControl: true,
@@ -277,7 +273,6 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
             )}
           </GoogleMap>
 
-          {/* Вграден бутон вътре в картата */}
           <div ref={centerButtonRef}>
             <button
               onClick={handleCenterToUser}
@@ -298,17 +293,19 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
         </LoadScriptNext>
 
         <textarea
-          placeholder="Описание на мястото (не е задължително)"
+          placeholder="Описание на обекта (не е задължително)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="modal-input description-textarea"
           rows="4"
         />
+
         {message && <p className={success ? "success-message" : "error-message"}>{message}</p>}
+
         <div className="modal-buttons">
-        <button className="btn-primary" onClick={handleSubmit}>
-          {editMode ? "Запази" : "Добави"}
-        </button>
+          <button className="btn-primary" onClick={handleSubmit}>
+            {editMode ? "Запази" : "Добави"}
+          </button>
           <button className="btn-cancel" onClick={() => setIsModalOpen(false)}>Отказ</button>
         </div>
       </div>
@@ -316,4 +313,4 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   );
 };
 
-export default AddPlaceModal;
+export default AddNationalSiteModal;

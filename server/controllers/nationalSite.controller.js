@@ -1,7 +1,9 @@
 import NationalSiteModel from "../models/nationalSites.model.js";
 import axios from "axios";
 import PlaceModel from "../models/place.model.js";
+import UserModel from "../models/user.model.js";
 import logError from '../utils/logger.js';
+import { getRandomImageHelper } from "../controllers/place.controller.js";
 
 // Get all places for a specific user
 export const getActiveNationalSites = async (req, res) => {
@@ -27,6 +29,32 @@ export const getActiveNationalSites = async (req, res) => {
     res.status(200).json(nationalSites);
   } catch (error) {
     logError(error, req, { className: 'nationalSite.controller', functionName: 'getActiveNationalSites' });
+    console.error("Error fetching national sites", error);
+    res.status(500).json({ message: "Error fetching national sites", error });
+  }
+};
+
+export const deleteNationalSite = async (req, res) => {
+  try {
+    const { placeId } = req.body;
+    const deletedPlace = await NationalSiteModel.findByIdAndDelete(placeId);
+    if (!deletedPlace) return res.status(404).json({ message: "Place not found" });
+
+    res.status(200).json({ message: "Place deleted successfully" });
+  } catch (error) {
+    logError(error, req, { className: 'place.controller', functionName: 'deletePlace' });
+    console.error("Error deleting place:", error);
+    res.status(500).json({ message: "Error deleting place", error });
+  }
+};
+
+export const getAllNationalSites = async (req, res) => {
+  try {
+    const allNationalSites = await NationalSiteModel.find();
+
+    res.status(200).json(allNationalSites);
+  } catch (error) {
+    logError(error, req, { className: 'nationalSite.controller', functionName: 'getAllNationalSites' });
     console.error("Error fetching national sites", error);
     res.status(500).json({ message: "Error fetching national sites", error });
   }
@@ -68,16 +96,24 @@ export const addNationalSite = async (req, res) => {
   try {
     const { adminId, nationalSiteData } = req.body;
 
-    const user = await UserModel.findById( adminId );
-    if(!user.isAdmin){
-      res.status(403).json({
+    const user = await UserModel.findById(adminId);
+    if (!user.isAdmin) {
+      return res.status(403).json({
         success: false,
         message: 'Достъп отказан!',
       });
     }
 
+    // 🔽 Добавяме снимка автоматично
+    const imageResponse = await getRandomImageHelper(nationalSiteData.name);
+    if (!imageResponse || !imageResponse.imageUrl) {
+      return res.status(500).json({ message: "Неуспешно извличане на снимка" });
+    }
+    nationalSiteData.imgPath = imageResponse.imageUrl;
+
     const newNationalSite = new NationalSiteModel(nationalSiteData);
     const savedNationalSite = await newNationalSite.save();
+
     res.status(201).json({
       message: 'National site added successfully!',
       site: savedNationalSite,
@@ -89,5 +125,34 @@ export const addNationalSite = async (req, res) => {
       message: 'Failed to add national site.',
       error: error.message,
     });
+  }
+};
+
+
+export const updateNationalSite = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, location, google_external_id, numberInNationalList, isActive } = req.body;
+
+  try {
+    const nationalSite = await NationalSiteModel.findByIdAndUpdate(
+      id,
+      { 
+        name, 
+        description, 
+        location, 
+        google_external_id, 
+        numberInNationalList, 
+        isActive 
+      },
+      { new: true }
+    );
+
+    if (!nationalSite) {
+      return res.status(404).json({ message: "Националният обект не е намерен." });
+    }
+
+    res.json(nationalSite);
+  } catch (err) {
+    res.status(500).json({ message: "Неуспешна редакция на национален обект." });
   }
 };

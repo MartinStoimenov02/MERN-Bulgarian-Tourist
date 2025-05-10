@@ -12,7 +12,27 @@ const Header = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
-  
+  const [user, setUser] = useState(null);
+  const isAuthPage =
+    location.pathname === '/login' ||
+    location.pathname === '/signup' ||
+    location.pathname === '/forgot-password' ||
+    location.pathname === '/';
+  const isForgotPasswordPage = location.pathname === '/forgot-password';
+
+  useEffect(() => {
+    if (!isAuthPage) {
+      const userSession = localStorage.getItem("userSession");
+      if (userSession) {
+        try {
+          setUser(JSON.parse(userSession));
+        } catch (err) {
+          console.error("Грешка при парсване на userSession:", err);
+        }
+      }
+    }
+  }, [isAuthPage]);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 600);
@@ -20,13 +40,6 @@ const Header = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const isAuthPage =
-    location.pathname === '/login' ||
-    location.pathname === '/signup' ||
-    location.pathname === '/forgot-password' ||
-    location.pathname === '/';
-  const isForgotPasswordPage = location.pathname === '/forgot-password';
 
   return (
     <header className="header">
@@ -58,11 +71,24 @@ const Header = () => {
           </button>
           {menuOpen && (
             <div className="menu-dropdown">
-              <Link to="/home" className="menu-item" onClick={() => setMenuOpen(false)}>Начало</Link>
-              <Link to="/my-places" className="menu-item" onClick={() => setMenuOpen(false)}>Моите места</Link>
-              <Link to="/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Национални обекти</Link>
-              <Link to="/nearby-places" className="menu-item" onClick={() => setMenuOpen(false)}>Места в близост</Link>
-              <Link to="/profile" className="menu-item" onClick={() => setMenuOpen(false)}>Профил</Link>
+              {user.isAdmin ? (
+                <>
+                  <Link to="/admin/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Туристически обекти</Link>
+                  <Link to="/admin/notifications" className="menu-item" onClick={() => setMenuOpen(false)}>Нотификации</Link>
+                  <Link to="/admin/users" className="menu-item" onClick={() => setMenuOpen(false)}>Потребители</Link>
+                  <Link to="/admin/logs" className="menu-item" onClick={() => setMenuOpen(false)}>Логове</Link>
+                  <Link to="/admin/feedback" className="menu-item" onClick={() => setMenuOpen(false)}>Обратни връзки</Link>
+                  <Link to="/profile" className="menu-item" onClick={() => setMenuOpen(false)}>Профил</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/home" className="menu-item" onClick={() => setMenuOpen(false)}>Начало</Link>
+                  <Link to="/my-places" className="menu-item" onClick={() => setMenuOpen(false)}>Моите места</Link>
+                  <Link to="/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Национални обекти</Link>
+                  <Link to="/nearby-places" className="menu-item" onClick={() => setMenuOpen(false)}>Места в близост</Link>
+                  <Link to="/profile" className="menu-item" onClick={() => setMenuOpen(false)}>Профил</Link>
+                </>
+              )}
             </div>
           )}
         </div>

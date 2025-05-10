@@ -11,7 +11,7 @@ const NationalSiteScheme = new mongoose.Schema({
     },
     imgPath: {
         type: String,
-        required:[true, "mapUrl number is required."]
+        required:[true, "imgPath number is required."]
     },
     isActive: {
         type: Boolean,

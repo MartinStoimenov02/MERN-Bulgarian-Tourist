@@ -7,7 +7,6 @@ import logError from '../utils/logger.js';
 export const getUserPlaces = async (req, res) => {
   try {
     const { userId, visited } = req.query; 
-    console.log("userId: ", userId);
     if (!userId) {
       throw new Error("User ID is required to fetch places.");
     }
@@ -53,9 +52,7 @@ export const addPlace = async (req, res) => {
     const imgPath = imageResponse.imageUrl;
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
-    console.log("nationalSites: ", nationalSites);
     const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
-    console.log("matchingSite: ", matchingSite);
 
     const newPlace = new PlaceModel({
       name,
@@ -122,7 +119,7 @@ export const updateFavourite = async (req, res) => {
   }
 };
 
-const getRandomImageHelper = async (query) => {
+export const getRandomImageHelper = async (query) => {
   try {
     const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&key=${API_KEY}&cx=${CX}`;
     const response = await axios.get(searchUrl);
@@ -143,5 +140,21 @@ const getRandomImageHelper = async (query) => {
     logError(error, req, { className: 'place.controller', functionName: 'getRandomImageHelper' });
     console.error("Error fetching image:", error);
     return null;
+  }
+};
+
+export const updatePlace = async (req, res) => {
+  const { id } = req.params;
+  const { name, description, location, google_external_id } = req.body;
+
+  try {
+    const place = await PlaceModel.findByIdAndUpdate(
+      id,
+      { name, description, location, google_external_id },
+      { new: true }
+    );
+    res.json(place);
+  } catch (err) {
+    res.status(500).json({ message: "Неуспешна редакция на място." });
   }
 };

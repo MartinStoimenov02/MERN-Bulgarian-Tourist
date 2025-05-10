@@ -117,7 +117,11 @@ function SignUp({ setIsAuthenticated }) {
       localStorage.setItem("userSession", JSON.stringify(res.data.user));
       localStorage.setItem("loginTime", new Date().getTime());
       setIsAuthenticated(true);
-      navigate("/home");
+      if(res.data.user.isAdmin){
+        navigate("/admin/national-sites");
+      } else{
+        navigate("/home");
+      }
     } catch (error) {
       console.error("error google login: ",error);
       setMessage("Грешка при Google вход");
@@ -144,7 +148,11 @@ function SignUp({ setIsAuthenticated }) {
             localStorage.setItem("loginTime", new Date().getTime());
             console.log(getUser.data.user);
             setIsAuthenticated(true);
-            navigate("/home");
+            if(res.data.user.isAdmin){
+              navigate("/admin/national-sites");
+            } else{
+              navigate("/home");
+            }
           } else {
             setMessage(getUser.data.message);
             setSuccess(false);
