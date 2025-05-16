@@ -5,7 +5,7 @@ const ConfirmDeleteModal = ({ onConfirm, onCancel }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h3>Сигурни ли сте, че искате да изтриете това място?</h3>
+        <h3>Сигурни ли сте, че искате да изтриете?</h3>
         <div className="modal-actions">
           <button className="confirm-btn" onClick={onConfirm}>
             Да, изтрий

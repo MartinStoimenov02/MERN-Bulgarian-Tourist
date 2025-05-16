@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import UserModel from '../models/user.model.js';
 import logError from '../utils/logger.js';
 
 dotenv.config();
@@ -56,3 +57,42 @@ export const verifyCode = async (req, res) => {
         res.status(500).json({ message: "Error verifying code." });
     }
 };
+
+export const sendNotificationEmail = async (req, res) => {
+    try {
+      const { adminId, userId, notificationMessage } = req.body;
+
+      const admin = await UserModel.findById( adminId );
+      
+          if(!admin.isAdmin){
+            res.status(403).json({
+              success: false,
+              message: 'Достъп отказан!',
+            });
+          }
+
+        const user = await UserModel.findById( userId );
+
+        
+  
+      if (!user.email || !notificationMessage) {
+        return res.status(400).json({ message: "Липсват задължителни полета (email, subject, html)." });
+      }
+  
+      const mailOptions = {
+        from: SENDER_EMAIL,
+        to: user.email,
+        subject: "Нова нотификация за "+user.name,
+        html: notificationMessage,
+      };
+  
+      await transporter.sendMail(mailOptions);
+  
+      res.status(200).json({ message: "Notification email sent successfully." });
+    } catch (err) {
+      logError(err, req, { className: 'email.controller', functionName: 'sendNotificationEmail', user: req.body.email });
+      console.error("Error sending notification email:", err);
+      res.status(500).json({ message: "Error sending notification email." });
+    }
+  };
+  

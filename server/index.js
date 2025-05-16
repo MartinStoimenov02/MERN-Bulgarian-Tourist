@@ -5,6 +5,7 @@ import placesRoutes from "./routes/place.route.js";
 import nationalSitesRoutes from "./routes/nationalSite.route.js";
 import feedbackRoutes from "./routes/feedback.routes.js";
 import notificationRoutes from './routes/notification.route.js';
+import logsRoutes from './routes/adminLogs.route.js';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -40,6 +41,7 @@ app.use("/places", placesRoutes);
 app.use("/nationalSites", nationalSitesRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use('/notifications', notificationRoutes);
+app.use('/logs', logsRoutes);
 
 app.listen(3001, () => {
     console.log("server runs perfectly!");

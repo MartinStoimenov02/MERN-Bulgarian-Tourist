@@ -124,7 +124,6 @@ const Profile = ({ setIsAuthenticated }) => {
   };
 
   const deleteAccountAndLogout = () => {
-    console.log("deleteAccountAndLogout");
     localStorage.removeItem("userSession");
     localStorage.removeItem("loginTime");
     setIsAuthenticated(false);

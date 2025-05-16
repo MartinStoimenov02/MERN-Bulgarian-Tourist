@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, Bell, HelpCircle } from 'lucide-react';
 import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import Notifications from '../pages/Notifications';
@@ -19,6 +20,7 @@ const Header = () => {
     location.pathname === '/forgot-password' ||
     location.pathname === '/';
   const isForgotPasswordPage = location.pathname === '/forgot-password';
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isAuthPage) {
@@ -45,8 +47,9 @@ const Header = () => {
     <header className="header">
       {isAuthPage && (
         <div className='header-notAuth'>
-          <div className="header-title">Български турист</div>
-
+          <div className="header-title" onClick={() => navigate("/")}>
+            Български турист
+          </div>
           <div className="auth-buttons">
             <nav>
               <Link to="/login" className="nav-link small-auth-button">
@@ -74,7 +77,6 @@ const Header = () => {
               {user.isAdmin ? (
                 <>
                   <Link to="/admin/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Туристически обекти</Link>
-                  <Link to="/admin/notifications" className="menu-item" onClick={() => setMenuOpen(false)}>Нотификации</Link>
                   <Link to="/admin/users" className="menu-item" onClick={() => setMenuOpen(false)}>Потребители</Link>
                   <Link to="/admin/logs" className="menu-item" onClick={() => setMenuOpen(false)}>Логове</Link>
                   <Link to="/admin/feedback" className="menu-item" onClick={() => setMenuOpen(false)}>Обратни връзки</Link>

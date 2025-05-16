@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const FeedbackSchema = new mongoose.Schema({
     user: {
         type: mongoose.Types.ObjectId,
-        ref: "model.user",
+        ref: "user",
         required:[true, "user is required."]
     },
     feedbackType: {

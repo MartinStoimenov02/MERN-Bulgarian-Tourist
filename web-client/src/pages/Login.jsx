@@ -207,8 +207,10 @@ function Login({ setIsAuthenticated }) {
               onChange={(e) => setVerificationCode(e.target.value)} 
               required
             />
-            <button onClick={handleVerifyCode}>Потвърди</button>
-            <button onClick={() => setShowModal(false)}>Затвори</button>
+            <div className="modal-buttons">
+              <button className="btn-primary" onClick={handleVerifyCode}>Потвърди</button>
+              <button className="btn-cancel" onClick={() => setShowModal(false)}>Затвори</button>
+            </div>
           </div>
         </div>
       )}

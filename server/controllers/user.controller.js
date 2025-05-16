@@ -286,7 +286,6 @@ export const deleteAccount = async (req, res, next) => {
 
   try {
     const { userId } = req.body;
-
     const deletedPlaces = await PlaceModel.deleteMany({ user: userId }).session(session);
 
     const deletedUser = await UserModel.findByIdAndDelete(userId).session(session);
@@ -330,3 +329,29 @@ export const getTopUsers = async (req, res, next) => {
         });
     }
 };
+
+export const getAllUsers = async (req, res) => {
+    try {
+      const users = await UserModel.find();
+      res.json({ users });
+    } catch (err) {
+        next(err);
+        logError(err, req, { className: 'user.controller', functionName: 'getAllUsers' });
+        console.error("Error getting users:", err);
+        res.status(500).json({ success: false, error: 'Грешка при извличане на потребители' });
+    }
+  };
+  
+  export const updateUser = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      await UserModel.findByIdAndUpdate(id, updates);
+      res.json({ message: 'Потребителят е обновен успешно' });
+    } catch (err) {
+        next(err);
+        logError(err, req, { className: 'user.controller', functionName: 'updateUser' });
+        console.error("Error updating users:", err);
+        res.status(500).json({ error: 'Грешка при обновяване' });
+    }
+  };

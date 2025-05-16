@@ -30,8 +30,6 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
       return;
     }
 
-    
-
     try {
       var res;
       if(user.hasPassword){
@@ -59,6 +57,8 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
           console.log("Calling onSuccess...");
           onSuccess();
           onClose();
+          setConfirmEmail("");
+          setPassword("");
         } else {
           setMessage("Грешка при изтриване на акаунта.");
           setSuccess(false);

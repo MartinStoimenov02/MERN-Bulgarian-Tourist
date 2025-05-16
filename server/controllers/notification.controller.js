@@ -1,5 +1,6 @@
 import NotificationModel from '../models/notification.model.js';
 import UserNotificationModel from '../models/userNotification.model.js';
+import UserModel from '../models/user.model.js';
 import logError from '../utils/logger.js';
 
 export const addNotification = async (req, res, next) => {
@@ -21,6 +22,7 @@ export const addNotification = async (req, res, next) => {
     res.status(201).json({
       success: true,
       message: 'Notification added successfully!',
+      data: newNotification
     });
   } catch (err) {
     next(err);

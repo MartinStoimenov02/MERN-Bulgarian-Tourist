@@ -99,6 +99,7 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
                 <option value="Предложение">Предложение</option>
                 <option value="Жалба">Жалба</option>
                 <option value="Обща обратна връзка">Обща обратна връзка</option>
+                <option value="Помощ и въпроси">Помощ и въпроси</option>
                 </select>
             </label>
 

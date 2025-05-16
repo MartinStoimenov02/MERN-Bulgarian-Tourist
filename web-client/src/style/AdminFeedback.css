@@ -1,0 +1,331 @@
+.admin-feedback-wrapper {
+    height: 85vh;
+    overflow-y: auto;
+  }
+  
+  .admin-feedback-container {
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+    max-width: 100vw;
+    /* margin: auto; */
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+  
+  .controls select,
+  .controls button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .delete-selected-btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .delete-selected-btn:hover {
+    background-color: #007bff;
+  }
+  
+  .feedback-table {
+    width: 100%;
+    table-layout: auto; /* позволява на колоните да се разпъват */
+    border-collapse: collapse;
+    min-width: 800px; /* предотвратява свиването при много тесни екрани */
+  }
+  
+  .feedback-table th,
+  .feedback-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+    word-break: normal; /* да не разкъсва имейли и текст */
+    white-space: normal;
+  }
+  
+  .feedback-table th:nth-child(2),  /* User Email */
+  .feedback-table td:nth-child(2) {
+    min-width: 200px;
+    max-width: 300px;
+  }
+  
+  .feedback-table th:nth-child(4),  /* Message */
+  .feedback-table td:nth-child(4) {
+    min-width: 300px;
+  }
+  
+  .feedback-table th:nth-child(6),  /* Date */
+  .feedback-table td:nth-child(6) {
+    min-width: 160px;
+  }
+  
+  .feedback-table th {
+    background-color: #f8f9fa;
+  }
+  
+  .feedback-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .feedback-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .feedback-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    position: relative; /* За позициониране на кофата */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Добавяме разстояние между свойствата */
+  }
+  
+  .feedback-card div {
+    margin-bottom: 0.5rem; /* Добавяме разстояние между всяко свойство */
+  }
+  
+  @media (max-width: 768px) {
+    .feedback-table {
+      display: none;
+    }
+
+    .delete-selected-btn {
+      display: none;
+    }
+
+    .feedback-card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+    .feedback-card {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem ;
+      position: relative;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .delete-icon {
+      cursor: pointer;
+      color: #d9534f;
+      font-size: 1.5rem;
+    }
+    
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px; /* разстояние между иконите */
+  justify-content: center;
+  align-items: center;
+}
+
+.name-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.editing-row {
+  background-color: #e6f7ff; /* Светлосин фон за по-добра видимост */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Леки сенки */
+  border-left: 4px solid #007bff; /* Син индикатор вляво */
+  transition: background-color 0.2s ease;
+}
+
+.editing-row input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 1rem;
+}
+
+.admin-controls {
+  display: flex;
+  flex-wrap: nowrap; /* не пренасяй реда по-големи екрани */
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.admin-controls input,
+.admin-controls select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  flex-shrink: 1;  /* да се стесняват ако няма място */
+  min-width: 0;    /* да не пречат flex-shrink */
+}
+
+.admin-controls input {
+  flex-grow: 1;    /* да заемат останалото пространство */
+  width: auto;     /* не задаваме фиксирана ширина */
+}
+
+.admin-controls button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  flex-shrink: 0; /* бутоните не се стесняват */
+  transition: background-color 0.2s ease;
+}
+
+.admin-controls input {
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .admin-controls {
+    flex-wrap: wrap; /* сега се пренасят на нов ред */
+  }
+
+  .admin-controls input,
+  .admin-controls select,
+  .admin-controls button {
+    width: 100%; /* пълна ширина */
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
+/* Скрий мобилния изглед по подразбиране */
+.mobile-view {
+  display: none;
+}
+
+/* Покажи карти на мобилни устройства */
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .user-card {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .card-field {
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    margin-bottom: 0.75rem;
+  }  
+
+  .card-field input[type="text"],
+  .card-field input[type="email"],
+  .card-field input[type="number"] {
+    width: 60%;
+  }
+
+  .card-field input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+
+  .card-field strong {
+    min-width: 90px;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  .icon {
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+
+  .delete-icon {
+    color: red;
+  }
+
+  .mobile-view input:not([type="checkbox"]) {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .message-btn {
+    display: none;
+  }
+}
+
+.message-btn {
+  font-size: 1.5rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  background-color: #17a2b8;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.message-btn:hover {
+  background-color: #138496;
+}
+
+.confirm-button {
+  color: white;
+  background-color: #16a34a; /* bg-green-600 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.confirm-button:hover {
+  background-color: #15803d; /* bg-green-700 */
+}
+
+.cancel-button {
+  color: white;
+  background-color: #dc2626; /* bg-red-600 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.cancel-button:hover {
+  background-color: #b91c1c; /* bg-red-700 */
+}

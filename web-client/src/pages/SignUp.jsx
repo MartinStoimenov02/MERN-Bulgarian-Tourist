@@ -35,7 +35,7 @@ function SignUp({ setIsAuthenticated }) {
       try {
         const query = "tourist sites in Bulgaria";
         const res = await Axios.get(
-          `http://"+host+":"+port+"/google/random-image?query=${encodeURIComponent(query)}`
+          `http://`+host+`:`+port+`/google/random-image?query=${encodeURIComponent(query)}`
         );
         setImageUrl(res.data.imageUrl);
       } catch (error) {
@@ -141,23 +141,24 @@ function SignUp({ setIsAuthenticated }) {
         await Axios.post("http://"+host+":"+port+"/users/createUser", formData);
         setMessage("Регистрацията е успешна!");
         setSuccess(true);
-
+      
         const getUser = await Axios.post("http://"+host+":"+port+"/users/getUser", formData);
-          if (getUser.data.success) {
-            localStorage.setItem("userSession", JSON.stringify(getUser.data.user));
-            localStorage.setItem("loginTime", new Date().getTime());
-            console.log(getUser.data.user);
-            setIsAuthenticated(true);
-            if(res.data.user.isAdmin){
-              navigate("/admin/national-sites");
-            } else{
-              navigate("/home");
-            }
+        if (getUser.data.success) {
+          const user = getUser.data.user;
+          localStorage.setItem("userSession", JSON.stringify(user));
+          localStorage.setItem("loginTime", new Date().getTime());
+          console.log(user);
+          setIsAuthenticated(true);
+          if (user.isAdmin) { // ✅ вече използваш user от getUser
+            navigate("/admin/national-sites");
           } else {
-            setMessage(getUser.data.message);
-            setSuccess(false);
-            setTimeout(() => setMessage(""), 3000);
+            navigate("/home");
           }
+        } else {
+          setMessage(getUser.data.message);
+          setSuccess(false);
+          setTimeout(() => setMessage(""), 3000);
+        }
       } else {
         setSuccess(false);
         setMessage("Невалиден код.");

@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 const LogSchema = new mongoose.Schema({
     user: {
-        type: String
+        type: mongoose.Types.ObjectId,
+        ref: "user",
     },
     errorStatus: {
         type: String

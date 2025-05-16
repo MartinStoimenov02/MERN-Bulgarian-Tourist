@@ -13,7 +13,7 @@ export const getUserPlaces = async (req, res) => {
     const places = await PlaceModel.find({ user: userId, isVisited: visited });
     res.status(200).json(places);
   } catch (error) {
-    logError(error, req, { className: 'place.controller', functionName: 'getUserPlaces', user: req.query.userId });
+    logError(error, req, { className: 'place.controller', functionName: 'getUserPlaces', user: userId });
     console.error("Error fetching place: ", error);
     res.status(500).json({ message: "Error fetching places", error });
   }
@@ -45,11 +45,14 @@ export const addPlace = async (req, res) => {
       return res.status(400).json({ message: "Мястото вече е добавено." });
     }
 
+    var imgPath;
     const imageResponse = await getRandomImageHelper(name);
     if (!imageResponse || !imageResponse.imageUrl) {
-      return res.status(500).json({ message: "Failed to fetch image" });
+      imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
+      // res.status(404).json({ message: "No images found" });
+    } else{
+      imgPath = imageResponse.imageUrl;
     }
-    const imgPath = imageResponse.imageUrl;
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
     const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
@@ -121,7 +124,7 @@ export const updateFavourite = async (req, res) => {
 
 export const getRandomImageHelper = async (query) => {
   try {
-    const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&key=${API_KEY}&cx=${CX}`;
+    const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
     const response = await axios.get(searchUrl);
     const items = response.data.items;
 

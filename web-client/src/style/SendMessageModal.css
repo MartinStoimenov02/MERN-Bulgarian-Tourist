@@ -1,0 +1,95 @@
+/* SendMessageModal.css */
+
+.send-notification-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center; /* хоризонтално центриране */
+    align-items: center;     /* вертикално центриране */
+    z-index: 1000;
+  }
+  
+  .send-notification-modal {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  
+  .send-notification-modal h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+  
+  .send-notification-modal textarea {
+    width: 100%;
+    resize: none;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+  }
+  
+  .send-notification-modal label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .send-notification-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .send-notification-modal-buttons button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+  }
+  
+  .send-notification-modal-buttons button:first-child {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #4da6ff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    width: 100px;
+    transition: background-color 0.3s ease;
+  }
+
+  .send-notification-modal-buttons button:first-child:hover {
+    background-color: #007bff;
+  }
+  
+  .send-notification-modal-buttons button:last-child {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #ff4d4d;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 20px;
+    width: 100px;
+    transition: background-color 0.3s ease;
+  }
+  
+
+  
+  .send-notification-modal-buttons button:last-child:hover {
+    background-color: #cc0000;
+  }

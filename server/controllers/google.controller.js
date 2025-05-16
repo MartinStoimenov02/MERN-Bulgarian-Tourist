@@ -105,7 +105,7 @@ export const getRandomImage = async (req, res) => {
             return res.status(400).json({ message: "Query parameter is required." });
         }
 
-        const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&key=${API_KEY}&cx=${CX}`;
+        const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
         const response = await axios.get(searchUrl);
         const items = response.data.items;
 
