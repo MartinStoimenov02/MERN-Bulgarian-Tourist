@@ -38,9 +38,6 @@ const Nearby = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           const last = userCoordsRef.current;
-          console.log("last: ", last);
-          console.log("position.coords: ", position.coords);
-
           const isSame =
             last &&
             Math.abs(last.latitude - latitude) < 0.0001 &&
@@ -60,7 +57,7 @@ const Nearby = () => {
           timeout: 5000,
         }
       );
-    }, 2000); // проверка на всеки 2 секунди
+    }, 2000); 
 
     return () => clearInterval(intervalId);
   }, [places]);
@@ -69,8 +66,6 @@ const Nearby = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          console.log("user PLACESSSS: ", user);
-          console.log("user PLACESSSS: ", user.id);
           const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
             params: { userId: user.id, visited: false }
           });
@@ -123,25 +118,21 @@ const Nearby = () => {
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
-    setIsSortModalOpen(false); // Затваря модала след избора
+    setIsSortModalOpen(false); 
   };
 
   const updateAllDistances = async (userCoordinates) => {
     try {
       const distances = {};  
       for (const place of places) {
-        console.log(userCoordinates);
-        console.log(place.location);
         if (place.location) {
           const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
             userLocation: userCoordinates,
             placeLocation: place.location,
           });
   
-          console.log("response.data.distance: ", parseFloat(response.data.distance));
           if(parseFloat(response.data.distance)<10){
             distances[place._id] = response.data.distance;
-            console.log("distances[place._id]: ", distances[place._id]);
           }
         }
       }
@@ -184,13 +175,12 @@ const Nearby = () => {
 
   const toggleFavourite = async (placeId, currentStatus) => {
     try {
-      const updatedStatus = !currentStatus; // Toggle the status
+      const updatedStatus = !currentStatus; 
       await axios.put("http://"+host+":"+port+"/places/updateFavourite", {
         placeId,
         isFavourite: updatedStatus,
       });
   
-      // Update the UI state immediately for a smoother experience
       setNewPlaces((prevPlaces) =>
         prevPlaces.map((place) =>
           place._id === placeId ? { ...place, isFavourite: updatedStatus } : place
@@ -222,7 +212,6 @@ const Nearby = () => {
       setMessage("Проблем с изтриване на мястото!");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
-      console.error("Error:", error);
     }
   };
 
@@ -244,7 +233,6 @@ const Nearby = () => {
     });
 
     if(isVisitSuccess){
-      console.log("user.id: ", user.id);
       const updatePoints = await axios.put("http://"+host+":"+port+"/users/updatePoints", {
          id: user.id, 
          nto100: nto100
@@ -383,7 +371,6 @@ const Nearby = () => {
             </div>
           </div>
     
-          {/* Основни детайли с вертикални разделители */}
           <div className="place-info-summary">
           {placeDistances[selectedPlace._id] && <span>{placeDistances[selectedPlace._id]} away</span>}
             {placeDetails?.rating && (
@@ -412,7 +399,6 @@ const Nearby = () => {
             )}
           </div>
     
-          {/* Адрес на нов ред с иконка */}
           {placeDetails?.address && (
             <div className="place-address">
               <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">

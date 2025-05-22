@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../style/NotificationsStyle.css';  
 
-const Notifications = () => {
+const Notifications = ({ setHasUnreadNotifications }) => {
   const [notifications, setNotifications] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -20,7 +20,6 @@ const Notifications = () => {
     if (user) {
       const fetchNotifications = async () => {
         try {
-          console.log("user NOTIFICATINS: ", user.id);
           const response = await axios.get('http://'+host+':'+port+'/notifications/getNotificationsForUser', {
             params: { userId: user.id }
           }); 
@@ -44,14 +43,19 @@ const Notifications = () => {
       await axios.patch('http://'+host+':'+port+'/notifications/markAsRead', {
          notificationId: notificationId
       });
-      // Update the state to reflect that the notification is read
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notification) =>
+      setNotifications((prevNotifications) => {
+        const updated = prevNotifications.map((notification) =>
           notification._id === notificationId
             ? { ...notification, isRead: true }
             : notification
-        )
-      );
+        );
+
+        // Проверка дали всички са прочетени
+        const allRead = updated.every((n) => n.isRead);
+        setHasUnreadNotifications(!allRead); // Обновява Header-а
+
+        return updated;
+      });
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }

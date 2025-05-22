@@ -1,5 +1,4 @@
 import FeedbackModel from '../models/feedback.model.js';
-import mongoose from 'mongoose';
 import logError from '../utils/logger.js';
 
 export const createFeedback = async (req, res, next) => {
@@ -38,7 +37,8 @@ export const getAllFeedback = async (req, res) => {
   
       res.status(200).json({ success: true, feedback: feedbackList });
     } catch (err) {
-        console.error(err);
+      next(err);
+      console.error(err);
       logError(err, req, { className: 'feedback.controller', functionName: 'getAllFeedback' });
       res.status(500).json({ success: false, message: 'Грешка при зареждането на обратната връзка' });
     }
@@ -49,19 +49,21 @@ export const getAllFeedback = async (req, res) => {
       await FeedbackModel.findByIdAndDelete(req.params.id);
       res.status(200).json({ success: true, message: 'Обратната връзка е изтрита' });
     } catch (err) {
-        console.error(err);
+      next(err);
+      console.error(err);
       logError(err, req, { className: 'feedback.controller', functionName: 'deleteFeedbackById' });
       res.status(500).json({ success: false, message: 'Грешка при изтриване' });
     }
   };
   
   export const deleteMultipleFeedback = async (req, res) => {
-    const { ids } = req.body; // масив от ID-та
+    const { ids } = req.body;
     try {
       await FeedbackModel.deleteMany({ _id: { $in: ids } });
       res.status(200).json({ success: true, message: 'Избраните записи са изтрити' });
     } catch (err) {
-        console.error(err);
+      next(err);
+      console.error(err);
       logError(err, req, { className: 'feedback.controller', functionName: 'deleteMultipleFeedback' });
       res.status(500).json({ success: false, message: 'Грешка при групово изтриване' });
     }

@@ -27,7 +27,7 @@
   padding: 10px;
   font-size: 16px;
   width: 100%;
-  border-radius: 20px; /* Заоблени инпути */
+  border-radius: 20px; 
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
@@ -35,11 +35,11 @@
 .btn-login {
   padding: 10px;
   font-size: 16px;
-  background-color: #4da6ff; /* Светлосин бутон */
+  background-color: #4da6ff; 
   color: white;
   cursor: pointer;
   border: none;
-  border-radius: 20px; /* Заоблен бутон */
+  border-radius: 20px; 
   width: 100%;
   transition: background-color 0.3s ease;
 }
@@ -49,7 +49,7 @@
 }
 
 .message-container {
-  margin-top: 90px; /* Разстояние от хедъра */
+  margin-top: 90px; 
 }
 
 .success-message, .error-message {
@@ -116,13 +116,13 @@
 }
 
 .password-container input {
-  padding-right: 40px; /* Дай място за окото вътре в инпута */
+  padding-right: 40px; 
 }
 
 .password-container {
   position: relative;
   display: flex;
-  align-items: center; /* Центрира съдържанието вертикално */
+  align-items: center; 
 }
 
 .password-container button {
@@ -140,7 +140,7 @@
 }
 
 .password-container button:hover {
-  opacity: 0.8; /* Optional: add hover effect */
+  opacity: 0.8; 
 }
 
 .forgot-password {
@@ -160,7 +160,6 @@
   text-decoration: underline;
 }
 
-/* Email Info Styling */
 .email-info {
   font-size: 16px;
   color: #333;

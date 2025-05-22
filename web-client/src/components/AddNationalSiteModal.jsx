@@ -66,7 +66,6 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
   }, [mapRef.current]);
 
   useEffect(() => {
-    console.log("initialData: ", initialData);
     if (editMode && initialData) {
       setPlaceName(initialData.name || "");
       setDescription(initialData.description || "");
@@ -156,14 +155,10 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        console.log("payload: ", payload);
-        console.log("user: ", user);
-
         const response = await axios.post(`http://${host}:${port}/nationalSites/addNationalSite`, {
             adminId: user.id,
             nationalSiteData: payload,
           });
-        console.log("response: ", response);
         const updatedSitesResponse = await axios.get(`http://${host}:${port}/nationalSites/getAllNationalSites`);
         setPlaces(updatedSitesResponse.data);
         const newSite = updatedSitesResponse.data[updatedSitesResponse.data.length - 1];

@@ -82,7 +82,7 @@ const AdminNationalSites = () => {
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
-    setIsSortModalOpen(false); // Затваря модала след избора
+    setIsSortModalOpen(false);
   };
   
 
@@ -142,7 +142,6 @@ const AdminNationalSites = () => {
       setMessage("Проблем с изтриване на мястото!");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
-      console.error("Error:", error);
     }
   };
 
@@ -286,14 +285,13 @@ const AdminNationalSites = () => {
                 className="icon edit-icon"
                 title="Редактирай"
                 onClick={() => {
-                  setEditData(selectedPlace); // или setEditModalData({ ... })
+                  setEditData(selectedPlace); 
                   setIsModalOpen(true);
                 }}
               />
             </div>
           </div>
     
-          {/* Основни детайли с вертикални разделители */}
           <div className="place-info-summary">
             {placeDetails?.rating && (
               <>
@@ -328,7 +326,6 @@ const AdminNationalSites = () => {
                 </span>
           </div>
     
-          {/* Адрес на нов ред с иконка */}
           {placeDetails?.address && (
             <div className="place-address">
               <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">

@@ -11,13 +11,7 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
   const port = process.env.REACT_APP_PORT;
 
   const handleSend = async () => {
-    console.log('currentUser:', currentUser);
-    console.log('Избрани ID:', selectedUserIds);
-    console.log('Съобщение:', notificationMessage);
-    console.log('Изпращане по имейл:', sendEmail);
-
     try {
-        // 1. Създаваме нотификацията
         const { data: notifData } = await axios.post(`http://${host}:${port}/notifications/addNotification`, {
             message: notificationMessage,
             adminId: currentUser.id,
@@ -27,11 +21,8 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
           throw new Error('Failed to create notification');
         }
 
-        console.log("notifData: ", notifData);
+        const notificationId = notifData.data._id; 
     
-        const notificationId = notifData.data._id;  // Предполагаме, че връщаш новия запис
-    
-        // 2. Свързваме нотификацията с всеки избран потребител
         for (const userId of selectedUserIds) {
           await axios.post(`http://${host}:${port}/notifications/addUserNotification`, {
             adminId: currentUser.id,
@@ -47,7 +38,6 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
               });
           }
         }
-        console.log('Notifications sent successfully');
         onSuccess();
         onClose(); 
       } catch (err) {

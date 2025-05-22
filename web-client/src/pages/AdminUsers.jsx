@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FaTrash, FaEdit, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import DeleteAccountModal from "../components/DeleteAccountModal";
 import SendMessageModal from '../components/SendMessageModal';
-import '../style/AdminFeedback.css'; // Използваме същите стилове
+import '../style/AdminFeedback.css';
 
 const AdminUsers = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -77,8 +77,7 @@ const AdminUsers = () => {
   };
   
   const handleDeleteSuccess = () => {
-    // Обнови списъка с потребители тук
-    fetchUsers(); // или друга твоя функция
+    fetchUsers();
     setIsDeleteModalOpen(false);
   };
 
@@ -107,7 +106,7 @@ const AdminUsers = () => {
   const handleConfirmSendMessage = () => {
     if (selectedUserIds.length === 0) {
       setMessage("Моля, изберете поне един потребител!");
-      setSuccess(false); // или false, ако е грешка
+      setSuccess(false); 
       setTimeout(() => setMessage(""), 3000);
       return;
     }
@@ -155,7 +154,7 @@ const AdminUsers = () => {
     const aValue = a[sortOption];
     const bValue = b[sortOption];
     if (typeof aValue === 'string') return aValue.localeCompare(bValue);
-    return (bValue || 0) - (aValue || 0); // points, boolean
+    return (bValue || 0) - (aValue || 0); 
   });
 
 
@@ -311,7 +310,7 @@ const AdminUsers = () => {
                           <FaEdit className="icon" onClick={() => handleEditClick(user)} title="Редактирай" />
                           <FaTrash
                             className="icon delete-icon"
-                            onClick={() => handleDeleteClick(user)} // Запазва избрания потребител и отваря модала
+                            onClick={() => handleDeleteClick(user)} 
                             title="Изтрий"
                           />
                         </div>

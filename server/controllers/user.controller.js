@@ -1,8 +1,8 @@
 import UserModel from '../models/user.model.js';
-import PlaceModel from '../models/place.model.js';
 import crypto from "crypto";
 import mongoose from "mongoose";
 import logError from '../utils/logger.js';
+import deleteUserAndRelatedData from '../utils/deleteUserAndRelatedData.js';
 
 const hashPassword = (password) => {
     return crypto.createHash("sha256").update(password).digest("hex");
@@ -31,7 +31,6 @@ export const getUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const hashedPassword = hashPassword(password);
-        // Find user by email
         const user = await UserModel.findOne({ 
             email: email,
             password: hashedPassword
@@ -44,6 +43,9 @@ export const getUser = async (req, res, next) => {
             });
         }
 
+        user.lastLogin = new Date();
+        await user.save();;
+        
         res.json({
             success: true,
             message: "Успешно влизане!",
@@ -65,6 +67,7 @@ export const getUser = async (req, res, next) => {
         next(err);
         logError(err, req, { className: 'user.controller', functionName: 'getUser', user: email });
         console.error("error getting user: ", err);
+        res.status(500).json({ success: false, message: "error getting use: " + err.message });
     }
 };
 
@@ -87,10 +90,11 @@ export const validateUser = async (req, res, next) => {
         await session.abortTransaction(); 
         res.status(200).json({ success: true, message: "Данните са валидни." });
     } catch (err) {
+        next(err);
         logError(err, req, { className: 'user.controller', functionName: 'validateUser', user: email });
         console.error("validateUser: ", err);
         await session.abortTransaction(); 
-        res.status(400).json({ success: false, message: "Невалидни данни: " + err.message });
+        res.status(500).json({ success: false, message: "Невалидни данни: " + err.message });
     } finally {
         session.endSession();
     }
@@ -118,7 +122,7 @@ export const createUser = async (req, res, next) => {
         next(err);
         logError(err, req, { className: 'user.controller', functionName: 'createUser', user: email });
         console.error("createUser: ", err);
-        return res.status(404).json({
+        return res.status(500).json({
             success: false,
             message: err.message + "!"
         });
@@ -211,6 +215,9 @@ export const googleAuth = async (req, res, next) => {
             await user.save();
         }
 
+        user.lastLogin = new Date();
+        await user.save();
+
         res.status(200).json({
             success: true,
             message: "Google login successful!",
@@ -228,6 +235,7 @@ export const googleAuth = async (req, res, next) => {
         });
 
     } catch (err) {
+        next(err);
         logError(err, req, { className: 'user.controller', functionName: 'googleAuth', user: email });
         console.error("Error in Google Auth:", err);
         res.status(500).json({
@@ -270,7 +278,6 @@ export const updateField = async (req, res, next) => {
       });
     } catch (err) {
       next(err);
-      console.error(err.message);
       logError(err, req, { className: 'user.controller', functionName: 'updateUserField', user: req.body.id });
       console.error("Error updating user field:", err);
       res.status(500).json({
@@ -281,30 +288,18 @@ export const updateField = async (req, res, next) => {
   };
   
 export const deleteAccount = async (req, res, next) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const { userId } = req.body;
-    const deletedPlaces = await PlaceModel.deleteMany({ user: userId }).session(session);
+    const result = await deleteUserAndRelatedData(userId);
 
-    const deletedUser = await UserModel.findByIdAndDelete(userId).session(session);
-    if (!deletedUser) {
-      throw new Error("User not found");
-    }
+    if (!result.success) throw new Error(result.error);
 
-    await session.commitTransaction();
-    session.endSession();
-
-    res.status(200).json({ message: "User and associated places deleted successfully", success: true });
-  } catch (error) {
-    next(error);
-    await session.abortTransaction();
-    session.endSession();
-
-    logError(error, req, { className: 'user.controller', functionName: 'deleteAccount', user: req.body.userId });
-    console.error("Error deleting user and associated places:", error);
-    res.status(500).json({ message: "Error deleting user and related places", error });
+    res.status(200).json({ success: true, message: "Потребителят е успешно изтрит." });
+  } catch (err) {
+    next(err);
+    logError(err, req, { className: 'user.controller', functionName: 'deleteAccount' });
+    console.error("Error deleting user field:", err);
+    res.status(500).json({ success: false, message: "Грешка при изтриване на потребителя" });
   }
 };
 

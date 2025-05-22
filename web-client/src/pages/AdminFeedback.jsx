@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTrash } from 'react-icons/fa';
 import '../style/AdminFeedback.css';
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal'; // Увери се, че пътят е правилен
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 
 const feedbackTypeOptions = [
   'Всички',
@@ -15,7 +15,7 @@ const feedbackTypeOptions = [
 
 const AdminFeedback = () => {
   const [feedbackList, setFeedbackList] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);  // Добави това състояние
+  const [selectAll, setSelectAll] = useState(false); 
   const [selectedIds, setSelectedIds] = useState([]);
   const [filterType, setFilterType] = useState('Всички');
   const [sortKey, setSortKey] = useState('createdAt');
@@ -54,8 +54,8 @@ const AdminFeedback = () => {
               ids: filteredSelectedIds,
             });
           }
-          setSelectedIds([]);  // Изчистване на селектиране след изтриване
-          setSelectAll(false);  // Изчистване на селектирания статус
+          setSelectedIds([]); 
+          setSelectAll(false);  
         }
       } else {
         await axios.delete(`http://${host}:${port}/feedback/deleteFeedbackById/${deleteTargetId}`);
@@ -70,7 +70,7 @@ const AdminFeedback = () => {
 
   const toggleSelectAll = () => {
     if (selectAll) {
-      setSelectedIds([]); // Отмаркира всички редове
+      setSelectedIds([]); 
     } else {
       // Маркира всички редове, които съвпадат с текущия филтър
       const filteredIds = feedbackList
@@ -78,7 +78,7 @@ const AdminFeedback = () => {
         .map(fb => fb._id);
       setSelectedIds(filteredIds); // Маркира само записите от активната категория
     }
-    setSelectAll(!selectAll); // Променя състоянието на selectAll
+    setSelectAll(!selectAll); 
   };  
 
   const openDeleteModal = (idOrIds) => {

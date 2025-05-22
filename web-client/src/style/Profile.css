@@ -1,5 +1,3 @@
-/* Profile Page Styling */
-
 .profile-container {
   display: flex;
   flex-direction: column;
@@ -17,9 +15,8 @@
   max-width: 700px;
   width: 100%;
 
-  /* Добавяме тези нови редове: */
-  max-height: calc(100vh - 150px); /* ограничаваме височината на самата карта */
-  overflow-y: auto; /* скрол само при нужда */
+  max-height: calc(100vh - 150px);
+  overflow-y: auto; 
 }
 
   
@@ -88,12 +85,12 @@
     justify-content: center;
     min-width: 205px;
     align-items: center;
-    background-color: #28a745; /* Зелен цвят */
+    background-color: #28a745; 
   }
   
   .small-button:hover {
     opacity: 0.8;
-    background-color: #218838;; /* Тъмно синьо при hover */
+    background-color: #218838;; 
   }
   
   .full-width {
@@ -128,37 +125,34 @@
     transition: background-color 0.3s;
 }
 
-/* Основни стилове за бутоните */
 .profile-buttons .change-password {
-  background-color: #4da6ff; /* Син цвят */
+  background-color: #4da6ff; 
   color: white;
 }
 
 .profile-buttons .change-password:hover {
-  background-color: #007bff; /* Тъмно синьо при hover */
+  background-color: #007bff; 
 }
 
-/* Бутон за изход */
 .profile-buttons .feedback {
-  background-color: #ffc107; /* Жълт цвят */
+  background-color: #ffc107; 
   color: white;
 }
 
 .profile-buttons .feedback:hover {
-  background-color: #e0a800; /* По-тъмен жълт при hover */
+  background-color: #e0a800; 
 }
 
-/* Бутон за изтриване на акаунт */
 .profile-buttons .delete-account {
-  background-color: #dc3545; /* Червен цвят */
+  background-color: #dc3545; 
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center; /* центрира иконата и текста */
+  justify-content: center; 
 }
 
 .profile-buttons .delete-account:hover {
-  background-color: #c82333; /* По-тъмен червен при hover */
+  background-color: #c82333; 
 }
 
   
@@ -200,12 +194,12 @@
     .buttons-row {
       flex-direction: column;
       align-items: center;
-      width: 100%; /* Добавено */
+      width: 100%; 
     }
   
     .buttons-row button {
       width: 100%;
-      max-width: 264px; /* ограничава ги като текстовите полета */
+      max-width: 264px;
     }
   }
 
@@ -215,7 +209,6 @@
     }
   }
   
-  /* Password Container */
   .password-container {
     position: relative;
   }

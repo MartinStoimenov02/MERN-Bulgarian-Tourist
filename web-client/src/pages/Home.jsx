@@ -8,7 +8,6 @@ function Home({ setIsAuthenticated }) {
   const [user, setUser] = useState(null);
   const [helpOpen, setHelpOpen] = useState(false);
 
-  // 🔥 Нови състояния
   const [visitedPlaces, setVisitedPlaces] = useState([]);
   const [topUsers, setTopUsers] = useState([]);
   const [foundInTop , setFoundInTop ] = useState(false);
@@ -60,13 +59,10 @@ function Home({ setIsAuthenticated }) {
       
       if (response.data.success) {
         let topUsers = response.data.topUsers;
-        console.log("topUsers: ", topUsers);
         let foundInTop = false;
   
-        console.log("user: ", user);
         topUsers.forEach((u, i) => {
           if (u._id === user.id) {
-            console.log('u._id === user._id: ', u._id === user._id);
             topUsers[i] = {
               ...u,
               me: true
@@ -74,9 +70,6 @@ function Home({ setIsAuthenticated }) {
             foundInTop = true;
           }
         });
-  
-        console.log('topUsers 2: ', topUsers);
-        console.log('foundInTop 2: ', foundInTop);
         setTopUsers(topUsers);
         setFoundInTop(foundInTop);
   
@@ -94,18 +87,13 @@ function Home({ setIsAuthenticated }) {
       const prompt = "Дай ми цитат за деня, свързан с красотата на българия и туристическите ѝ дестинации. Но без обяснения, само цитат, защото го ползвам да го показвам на потребители!";
 
       const res = await Axios.post(`http://${host}:${port}/google/gemini`, { prompt });
-      console.log("response from gemini: ", res);
       if (res.data.response) {
         setGeminiCitat(res.data.response);
       } else {
-        //setError("Не е намерен отговор от модела.");
         console.error("Не е намерен отговор от модела.");
       }
     } catch (error) {
-      //setError("Грешка при заявката към Gemini.");
       console.error(error);
-    } finally {
-      //setLoading(false);
     }
   }
 
@@ -130,18 +118,13 @@ function Home({ setIsAuthenticated }) {
       const prompt = "Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
 
       const res = await Axios.post(`http://${host}:${port}/google/gemini`, { prompt });
-      console.log("response from gemini: ", res);
       if (res.data.response) {
         setGeminiSuggestion(res.data.response);
       } else {
-        //setError("Не е намерен отговор от модела.");
         console.error("Не е намерен отговор от модела.");
       }
     } catch (error) {
-      //setError("Грешка при заявката към Gemini.");
       console.error(error);
-    } finally {
-      //setLoading(false);
     }
   }
 
@@ -180,7 +163,6 @@ function Home({ setIsAuthenticated }) {
         <p><i>{geminiCitat}</i></p>
       </center>
 
-      {/* 💡 Новата част */}
       <div className="home-content">
         <div className="visited-places"><VisitedPlaces visitedPlaces={visitedPlaces} /></div>
 

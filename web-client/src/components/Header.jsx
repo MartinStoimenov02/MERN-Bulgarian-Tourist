@@ -13,6 +13,7 @@ const Header = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [user, setUser] = useState(null);
   const isAuthPage =
     location.pathname === '/login' ||
@@ -42,6 +43,24 @@ const Header = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    const fetchUnreadNotifications = async () => {
+      if (!user) return;
+      try {
+        const host = process.env.REACT_APP_HOST;
+        const port = process.env.REACT_APP_PORT;
+        const res = await fetch(`http://${host}:${port}/notifications/getNotificationsForUser?userId=${user.id}`);
+        const data = await res.json();
+        const unread = data.data.some(notification => !notification.isRead);
+        setHasUnreadNotifications(unread);
+      } catch (err) {
+        console.error("Грешка при взимане на нотификациите:", err);
+      }
+    };
+
+    fetchUnreadNotifications();
+  }, [user]);
 
   return (
     <header className="header">
@@ -96,10 +115,6 @@ const Header = () => {
         </div>
       )}
 
-      {/* {isAuthPage && !isForgotPasswordPage && (
-        <h1 className={isAuthPage ? 'title-center' : 'title'}>Български Турист</h1>
-      )} */}
-
       {!isAuthPage && (
         <div className="header-right">
           <div className="help">
@@ -122,12 +137,13 @@ const Header = () => {
           <div className="notification">
               <button onClick={() => setNotificationsOpen(!notificationsOpen)} className="notification-icon">
                 <Bell size={30} color="#fff" />
+                {hasUnreadNotifications && <span className="notification-dot" />}
               </button>
 
               {/* Падащо меню за десктоп */}
               {!isMobile && notificationsOpen && (
                 <div className="notifications-dropdown">
-                  <Notifications />
+                  <Notifications setHasUnreadNotifications={setHasUnreadNotifications}/>
                 </div>
               )}
 
@@ -139,7 +155,7 @@ const Header = () => {
                       <h2>Уведомления</h2>
                       <button className="close-button" onClick={() => setNotificationsOpen(false)}>✕</button>
                     </div>
-                    <Notifications />
+                    <Notifications setHasUnreadNotifications={setHasUnreadNotifications}/>
                   </div>
                 </div>
               )}

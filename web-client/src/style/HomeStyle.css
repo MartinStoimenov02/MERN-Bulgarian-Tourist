@@ -19,13 +19,13 @@
   margin: 5px 0;
   font-weight: normal;
   background-color: #f0f0f0;
-  border: 2px solid transparent; /* Добави прозрачен бордер, който ще бъде променян */
+  border: 2px solid transparent; 
 }
 
 .rank-user {
-  background-color: #d2f8d2; /* светло зелено */
+  background-color: #d2f8d2; 
   font-weight: bold;
-  border: 2px solid #000; /* Болднат бордер за текущия потребител */
+  border: 2px solid #000; 
 }
 
 .rank-gold {
@@ -201,9 +201,6 @@
   }
   
 
-  /* ########################### */
-
-  /* За модалния прозорец на посетените места */
 .visited-places-modal-overlay {
   position: fixed;
   top: 0;
@@ -256,7 +253,7 @@
 }
 
 .mobile-button button {
-  background-color: #007bff; /* лилав тон като в visited-place hover */
+  background-color: #007bff; 
   color: white;
   border: none;
   padding: 12px 20px;

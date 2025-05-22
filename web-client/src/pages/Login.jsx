@@ -50,7 +50,6 @@ function Login({ setIsAuthenticated }) {
       if (res.data.success) {
         localStorage.setItem("userSession", JSON.stringify(res.data.user));
         localStorage.setItem("loginTime", new Date().getTime());
-        console.log(res.data.user);
         setIsAuthenticated(true);
         if(res.data.user.isAdmin){
           navigate("/admin/national-sites");

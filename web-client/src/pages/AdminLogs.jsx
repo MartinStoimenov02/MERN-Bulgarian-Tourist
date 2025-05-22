@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTrash } from 'react-icons/fa';
-import '../style/AdminFeedback.css';  // Използвай AdminFeedback.css
-import ConfirmDeleteModal from '../components/ConfirmDeleteModal';  // Увери се, че пътят е правилен
+import '../style/AdminFeedback.css';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 
 const AdminLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -20,7 +20,6 @@ const AdminLogs = () => {
   const fetchLogs = async () => {
     try {
       const res = await axios.get(`http://${host}:${port}/logs/getAllLogs`);
-      console.log("res.data.logs: ", res.data.logs);
       setLogs(res.data.logs);
     } catch (err) {
       console.error('Error fetching logs:', err);
@@ -52,11 +51,11 @@ const AdminLogs = () => {
 
   const toggleSelectAll = () => {
     if (selectAll) {
-      setSelectedIds([]); // Отмаркира всички редове
+      setSelectedIds([]); 
     } else {
-      setSelectedIds(logs.map(log => log._id)); // Маркира всички редове
+      setSelectedIds(logs.map(log => log._id)); 
     }
-    setSelectAll(!selectAll); // Променя състоянието на selectAll
+    setSelectAll(!selectAll); 
   };  
 
   const openDeleteModal = (idOrIds) => {
@@ -117,7 +116,7 @@ const AdminLogs = () => {
                     <input
                       type="checkbox"
                       checked={selectAll}
-                      onChange={toggleSelectAll} // Тази функция ще управлява глобалното маркиране
+                      onChange={toggleSelectAll}
                     />
                   </th>
                   <th>Потребител</th>

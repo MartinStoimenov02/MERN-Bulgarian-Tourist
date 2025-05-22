@@ -2,37 +2,32 @@ body {
   font-family: 'Inter';
 }
 
-/* Основен контейнер на приложението */
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Поне височината на екрана */
+  min-height: 100vh; 
 }
 
-/* Основно съдържание */
 .main-content {
-  flex-grow: 1; /* Запълва останалото пространство */
+  flex-grow: 1; 
   background-color: #f5f7fa;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Позволява скролиране на вътрешни елементи */
+  overflow: hidden;
 }
 
-/* Контейнер за списъка */
 .list-container {
-  overflow-y: auto; /* Скролиране по вертикала */
-  max-height: 70vh; /* Може да промениш на желаната височина */
+  overflow-y: auto; 
+  max-height: 70vh;
   padding: 10px;
 }
 
-/* Контейнер за детайлите */
 .details-container {
   overflow-y: auto;
-  max-height: 50vh; /* Променяй както ти е удобно */
+  max-height: 50vh; 
   padding: 10px;
 }
 
-/* Футър */
 footer {
   background-color: #333;
   color: white;
@@ -42,7 +37,6 @@ footer {
   margin-top: auto;
 }
 
-/* Пример за стилове на success и error съобщения */
 .success-message, .error-message {
   position: fixed;
   top: 0;

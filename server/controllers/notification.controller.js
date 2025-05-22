@@ -48,7 +48,6 @@ export const addUserNotification = async (req, res, next) => {
       });
     }
 
-    // Create a new junction record
     const userNotification = await UserNotificationModel.create({
       user: userId,
       notificationId,
@@ -98,9 +97,13 @@ export const getNotificationsForUser = async (req, res, next) => {
       })),
     });
   } catch (err) {
+    next(err);
     logError(err, req, { className: 'notification.controller', functionName: 'getNotificationsForUser', user: req.query.userId });
     console.error('Error fetching notifications:', err);
-    throw new Error('Failed to fetch notifications');
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch notifications',
+    });
   }
 };
 
@@ -117,6 +120,7 @@ export const markAsRead = async (req, res, next) => {
     }
 
     userNotification.isRead = true;
+    userNotification.readOn = new Date();
     await userNotification.save();
 
     res.status(200).json({

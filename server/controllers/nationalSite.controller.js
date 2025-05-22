@@ -5,7 +5,6 @@ import UserModel from "../models/user.model.js";
 import logError from '../utils/logger.js';
 import { getRandomImageHelper } from "../controllers/place.controller.js";
 
-// Get all places for a specific user
 export const getActiveNationalSites = async (req, res) => {
   try {
     const nationalSites = await NationalSiteModel.aggregate([
@@ -28,6 +27,7 @@ export const getActiveNationalSites = async (req, res) => {
 
     res.status(200).json(nationalSites);
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'nationalSite.controller', functionName: 'getActiveNationalSites' });
     console.error("Error fetching national sites", error);
     res.status(500).json({ message: "Error fetching national sites", error });
@@ -42,6 +42,7 @@ export const deleteNationalSite = async (req, res) => {
 
     res.status(200).json({ message: "Place deleted successfully" });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'deletePlace' });
     console.error("Error deleting place:", error);
     res.status(500).json({ message: "Error deleting place", error });
@@ -54,6 +55,7 @@ export const getAllNationalSites = async (req, res) => {
 
     res.status(200).json(allNationalSites);
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'nationalSite.controller', functionName: 'getAllNationalSites' });
     console.error("Error fetching national sites", error);
     res.status(500).json({ message: "Error fetching national sites", error });
@@ -83,6 +85,7 @@ export const addNationalSiteToMyList = async (req, res) => {
       site: savedNewPlace,
     });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'nationalSite.controller', functionName: 'addNationalSiteToMyList', user: req.body.userId });
     console.error('Error adding place:', error);
     res.status(500).json({
@@ -104,7 +107,6 @@ export const addNationalSite = async (req, res) => {
       });
     }
 
-    // 🔽 Добавяме снимка автоматично
     const imageResponse = await getRandomImageHelper(nationalSiteData.name);
     if (!imageResponse || !imageResponse.imageUrl) {
       return res.status(500).json({ message: "Неуспешно извличане на снимка" });
@@ -119,6 +121,7 @@ export const addNationalSite = async (req, res) => {
       site: savedNationalSite,
     });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'nationalSite.controller', functionName: 'addNationalSite' });
     console.error('Error adding national site:', error);
     res.status(500).json({
@@ -153,6 +156,9 @@ export const updateNationalSite = async (req, res) => {
 
     res.json(nationalSite);
   } catch (err) {
+    next(err);
+    logError(err, req, { className: 'nationalSite.controller', functionName: 'updateNationalSite' });
+    console.error('Error updateNationalSite:', err);
     res.status(500).json({ message: "Неуспешна редакция на национален обект." });
   }
 };

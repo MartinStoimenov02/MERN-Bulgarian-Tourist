@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
-import "../style/LoginStyle.css"; // Using the same style for consistency
+import "../style/LoginStyle.css"; 
 import shipkaImage from "../images/shipka.jpg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -23,14 +23,12 @@ function ForgotPassword() {
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
 
-  // Redirect if accessed directly
   useEffect(() => {
     if (!isAllowed) {
       navigate("/login");
     }
   }, [isAllowed, navigate]);
 
-  // Fetch background image
   useEffect(() => {
     const fetchImage = async () => {
       try {

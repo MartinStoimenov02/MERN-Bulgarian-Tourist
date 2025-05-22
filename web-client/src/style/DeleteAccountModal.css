@@ -1,4 +1,3 @@
-/* Modal for Delete Account */
 .delete-account-modal .modal-overlay {
     position: fixed;
     top: 0;
@@ -36,16 +35,14 @@
     border-radius: 10px;
   }
 
-  /* Common modal button styles */
   .modal-buttons {
     display: flex;
     justify-content: center;
     gap: 20px;
   }
   
-/* Primary action button (e.g., "Add", "Delete") */
 .btn-primary {
-  background-color: #f44336; /* червен за изтриване */
+  background-color: #f44336; 
   color: white;
   padding: 12px 20px;
   border: none;
@@ -59,7 +56,7 @@
 }
 
 .btn-cancel {
-  background-color: gray; /* син за отказ */
+  background-color: gray; 
   color: white;
   padding: 12px 20px;
   border: none;

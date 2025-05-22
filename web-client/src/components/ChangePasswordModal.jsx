@@ -60,8 +60,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
     try {
           const res = await Axios.post("http://"+host+":"+port+"/users/getUser", formData);
           if (res.data.success) {
-            console.log("res.data.user: ", res.data.user);
-            console.log("newPassword: ", newPassword);
             const password = newPassword;
             const resetPassword = await Axios.post("http://"+host+":"+port+"/users/resetPassword", {
               email,
@@ -90,10 +88,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
           setTimeout(() => setMessage(""), 3000);
           return;
         }
-
-    // TODO: Викай API-то за смяна на парола тук
-    console.log("Промяна на парола:", { email, currentPassword, newPassword });
-
     handleClose();
   };
 
@@ -103,7 +97,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
     <div className="modal-overlay change-password-modal">
       <div className="modal-content">
         <h2>Смяна на парола</h2>
-        {/* Текуща парола */}
         <div className="password-container">
           <input
             type={showCurrent ? "text" : "password"}
@@ -122,7 +115,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
           </button>
         </div>
 
-        {/* Нова парола */}
         <div className="password-container">
           <input
             type={showNew ? "text" : "password"}
@@ -141,7 +133,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
           </button>
         </div>
 
-        {/* Потвърди новата парола */}
         <div className="password-container">
           <input
             type={showConfirm ? "text" : "password"}

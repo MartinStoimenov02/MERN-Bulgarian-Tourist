@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
   const [confirmEmail, setConfirmEmail] = useState("");
-  const [password, setPassword] = useState(""); // State to store the entered password
+  const [password, setPassword] = useState(""); 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -14,8 +14,6 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
   const port = process.env.REACT_APP_PORT;
 
   const handleDelete = async () => {
-    console.log("user in deleting account modal: ", user);
-
     if (confirmEmail !== user.email) {
       setMessage("Email-ът не съвпада!");
       setSuccess(false);
@@ -51,10 +49,7 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
           { userId: user.id }
         );
 
-        console.log("deleteResL ", deleteRes.data);
-
         if (deleteRes.data.success) {
-          console.log("Calling onSuccess...");
           onSuccess();
           onClose();
           setConfirmEmail("");
@@ -95,11 +90,10 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
           className="modal-input"
         />
 
-        {/* Conditionally render the password field if user.hasPassword is true */}
         {user.hasPassword && (
           <div className="password-container">
           <input
-            type={showPassword ? "text" : "password"} // Toggle password visibility
+            type={showPassword ? "text" : "password"}
             placeholder="Парола"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -108,9 +102,9 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
           <button 
             type="button" 
             className="password-toggle" 
-            onClick={() => setShowPassword(!showPassword)} // Toggle the visibility of password
+            onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <FaEyeSlash /> : <FaEye />} {/* Toggle the eye icon */}
+            {showPassword ? <FaEyeSlash /> : <FaEye />} 
           </button>
         </div>
         )}

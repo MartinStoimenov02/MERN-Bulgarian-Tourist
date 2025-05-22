@@ -50,7 +50,7 @@ const NationalSites = () => {
             timeout: 5000,
           }
         );
-      }, 2000); // проверка на всеки 2 секунди
+      }, 2000);
   
       return () => clearInterval(intervalId);
     }, [places]);
@@ -95,7 +95,7 @@ const NationalSites = () => {
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
-    setIsSortModalOpen(false); // Затваря модала след избора
+    setIsSortModalOpen(false); 
   };
   
   const fetchPlaceDetails = async (place) => {
@@ -106,7 +106,6 @@ const NationalSites = () => {
         externalId
       });
       setPlaceDetails(response.data);
-      console.log("place details: ", response.data);
     } catch (error) {
       setPlaceDetails(null);
       console.error("Грешка при извличане на детайлите:", error);
@@ -131,21 +130,6 @@ const NationalSites = () => {
       console.error("Грешка при изчисляване на разстоянията:", error);
     }
   };
-  
-  // const sortedPlaces = [...places].sort((a, b) => {
-  //   switch (sortOrder) {
-  //     case "name-asc":
-  //       return a.name.localeCompare(b.name);
-  //     case "name-desc":
-  //       return b.name.localeCompare(a.name);
-  //     case "nto100":
-  //       return parseInt(a.numberInNationalList) - parseInt(b.numberInNationalList);
-  //       case "distance":
-  //         return (parseFloat(placeDistances[a._id]) || Infinity) - (parseFloat(placeDistances[b._id]) || Infinity);        
-  //     default:
-  //       return 0;
-  //   }
-  // });
 
   const sortedPlaces = [...places].sort((a, b) => {
     switch (sortOrder) {
@@ -170,27 +154,7 @@ const NationalSites = () => {
       default:
         return 0;
     }
-  });
-  
-  
-
-  // const sortedPlaces = [...places].sort((a, b) => {
-  //   function parseNumber(str) {
-  //     const match = str.match(/^(\d+)(\D*)$/);
-  //     return match ? [parseInt(match[1], 10), match[2] || ""] : [Infinity, ""];
-  //   }
-  
-  //   if (sortOrder === "nto100") {
-  //     const [numA, suffixA] = parseNumber(a.numberInNationalList);
-  //     const [numB, suffixB] = parseNumber(b.numberInNationalList);
-  
-  //     if (numA !== numB) return numA - numB;
-  
-  //     return suffixA.localeCompare(suffixB, 'bg');
-  //   }
-  
-  //   return 0; 
-  // });  
+  }); 
 
   const filteredPlaces = sortedPlaces.filter((place) => 
     place.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -351,7 +315,6 @@ const NationalSites = () => {
             </div>
           </div>
     
-          {/* Основни детайли с вертикални разделители */}
           <div className="place-info-summary">
           {placeDistances[selectedPlace._id] && <span>{placeDistances[selectedPlace._id]} away</span>}
             {placeDetails?.rating && (
@@ -376,7 +339,6 @@ const NationalSites = () => {
                 </span>
           </div>
     
-          {/* Адрес на нов ред с иконка */}
           {placeDetails?.address && (
             <div className="place-address">
               <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">

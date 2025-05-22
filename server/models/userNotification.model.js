@@ -14,6 +14,9 @@ const userNotificationSchema = new mongoose.Schema({
   isRead: {
     type: Boolean,
     default: false,
+  },
+  readOn: {
+    type: Date
   }
 });
 

@@ -40,7 +40,6 @@ const Profile = ({ setIsAuthenticated }) => {
   };
 
   const cancelEdit = () => {
-    console.log("user priolfeeewedcdfe: ", user);
     setUserFromSession();
     setEditingField(null);
   };
@@ -71,9 +70,6 @@ const Profile = ({ setIsAuthenticated }) => {
     }    
 
     if (field === "name") {
-      console.log("name: ", field);
-      console.log("value: ", value);
-
       if (value === "") {
         return "Името не може да е празно!";
       }
@@ -83,7 +79,6 @@ const Profile = ({ setIsAuthenticated }) => {
 
   const saveField = async (field) => {
     const validationError = validateField(field, user[field]);
-    console.log("user[field]: ", user[field]);
     if (validationError) {
       setMessage(validationError);
       setSuccess(false);

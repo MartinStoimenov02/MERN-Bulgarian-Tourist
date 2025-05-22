@@ -29,17 +29,15 @@
     margin-bottom: 45px;
   }
   
-  /* Подравняване на "Тип" и "Рейтинг" в един ред, центрирани */
   .feedback-type-rating {
     display: flex;
     align-items: center;
-    justify-content: center; /* Центрираме елементите */
-    gap: 40px; /* Увеличавам разстоянието още малко */
+    justify-content: center; 
+    gap: 40px; 
     width: 100%;
     margin-bottom: 15px;
   }
   
-  /* Контейнер за "Тип", за да остане текстът отляво */
   .feedback-type-container {
     display: flex;
     flex-direction: column;
@@ -47,7 +45,6 @@
     text-align: left;
   }
   
-  /* Селектът остава в нормална позиция */
   .feedback-modal .modal-input {
     width: 100%;
     padding: 10px;
@@ -57,7 +54,6 @@
     box-sizing: border-box;
   }
 
-    /* Текстово поле за съобщение */
   .feedback-modal .description-textarea {
     width: 100%;
     height: 100px;
@@ -70,7 +66,6 @@
     margin-bottom: 15px;
   }
   
-  /* Подравняване на звездите */
   .feedback-type-rating .star-rating {
     display: flex;
     gap: 5px;
@@ -140,7 +135,6 @@
     color: #ff4d4d;
   }
   
-  /* Responsive за мобилни устройства */
   @media screen and (max-width: 800px) {
     .feedback-modal .modal-content {
       width: 90%;
@@ -149,7 +143,7 @@
     .feedback-type-rating {
       flex-direction: column;
       align-items: center;
-      gap: 15px; /* Няма да бъде толкова голямо като на десктоп */
+      gap: 15px;
     }
   
     .feedback-type-container {

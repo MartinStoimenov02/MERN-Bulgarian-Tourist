@@ -147,9 +147,8 @@ function SignUp({ setIsAuthenticated }) {
           const user = getUser.data.user;
           localStorage.setItem("userSession", JSON.stringify(user));
           localStorage.setItem("loginTime", new Date().getTime());
-          console.log(user);
           setIsAuthenticated(true);
-          if (user.isAdmin) { // ✅ вече използваш user от getUser
+          if (user.isAdmin) { 
             navigate("/admin/national-sites");
           } else {
             navigate("/home");

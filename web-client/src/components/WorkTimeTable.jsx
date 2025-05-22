@@ -85,21 +85,11 @@ function parseTimeRanges(timeString) {
   return ranges;
 }
 
-// Компонентът за работното време
 const WorkTimeTable = ({ workTime }) => {
   const [language, setLanguage] = useState('bg');
 
   return (
     <div>
-      {/* <select
-        onChange={(e) => setLanguage(e.target.value)}
-        value={language}
-        className="language-selector" 
-      >
-        <option value="bg">Български</option>
-        <option value="en">English</option>
-      </select> */}
-
 <table className="work-time-table">
   <thead>
     <tr>

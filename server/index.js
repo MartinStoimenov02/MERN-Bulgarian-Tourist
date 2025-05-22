@@ -9,6 +9,8 @@ import logsRoutes from './routes/adminLogs.route.js';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import './jobs/deleteUserNotifications.job.js';
+import './jobs/cleanupInactiveUsers.job.js';
 
 const app = express();
 app.use(express.json());

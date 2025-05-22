@@ -19,11 +19,10 @@ const UserScheme = new mongoose.Schema({
     },
     phoneNumber: {
         type: String,
-        // required:[true, "phone number is required."],
         unique: [true, "phone number must be unique"],
         sparse: true, //Позволява няколко документа да нямат стойност (null или undefined) за това поле, без да нарушава уникалността
         set: function (val) {
-            return val && val.trim() !== "" ? val : undefined;  // ✅ Remove field if empty
+            return val && val.trim() !== "" ? val : undefined;  // Remove field if empty
         },
     },
     points: {
@@ -41,6 +40,9 @@ const UserScheme = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default: false
+    },
+    lastLogin: {
+        type: Date
     }
 }, {timestamps:true});
 

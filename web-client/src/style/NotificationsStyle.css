@@ -14,36 +14,35 @@
 
 .notificationCard {
     display: flex;
-    flex-direction: column; /* Стекване на съобщението и датата вертикално */
-    align-items: flex-start; /* Подравняване на съобщението и датата вляво */
+    flex-direction: column; 
+    align-items: flex-start; 
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #fff; /* Стандартен бял фон */
+    background-color: #fff; 
 }
 
 .message {
     color: black;
     font-size: 1em;
     font-weight: normal;
-    width: 100%; /* Съобщението да заема пълната ширина */
-    text-align: left; /* Подравняване на съобщението вляво */
+    width: 100%; 
+    text-align: left; 
 }
 
 .date {
-    margin-top: 5px; /* Разстояние между съобщението и датата */
+    margin-top: 5px;
     font-size: 0.9em;
     color: #888;
-    width: 100%; /* Датата да заема пълната ширина */
-    text-align: left; /* Подравняване на датата вляво */
+    width: 100%;
+    text-align: left;
 }
 
 .boldMessage {
-    font-weight: bold; /* Удебелен стил за непрочетени съобщения */
+    font-weight: bold; 
 }
 
-/* Фонът да е сив за непрочетени съобщения */
 .notificationCard.unread {
-    background-color: #f0f0f0; /* Сив фон за непрочетени съобщения */
+    background-color: #f0f0f0; 
 }

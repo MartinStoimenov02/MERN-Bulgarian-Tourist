@@ -3,7 +3,6 @@ import NationalSiteModel from "../models/nationalSites.model.js";
 import axios from "axios";
 import logError from '../utils/logger.js';
 
-// Get all places for a specific user
 export const getUserPlaces = async (req, res) => {
   try {
     const { userId, visited } = req.query; 
@@ -13,13 +12,13 @@ export const getUserPlaces = async (req, res) => {
     const places = await PlaceModel.find({ user: userId, isVisited: visited });
     res.status(200).json(places);
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'getUserPlaces', user: userId });
     console.error("Error fetching place: ", error);
     res.status(500).json({ message: "Error fetching places", error });
   }
 };
 
-// Get a single place by ID
 export const getPlaceById = async (req, res) => {
   try {
     const place = await PlaceModel.findById(req.params.id);
@@ -27,13 +26,13 @@ export const getPlaceById = async (req, res) => {
 
     res.status(200).json(place);
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'getPlaceById' });
     console.error("Error fetching place:", error);
     res.status(500).json({ message: "Error fetching place", error });
   }
 };
 
-// Add a new place
 export const addPlace = async (req, res) => {
   try {
     const { name, google_external_id, userId, description, location } = req.body; 
@@ -49,7 +48,6 @@ export const addPlace = async (req, res) => {
     const imageResponse = await getRandomImageHelper(name);
     if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-      // res.status(404).json({ message: "No images found" });
     } else{
       imgPath = imageResponse.imageUrl;
     }
@@ -70,13 +68,13 @@ export const addPlace = async (req, res) => {
     await newPlace.save();
     res.status(201).json({ message: "Place added successfully", place: newPlace });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'addPlace', user: req.body.userId });
     console.error("Error adding place:", error);
     res.status(500).json({ message: "Error adding place", error });
   }
 };
 
-// Delete a place
 export const deletePlace = async (req, res) => {
   try {
     const { placeId } = req.body;
@@ -85,6 +83,7 @@ export const deletePlace = async (req, res) => {
 
     res.status(200).json({ message: "Place deleted successfully" });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'deletePlace' });
     console.error("Error deleting place:", error);
     res.status(500).json({ message: "Error deleting place", error });
@@ -101,6 +100,7 @@ export const visitPlace = async (req, res) => {
       res.status(500).json({ error: "Разстоянието до мястото е повече от 1 км!" });
     }
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'visitPlace' });
     console.error("Failed to visit: ", error);
     res.status(500).json({ error: "Failed to visit" });
@@ -116,6 +116,7 @@ export const updateFavourite = async (req, res) => {
     await PlaceModel.findByIdAndUpdate(placeId, { isFavourite });
     res.json({ success: true });
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'updateFavourite' });
     console.error("Failed to update favourite status: ", error);
     res.status(500).json({ error: "Failed to update favourite status" });
@@ -140,9 +141,10 @@ export const getRandomImageHelper = async (query) => {
 
     return null;
   } catch (error) {
+    next(err);
     logError(error, req, { className: 'place.controller', functionName: 'getRandomImageHelper' });
     console.error("Error fetching image:", error);
-    return null;
+    res.status(500).json({ error: "Error fetching image" });
   }
 };
 
@@ -158,6 +160,9 @@ export const updatePlace = async (req, res) => {
     );
     res.json(place);
   } catch (err) {
+    next(err);
+    logError(err, req, { className: 'place.controller', functionName: 'updatePlace' });
+    console.error("Error update Place:", error);
     res.status(500).json({ message: "Неуспешна редакция на място." });
   }
 };

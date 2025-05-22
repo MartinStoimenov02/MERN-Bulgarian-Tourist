@@ -1,4 +1,3 @@
-/* General Container */
 .my-places-container {
     display: flex;
     flex-direction: column;
@@ -21,7 +20,6 @@
   }
   
 
-/* Top Controls */
 .top-controls {
     display: flex;
     align-items: center;
@@ -45,20 +43,19 @@
     border-color: #007bff;
 }
 
-/* Buttons */
 .add-btn, .sort-btn {
-    display: flex; /* Добави това */
-    justify-content: center; /* Центрира хоризонтално */
-    align-items: center; /* Центрира вертикално */
-    padding: 12px; /* Може леко да намалиш padding-а */
-    font-size: 20px; /* Иконата ще се нагоди спрямо това */
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    padding: 12px; 
+    font-size: 20px; 
     background-color: #007bff;
     color: white;
     cursor: pointer;
     border: none;
-    border-radius: 50%; /* Ако искаш бутона да е кръгъл */
-    width: 50px; /* Добави размер */
-    height: 50px; /* Добави размер */
+    border-radius: 50%;
+    width: 50px; 
+    height: 50px; 
     transition: background 0.3s ease;
 }
 
@@ -66,14 +63,12 @@
     background-color: #0056b3;
 }
 
-/* Контейнер за заглавие и иконките */
 .title-icons-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Иконки в заглавието */
 .icons-container {
     display: flex;
     gap: 15px;
@@ -106,7 +101,6 @@
     color: #5cb85c;
   }
 
-/* Контейнер за обобщената информация */
 .place-info-summary {
     display: flex;
     gap: 15px;
@@ -116,7 +110,6 @@
     align-items: center;
 }
 
-/* Вертикална черта | */
 .place-info-summary span {
     display: flex;
     align-items: center;
@@ -128,7 +121,6 @@
     color: #999;
 }
 
-/* Адрес на втори ред */
 .place-address {
     display: flex;
     align-items: center;
@@ -142,7 +134,6 @@
     color: red;
 }
 
-/* Индивидуални стилове за различните иконки */
 .star-icon {
     font-size: 24px;
     color: gold;
@@ -159,7 +150,6 @@
 }
 
 
-/* Main Content */
 .content {
     display: flex;
     width: 100%;
@@ -170,13 +160,12 @@
     flex-direction: row;
 }
 
-/* Places List */
 .places-list {
     flex: 1;
-    overflow-y: auto; /* Добавяме скролиране по вертикала */
+    overflow-y: auto; 
     padding: 15px;
     border-right: 2px solid #ddd;
-    height: 100%; /* Използваме цялото пространство в контейнера */
+    height: 100%; 
 }
 
 .place-item {
@@ -206,7 +195,7 @@
 .icons {
     display: flex;
     align-items: center;
-    gap: 10px; /* Разстояние между иконите */
+    gap: 10px; 
 }
 
 .national-symbol {
@@ -217,7 +206,6 @@
     font-size: 1.2em;
 }
 
-/* Stylish Divider */
 .divider {
     width: 3px;
     background: linear-gradient(to bottom, #007bff, #4da6ff);
@@ -226,13 +214,12 @@
     border-radius: 5px;
 }
 
-/* Place Details */
 .place-details {
     flex: 2;
     padding: 20px;
     text-align: left;
-    overflow-y: auto; /* Позволява скролиране на детайлите */
-    height: 100%; /* Използваме цялото пространство в контейнера */
+    overflow-y: auto; 
+    height: 100%; 
 }
 
 .place-title {
@@ -279,7 +266,7 @@
 }
 
 .inactive-place {
-    color: #555; /* тъмно сиво */
+    color: #555; 
   }
   
   .place-status {
@@ -301,7 +288,6 @@
   }
   
 
-/* Responsive Styles */
 @media screen and (max-width: 1000px) {
     .content {
         flex-direction: column;
@@ -330,7 +316,6 @@
         content: "";
     }
 
-    /* Show icons */
     .add-btn {
         display: flex;
         justify-content: center;
@@ -344,13 +329,12 @@
     }
 }
 
-/* Ensure no overflow issues globally */
 * {
-    box-sizing: border-box; /* Включва padding и border в размера на елемента */
+    box-sizing: border-box;
 }
 
 .message-container {
-  margin-top: 90px; /* Разстояние от хедъра */
+  margin-top: 90px; 
 }
 
 .success-message, .error-message {
@@ -378,7 +362,7 @@
   
   .sort-dropdown {
     padding: 8px 12px;
-    border: 2px solid #007bff; /* Blue border */
+    border: 2px solid #007bff; 
     border-radius: 8px;
     background-color: #fff;
     font-size: 16px;
@@ -388,7 +372,7 @@
   }
   
   .sort-dropdown:hover {
-    border-color: #0056b3; /* Darker blue on hover */
+    border-color: #0056b3;
   }
   
   .sort-dropdown:focus {

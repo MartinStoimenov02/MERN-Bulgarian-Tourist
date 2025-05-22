@@ -58,7 +58,7 @@ const MyPlaces = () => {
           timeout: 5000,
         }
       );
-    }, 2000); // проверка на всеки 2 секунди
+    }, 2000);
 
     return () => clearInterval(intervalId);
   }, [places]);
@@ -120,7 +120,7 @@ const MyPlaces = () => {
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
-    setIsSortModalOpen(false); // Затваря модала след избора
+    setIsSortModalOpen(false);
   };
 
   const updateAllDistances = async (userCoordinates) => {
@@ -173,9 +173,7 @@ const MyPlaces = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const distances = placeDistances;  
-        console.log ("newPlace: ", newPlace);
         if (newPlace.location) {
-          console.log ("newPlace.location: ", newPlace.location);
           const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
             userLocation: position.coords,
             placeLocation: newPlace.location,
@@ -191,7 +189,7 @@ const MyPlaces = () => {
         },
         {
           enableHighAccuracy: true, // използва GPS ако има
-          timeout: 5000,            // макс време за отговор
+          timeout: 5000,            // макс време за отговор 5 секунди
           maximumAge: 0             // не използвай кеширана локация
         }
     );
@@ -204,13 +202,12 @@ const MyPlaces = () => {
 
   const toggleFavourite = async (placeId, currentStatus) => {
     try {
-      const updatedStatus = !currentStatus; // Toggle the status
+      const updatedStatus = !currentStatus;
       await axios.put("http://"+host+":"+port+"/places/updateFavourite", {
         placeId,
         isFavourite: updatedStatus,
       });
   
-      // Update the UI state immediately for a smoother experience
       setPlaces((prevPlaces) =>
         prevPlaces.map((place) =>
           place._id === placeId ? { ...place, isFavourite: updatedStatus } : place
@@ -239,7 +236,6 @@ const MyPlaces = () => {
       setMessage("Проблем с изтриване на мястото!");
       setSuccess(false);
       setTimeout(() => setMessage(""), 3000);
-      console.error("Error:", error);
     }
   };
 
@@ -266,7 +262,6 @@ const MyPlaces = () => {
          nto100: nto100
       });
 
-      console.log("updatePoints: ", updatePoints);
       user.points = updatePoints.data.totalPoints;
       localStorage.setItem("userSession", JSON.stringify(user));
     }
@@ -408,14 +403,13 @@ const MyPlaces = () => {
                 className="icon edit-icon"
                 title="Редактирай"
                 onClick={() => {
-                  setEditData(selectedPlace); // или setEditModalData({ ... })
+                  setEditData(selectedPlace);
                   setIsModalOpen(true);
                 }}
               />
             </div>
           </div>
     
-          {/* Основни детайли с вертикални разделители */}
           <div className="place-info-summary">
           {placeDistances[selectedPlace._id] && <span>{placeDistances[selectedPlace._id]} away</span>}
             {placeDetails?.rating && (
@@ -444,7 +438,6 @@ const MyPlaces = () => {
             )}
           </div>
     
-          {/* Адрес на нов ред с иконка */}
           {placeDetails?.address && (
             <div className="place-address">
               <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">

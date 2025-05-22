@@ -27,17 +27,17 @@
 
 .add-place-modal .input-container {
   position: relative;
-  width: 100%; /* Ensure it takes full width on small screens */
-  display: flex; /* Align items horizontally */
-  align-items: center; /* Vertically center items */
+  width: 100%; 
+  display: flex; 
+  align-items: center; 
 }
 
 
 .add-place-modal .search-icon {
   position: absolute;
   right: 10px;
-  top: 50%; /* Vertically center the icon */
-  transform: translateY(-50%); /* Offset by 50% of its height */
+  top: 50%; 
+  transform: translateY(-50%); 
   background: transparent;
   border: none;
   font-size: 20px;
@@ -93,7 +93,6 @@
   background-color: #cc0000;
 }
 
-/* Description Textarea Styles */
 .add-place-modal .description-textarea {
   width: 100%;
   height: 100px;
@@ -108,7 +107,6 @@
   box-sizing: border-box;
 }
 
-/* Close Button */
 .add-place-modal .close-button {
   position: absolute;
   top: 10px;
@@ -136,17 +134,17 @@
 
 @media screen and (max-width: 768px) {
   .add-place-modal .modal-content {
-    width: 90%; /* Make the modal content 90% width on small screens */
+    width: 90%; 
   }
 
   .add-place-modal .input-container {
-    width: 100%; /* Ensure input container takes full width on small screens */
+    width: 100%; 
   }
 
   .add-place-modal .search-icon {
-    right: 10px; /* Keep the icon aligned with the right edge of the input */
-    top: 50%; /* Vertically center the icon */
-    transform: translateY(-50%); /* Offset by 50% of its height */
+    right: 10px; 
+    top: 50%; 
+    transform: translateY(-50%);
   }
 
   .modal-input-number {
@@ -175,7 +173,7 @@
 
 .modal-input {
   flex: 1;
-  padding: 10px 40px 10px 10px; /* място вдясно за иконата */
+  padding: 10px 40px 10px 10px;
   border: 1px solid #ccc;
   border-radius: 20px;
   font-size: 16px;
@@ -185,7 +183,7 @@
 
 .modal-input-number {
   width: 70px;
-  padding: 10px 10px 10px 10px; /* място вдясно за иконата */
+  padding: 10px 10px 10px 10px; 
   border: 1px solid #ccc;
   border-radius: 20px;
   font-size: 16px;
@@ -211,7 +209,7 @@
 }
 
 .message-container {
-  margin-top: 90px; /* Разстояние от хедъра */
+  margin-top: 90px; 
 }
 
 .success-message, .error-message {

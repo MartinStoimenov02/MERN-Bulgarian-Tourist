@@ -87,7 +87,6 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
         <h2>Дайте обратна връзка</h2>
         
         <div className="feedback-type-rating">
-            {/* Feedback Type Selection */}
             <label className="block mb-2">
                 <select
                 className="modal-input"
@@ -102,8 +101,6 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
                 <option value="Помощ и въпроси">Помощ и въпроси</option>
                 </select>
             </label>
-
-            {/* Rating Stars */}
             <label className="rating-label">
                 <div className="star-rating">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -118,8 +115,6 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
                 </div>
             </label>
             </div>
-
-
         <div>
           <label className="block mb-2">
             Съобщение (незадължително):

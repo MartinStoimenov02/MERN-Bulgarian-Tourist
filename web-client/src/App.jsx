@@ -46,7 +46,6 @@ function App() {
         <Header />
         <main className="main-content">
           <Routes>
-            {/* <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login setIsAuthenticated={setIsAuthenticated} />} /> */}
             <Route path="/home" element={isAuthenticated ? <Home setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
@@ -62,7 +61,7 @@ function App() {
             <Route path="/admin/national-sites/:id" element={isAuthenticated ? <AdminNationalSites setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/admin/users" element={isAuthenticated ? <AdminUsers setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/admin/logs" element={isAuthenticated ? <AdminLogs setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
-            <Route path="//admin/feedback" element={isAuthenticated ? <AdminFeedback setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
+            <Route path="/admin/feedback" element={isAuthenticated ? <AdminFeedback setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/" />} />
             <Route path="/" element={<GuestPage/>} />
           </Routes>
         </main>

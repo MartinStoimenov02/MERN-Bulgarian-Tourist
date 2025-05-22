@@ -36,6 +36,7 @@ export const sendVerificationCode = async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: "Verification code sent successfully." });
     } catch (err) {
+      next(err);
         logError(err, req, { className: 'email.controller', functionName: 'sendVerificationCode', user: id });
         console.error("Error sending email:", err);
         res.status(500).json({ message: "Error sending verification code." });
@@ -52,6 +53,7 @@ export const verifyCode = async (req, res) => {
             res.status(400).json({ success: false, message: "Invalid code." });
         }
     } catch (err) {
+      next(err);
         logError(err, req, { className: 'email.controller', functionName: 'verifyCode', user: email });
         console.error("Error verifying code:", err);
         res.status(500).json({ message: "Error verifying code." });
@@ -90,6 +92,7 @@ export const sendNotificationEmail = async (req, res) => {
   
       res.status(200).json({ message: "Notification email sent successfully." });
     } catch (err) {
+      next(err);
       logError(err, req, { className: 'email.controller', functionName: 'sendNotificationEmail', user: req.body.email });
       console.error("Error sending notification email:", err);
       res.status(500).json({ message: "Error sending notification email." });

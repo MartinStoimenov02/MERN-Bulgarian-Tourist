@@ -72,7 +72,6 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   }, [editMode, initialData]);
   
   const handleMapClick = async(event) => {
-    console.log("event: ", event);
     setSelectedLocation({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -87,9 +86,8 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
       const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
         externalId
       });
-      console.log("response.data: ", response.data);
-      const placeName = response.data.name; // Името на мястото
-      setPlaceName(placeName); // Актуализирай текстовото поле за име
+      const placeName = response.data.name;
+      setPlaceName(placeName);
     } catch (error) {
       console.error("Error fetching place details", error);
     }
@@ -155,7 +153,6 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        // текущата логика за добавяне
         const response = await axios.post(`http://${host}:${port}/places/addPlace`, {
           name: placeName,
           google_external_id: selectedPlaceId,
@@ -217,7 +214,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
             onLoad={(map) => {
               mapRef.current = map;
             
-              // Центриране в editMode или към текуща локация
+              // Центриране на картата в editMode или към текуща локация
               if (editMode && selectedLocation) {
                 navigator.geolocation.getCurrentPosition(
                   (position) => {
@@ -250,7 +247,6 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
                 );
               }
             
-              // ✅ Добави бутона след като картата е заредена
               if (centerButtonRef.current) {
                 const controlDiv = document.createElement("div");
                 controlDiv.appendChild(centerButtonRef.current);

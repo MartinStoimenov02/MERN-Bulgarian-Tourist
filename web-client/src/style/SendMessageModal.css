@@ -1,5 +1,3 @@
-/* SendMessageModal.css */
-
 .send-notification-backdrop {
     position: fixed;
     top: 0;
@@ -8,8 +6,8 @@
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center; /* хоризонтално центриране */
-    align-items: center;     /* вертикално центриране */
+    justify-content: center;
+    align-items: center;     
     z-index: 1000;
   }
   
