@@ -30,7 +30,10 @@ export const sendVerificationCode = async (req, res) => {
             from: SENDER_EMAIL,
             to: email,
             subject: "Your Verification Code",
-            html: `<p>Hello,</p><p>Your verification code is: <b>${verificationCode}</b></p><p>This code is valid for 10 minutes.</p>`
+            html: `<p>Hello,</p><p>Your verification code is: <b>${verificationCode}</b></p><p>This code is valid for 10 minutes.</p>
+            <br><br><hr><br>
+            <p style="color: #888; font-weight: bold; text-transform: uppercase; margin: 0;">Български турист</p>
+            <p style="color: #888; font-size: 12px; margin: 0;">email: bulgariantourist2@gmail.com</p>`
         };
 
         await transporter.sendMail(mailOptions);
@@ -85,7 +88,9 @@ export const sendNotificationEmail = async (req, res) => {
         from: SENDER_EMAIL,
         to: user.email,
         subject: "Нова нотификация за "+user.name,
-        html: notificationMessage,
+        html: notificationMessage+`<br><br><hr><br>
+            <p style="color: #888; font-weight: bold; text-transform: uppercase; margin: 0;">Български турист</p>
+            <p style="color: #888; font-size: 12px; margin: 0;">email: bulgariantourist2@gmail.com</p>`,
       };
   
       await transporter.sendMail(mailOptions);

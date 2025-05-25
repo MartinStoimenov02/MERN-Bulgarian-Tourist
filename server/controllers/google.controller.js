@@ -35,7 +35,6 @@ export const getPlaceDetails = async (req, res) => {
         });
 
     } catch (error) {
-        next(err);
         logError(error, req, { className: 'google.controller', functionName: 'getPlaceDetails' });
         console.error("Грешка при извличане на детайлите за мястото:", error);
         res.status(500).json({ message: "Грешка при обработката на заявката." });
@@ -89,7 +88,6 @@ export const getDistance = async (req, res) => {
         res.json({ distance });
 
     } catch (error) {
-        next(err);
         logError(error, req, { className: 'google.controller', functionName: 'getDistance' });
         console.error("Грешка при изчисляване на разстоянието:", error);
         res.status(500).json({ message: "Грешка при обработката на заявката." });
@@ -116,7 +114,6 @@ export const getRandomImage = async (req, res) => {
 
         res.status(404).json({ message: "No images found" });
     } catch (error) {
-        next(err);
         logError(error, req, { className: 'google.controller', functionName: 'getRandomImage' });
         console.error("Error fetching image:", error);
         res.status(500).json({ message: "Error fetching image" });
@@ -150,7 +147,6 @@ export const gemini = async (req, res) => {
             res.status(404).json({ message: "Не е намерен отговор от модела." });
         }
     } catch (error) {
-        next(err);
         logError(error, req, { className: 'google.controller', functionName: 'gemini' });
         console.error("Грешка при заявката към Gemini:", error);
         res.status(500).json({ message: "Грешка при заявката към модела Gemini." });

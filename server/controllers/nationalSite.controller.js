@@ -7,6 +7,8 @@ import { getRandomImageHelper } from "../controllers/place.controller.js";
 
 export const getActiveNationalSites = async (req, res) => {
   try {
+    const { userId } = req.body;
+    
     const nationalSites = await NationalSiteModel.aggregate([
       {
         $match: { isActive: true }
@@ -14,14 +16,26 @@ export const getActiveNationalSites = async (req, res) => {
       {
         $lookup: {
           from: "places",
-          localField: "_id",
-          foreignField: "nto100",
-          as: "referencingPlaces"
+          let: { nationalSiteId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$nto100", "$$nationalSiteId"] },
+                    { $eq: ["$user", { $toObjectId: userId }] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: "userPlaces"
         }
       },
       {
-        // Only keep national sites that are not referenced in any place
-        $match: { referencingPlaces: { $eq: [] } }
+        $match: {
+          userPlaces: { $eq: [] }
+        }
       }
     ]);
 

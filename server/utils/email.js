@@ -18,7 +18,9 @@ export const sendEmail = async (to, subject, html) => {
       from: SENDER_EMAIL,
       to,
       subject,
-      html
+      html: html+`<br><br><hr><br>
+            <p style="color: #888; font-weight: bold; text-transform: uppercase; margin: 0;">Български турист</p>
+            <p style="color: #888; font-size: 12px; margin: 0;">email: bulgariantourist2@gmail.com</p>`
     };
 
     await transporter.sendMail(mailOptions);

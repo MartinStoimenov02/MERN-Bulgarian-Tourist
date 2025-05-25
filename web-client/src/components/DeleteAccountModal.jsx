@@ -112,8 +112,8 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
         {message && <p className={success ? "success-message" : "error-message"}>{message}</p>}
 
         <div className="modal-buttons">
-          <button className="btn-primary" onClick={handleDelete}>Изтрий</button>
-          <button className="btn-cancel" onClick={onClose}>Отказ</button>
+          <button className="btn-primary-delete-account" onClick={handleDelete}>Изтрий</button>
+          <button className="btn-cancel-delete-account" onClick={onClose}>Отказ</button>
         </div>
       </div>
     </div>

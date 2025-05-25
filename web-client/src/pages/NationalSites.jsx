@@ -66,7 +66,9 @@ const NationalSites = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://"+host+":"+port+"/nationalSites/getActiveNationalSites");
+          const response = await axios.post("http://"+host+":"+port+"/nationalSites/getActiveNationalSites", {
+            userId: user.id
+          });
           setPlaces(response.data);
         } catch (error) {
           console.error("Error fetching national sites", error);
@@ -171,7 +173,9 @@ const NationalSites = () => {
     setMessage("Мястото е добавено успешно!");
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
-    const response = await axios.get("http://"+host+":"+port+"/nationalSites/getActiveNationalSites");
+    const response = await axios.post("http://"+host+":"+port+"/nationalSites/getActiveNationalSites", {
+            userId: user.id
+          });
     setPlaces(response.data);
     } catch (error) {
       console.log("error: ", error?.response?.data?.error);

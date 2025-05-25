@@ -3,7 +3,7 @@ import { getActiveNationalSites, addNationalSite, addNationalSiteToMyList, getAl
 
 const router = express.Router();
 
-router.get("/getActiveNationalSites", getActiveNationalSites);
+router.post("/getActiveNationalSites", getActiveNationalSites);
 router.get("/getAllNationalSites", getAllNationalSites);
 router.post("/addNationalSite", addNationalSite);
 router.post("/addNationalSiteToMyList", addNationalSiteToMyList);

@@ -154,8 +154,8 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
         {message && <p className={success ? "success-message" : "error-message"}>{message}</p>}
 
         <div className="modal-buttons">
-          <button onClick={handleChange} className="confirm-btn">Потвърди</button>
-          <button className="btn-cancel" onClick={handleClose}>Затвори</button>
+          <button onClick={handleChange} className="btn-primary-change-password">Потвърди</button>
+          <button className="btn-cancel-change-password" onClick={handleClose}>Затвори</button>
         </div>
       </div>
     </div>
