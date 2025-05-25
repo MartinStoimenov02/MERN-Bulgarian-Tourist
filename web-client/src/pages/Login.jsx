@@ -20,14 +20,14 @@ function Login({ setIsAuthenticated }) {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
-  
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
         const query = "tourist sites in Bulgaria";
         const res = await Axios.get(
-          `http://`+host+`:`+port+`/google/random-image?query=${encodeURIComponent(query)}`
+          `${backendUrl}/google/random-image?query=${encodeURIComponent(query)}`
         );
         setImageUrl(res.data.imageUrl);
       } catch (error) {
@@ -46,7 +46,7 @@ function Login({ setIsAuthenticated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await Axios.post("http://"+host+":"+port+"/users/getUser", formData);
+      const res = await Axios.post(`${backendUrl}/users/getUser`, formData);
       if (res.data.success) {
         localStorage.setItem("userSession", JSON.stringify(res.data.user));
         localStorage.setItem("loginTime", new Date().getTime());
@@ -81,7 +81,7 @@ function Login({ setIsAuthenticated }) {
         userData.phoneNumber = decoded.phone_number; 
     }
 
-      const res = await Axios.post("http://"+host+":"+port+"/users/googleAuth", { userData });
+      const res = await Axios.post(`${backendUrl}/users/googleAuth`, { userData });
       localStorage.setItem("userSession", JSON.stringify(res.data.user));
       localStorage.setItem("loginTime", new Date().getTime());
       setIsAuthenticated(true);
@@ -100,7 +100,7 @@ function Login({ setIsAuthenticated }) {
 
   const handleForgotPassword = async () => {
     try {
-      const userCheck = await Axios.post("http://"+host+":"+port+"/users/checkUserExists", {
+      const userCheck = await Axios.post(`${backendUrl}/users/checkUserExists`, {
         email: formData.email
       });
       
@@ -111,7 +111,7 @@ function Login({ setIsAuthenticated }) {
         return;
       }
       
-      await Axios.post("http://"+host+":"+port+"/email/sendVerificationCode", {
+      await Axios.post(`${backendUrl}/email/sendVerificationCode`, {
         email: formData.email
       });
       setShowModal(true);
@@ -128,7 +128,7 @@ function Login({ setIsAuthenticated }) {
 
   const handleVerifyCode = async () => {
     try {
-      const res = await Axios.post("http://"+host+":"+port+"/email/verifyCode", {
+      const res = await Axios.post(`${backendUrl}/email/verifyCode`, {
         email: formData.email,
         code: verificationCode,
       });

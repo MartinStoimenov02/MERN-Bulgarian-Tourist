@@ -14,7 +14,11 @@ import './jobs/cleanupInactiveUsers.job.js';
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://mern-bulgarian-tourist.onrender.com'],
+  credentials: true
+}));
+
 
 const mongoDbKey = process.env.MONGODB_KEY;
 await mongoose.connect("mongodb+srv://martinstoimenov02:"+mongoDbKey+"@bulgarian-tourist.x2ofb.mongodb.net/");
