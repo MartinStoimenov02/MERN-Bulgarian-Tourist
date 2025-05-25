@@ -20,8 +20,9 @@ app.use(cors({
 }));
 
 
-const mongoDbKey = process.env.MONGODB_KEY;
-await mongoose.connect("mongodb+srv://martinstoimenov02:"+mongoDbKey+"@bulgarian-tourist.x2ofb.mongodb.net/");
+// const mongoDbKey = process.env.MONGODB_KEY;
+const mongoDbConnection = process.env.MONGODB_CONNECTION;
+await mongoose.connect(mongoDbConnection);
 
 
 
