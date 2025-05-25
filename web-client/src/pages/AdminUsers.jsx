@@ -23,6 +23,7 @@ const AdminUsers = () => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
       setUserFromSession();
@@ -42,7 +43,7 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`http://${host}:${port}/users/getAllUsers`);
+      const res = await axios.get(`${backendUrl}/users/getAllUsers`);
       setUsers(res.data.users);
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -61,7 +62,7 @@ const AdminUsers = () => {
 
   const handleSaveEdit = async () => {
     try {
-      await axios.put(`http://${host}:${port}/users/updateUser/${editUserId}`, editedUser);
+      await axios.put(`${backendUrl}/users/updateUser/${editUserId}`, editedUser);
       setEditUserId(null);
       fetchUsers();
     } catch (err) {

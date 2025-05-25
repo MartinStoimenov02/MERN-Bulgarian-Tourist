@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import UserNotificationModel from '../models/userNotification.model.js';
 
 // Джоб, който се изпълнява всеки ден в 02:00
-cron.schedule('0 12 * * *', async () => {
+cron.schedule('0 2 * * *', async () => {
   try {
     const today = new Date();
     const oneMonthAgo = new Date(

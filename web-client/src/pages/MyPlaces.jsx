@@ -29,6 +29,7 @@ const MyPlaces = () => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const userCoordsRef = useRef(null);
 
@@ -74,7 +75,7 @@ const MyPlaces = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+          const response = await axios.get(`${backendUrl}/places/getUserPlaces`, {
             params: { userId: user.id, visited: false }
           });
           setPlaces(response.data);
@@ -108,7 +109,7 @@ const MyPlaces = () => {
 
     try {
       const externalId = place.google_external_id;
-      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
+      const response = await axios.post(`${backendUrl}/google/place-details`, {
         externalId
       });
       setPlaceDetails(response.data);
@@ -128,7 +129,7 @@ const MyPlaces = () => {
       const distances = {};  
       for (const place of places) {
         if (place.location) {
-          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
+          const response = await axios.post(`${backendUrl}/google/place-distance`, {
             userLocation: userCoordinates,
             placeLocation: place.location,
           });
@@ -174,7 +175,7 @@ const MyPlaces = () => {
       async (position) => {
         const distances = placeDistances;  
         if (newPlace.location) {
-          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
+          const response = await axios.post(`${backendUrl}/google/place-distance`, {
             userLocation: position.coords,
             placeLocation: newPlace.location,
           });
@@ -203,7 +204,7 @@ const MyPlaces = () => {
   const toggleFavourite = async (placeId, currentStatus) => {
     try {
       const updatedStatus = !currentStatus;
-      await axios.put("http://"+host+":"+port+"/places/updateFavourite", {
+      await axios.put(`${backendUrl}/places/updateFavourite`, {
         placeId,
         isFavourite: updatedStatus,
       });
@@ -220,10 +221,10 @@ const MyPlaces = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete("http://"+host+":"+port+"/places/deletePlace", {
+      await axios.delete(`${backendUrl}/places/deletePlace`, {
         data: { placeId: placeToDelete } 
       });      
-      const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+      const response = await axios.get(`${backendUrl}/places/getUserPlaces`, {
         params: { userId: user.id, visited: false }
       });
       setPlaces(response.data);
@@ -251,13 +252,13 @@ const MyPlaces = () => {
 
   const visitThePlace = async (placeId, nto100) => {
     try {
-    const isVisitSuccess = await axios.put("http://"+host+":"+port+"/places/visitPlace", {
+    const isVisitSuccess = await axios.put(`${backendUrl}/places/visitPlace`, {
       placeId: placeId,
       placeDistance: placeDistances[selectedPlace._id]
     });
 
     if(isVisitSuccess){
-      const updatePoints = await axios.put("http://"+host+":"+port+"/users/updatePoints", {
+      const updatePoints = await axios.put(`${backendUrl}/users/updatePoints`, {
          id: user.id, 
          nto100: nto100
       });
@@ -266,7 +267,7 @@ const MyPlaces = () => {
       localStorage.setItem("userSession", JSON.stringify(user));
     }
     
-    const response = await axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+    const response = await axios.get(`${backendUrl}/places/getUserPlaces`, {
       params: { userId: user.id, visited: false }
     });
     setPlaces(response.data);

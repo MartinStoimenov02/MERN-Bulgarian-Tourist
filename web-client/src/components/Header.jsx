@@ -50,7 +50,8 @@ const Header = () => {
       try {
         const host = process.env.REACT_APP_HOST;
         const port = process.env.REACT_APP_PORT;
-        const res = await fetch(`http://${host}:${port}/notifications/getNotificationsForUser?userId=${user.id}`);
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        const res = await fetch(`${backendUrl}/notifications/getNotificationsForUser?userId=${user.id}`);
         const data = await res.json();
         const unread = data.data.some(notification => !notification.isRead);
         setHasUnreadNotifications(unread);

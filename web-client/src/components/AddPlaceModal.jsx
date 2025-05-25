@@ -18,6 +18,7 @@ const center = {
 
 const host = process.env.REACT_APP_HOST;
 const port = process.env.REACT_APP_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {
   const [placeName, setPlaceName] = useState("");
@@ -83,7 +84,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
 
   if (externalId) {
     try {
-      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
+      const response = await axios.post(`${backendUrl}/google/place-details`, {
         externalId
       });
       const placeName = response.data.name;
@@ -137,14 +138,14 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   
     try {
       if (editMode) {
-        await axios.put(`http://${host}:${port}/places/updatePlace/${placeId}`, {
+        await axios.put(`${backendUrl}/places/updatePlace/${placeId}`, {
           name: placeName,
           description,
           location: selectedLocation,
           google_external_id: selectedPlaceId,
         });
   
-        const updatedPlacesResponse = await axios.get(`http://${host}:${port}/places/getUserPlaces`, {
+        const updatedPlacesResponse = await axios.get(`${backendUrl}/places/getUserPlaces`, {
           params: { userId: user.id, visited: false }
         });
   
@@ -153,7 +154,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        const response = await axios.post(`http://${host}:${port}/places/addPlace`, {
+        const response = await axios.post(`${backendUrl}/places/addPlace`, {
           name: placeName,
           google_external_id: selectedPlaceId,
           userId: user.id,
@@ -161,7 +162,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
           location: selectedLocation
         });
   
-        const updatedPlacesResponse = await axios.get(`http://${host}:${port}/places/getUserPlaces`, {
+        const updatedPlacesResponse = await axios.get(`${backendUrl}/places/getUserPlaces`, {
           params: { userId: user.id, visited: false }
         });
   

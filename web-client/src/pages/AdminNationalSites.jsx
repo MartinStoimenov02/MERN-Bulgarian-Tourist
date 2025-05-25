@@ -26,6 +26,7 @@ const AdminNationalSites = () => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -38,7 +39,7 @@ const AdminNationalSites = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.get("http://"+host+":"+port+"/nationalSites/getAllNationalSites");
+          const response = await axios.get(`${backendUrl}/nationalSites/getAllNationalSites`);
           setPlaces(response.data);
         } catch (error) {
           console.error("Error fetching places", error);
@@ -70,7 +71,7 @@ const AdminNationalSites = () => {
 
     try {
       const externalId = place.google_external_id;
-      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
+      const response = await axios.post(`${backendUrl}/google/place-details`, {
         externalId
       });
       setPlaceDetails(response.data);
@@ -128,10 +129,10 @@ const AdminNationalSites = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete("http://"+host+":"+port+"/nationalSites/deleteNationalSite", {
+      await axios.delete(`${backendUrl}/nationalSites/deleteNationalSite`, {
         data: { placeId: placeToDelete } 
       });      
-      const response = await axios.get("http://"+host+":"+port+"/nationalSites/getAllNationalSites");
+      const response = await axios.get(`${backendUrl}/nationalSites/getAllNationalSites`);
       setPlaces(response.data);
       closeDeleteModal();
       setMessage("Мястото е изтрито успешно!");

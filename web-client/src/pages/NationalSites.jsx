@@ -21,6 +21,7 @@ const NationalSites = () => {
   
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const userCoordsRef = useRef(null);
   
@@ -66,7 +67,7 @@ const NationalSites = () => {
     if (user) {
       const fetchPlaces = async () => {
         try {
-          const response = await axios.post("http://"+host+":"+port+"/nationalSites/getActiveNationalSites", {
+          const response = await axios.post(`${backendUrl}/nationalSites/getActiveNationalSites`, {
             userId: user.id
           });
           setPlaces(response.data);
@@ -104,7 +105,7 @@ const NationalSites = () => {
 
     try {
       const externalId = place.google_external_id;
-      const response = await axios.post("http://"+host+":"+port+"/google/place-details", {
+      const response = await axios.post(`${backendUrl}/google/place-details`, {
         externalId
       });
       setPlaceDetails(response.data);
@@ -119,7 +120,7 @@ const NationalSites = () => {
       const distances = {};  
       for (const place of places) {
         if (place.location) {
-          const response = await axios.post("http://"+host+":"+port+"/google/place-distance", {
+          const response = await axios.post(`${backendUrl}/google/place-distance`, {
             userLocation: userCoordinates,
             placeLocation: place.location,
           });
@@ -166,14 +167,14 @@ const NationalSites = () => {
 
   const addThePlace = async (newPlace) => {
     try {
-    await axios.post("http://"+host+":"+port+"/nationalSites/addNationalSiteToMyList", {
+    await axios.post(`${backendUrl}/nationalSites/addNationalSiteToMyList`, {
       nationalSite: newPlace,
       userId: user.id
     });
     setMessage("Мястото е добавено успешно!");
     setSuccess(true);
     setTimeout(() => setMessage(""), 3000);
-    const response = await axios.post("http://"+host+":"+port+"/nationalSites/getActiveNationalSites", {
+    const response = await axios.post(`${backendUrl}/nationalSites/getActiveNationalSites`, {
             userId: user.id
           });
     setPlaces(response.data);

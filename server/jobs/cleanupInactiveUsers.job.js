@@ -4,7 +4,7 @@ import UserModel from '../models/user.model.js';
 import deleteUserAndRelatedData from '../utils/deleteUserAndRelatedData.js';
 import { sendEmail } from '../utils/email.js';
 
-cron.schedule('0 12 * * *', async () => {
+cron.schedule('0 2 * * *', async () => {
 // cron.schedule('* * * * *', async () => {
   console.log('[CRON] Стартиране на проверка за неактивни потребители...');
   try {

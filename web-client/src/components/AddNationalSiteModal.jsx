@@ -18,6 +18,7 @@ const center = {
 
 const host = process.env.REACT_APP_HOST;
 const port = process.env.REACT_APP_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {
   const [placeName, setPlaceName] = useState("");
@@ -87,7 +88,7 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
 
     if (externalId) {
       try {
-        const response = await axios.post(`http://${host}:${port}/google/place-details`, {
+        const response = await axios.post(`${backendUrl}/google/place-details`, {
           externalId
         });
         const placeName = response.data.name;
@@ -148,18 +149,18 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
       };
 
       if (editMode) {
-        await axios.put(`http://${host}:${port}/nationalSites/updateNationalSite/${placeId}`, payload);
-        const updatedSitesResponse = await axios.get(`http://${host}:${port}/nationalSites/getAllNationalSites`);
+        await axios.put(`${backendUrl}/nationalSites/updateNationalSite/${placeId}`, payload);
+        const updatedSitesResponse = await axios.get(`${backendUrl}/nationalSites/getAllNationalSites`);
         setPlaces(updatedSitesResponse.data);
         navigate(`/admin/national-sites/${placeId}`);
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        const response = await axios.post(`http://${host}:${port}/nationalSites/addNationalSite`, {
+        const response = await axios.post(`${backendUrl}/nationalSites/addNationalSite`, {
             adminId: user.id,
             nationalSiteData: payload,
           });
-        const updatedSitesResponse = await axios.get(`http://${host}:${port}/nationalSites/getAllNationalSites`);
+        const updatedSitesResponse = await axios.get(`${backendUrl}/nationalSites/getAllNationalSites`);
         setPlaces(updatedSitesResponse.data);
         const newSite = updatedSitesResponse.data[updatedSitesResponse.data.length - 1];
         navigate(`/admin/national-sites/${newSite._id}`);

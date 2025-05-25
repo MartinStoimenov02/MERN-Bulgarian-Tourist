@@ -29,13 +29,14 @@ function SignUp({ setIsAuthenticated }) {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
         const query = "tourist sites in Bulgaria";
         const res = await Axios.get(
-          `http://`+host+`:`+port+`/google/random-image?query=${encodeURIComponent(query)}`
+          `${backendUrl}/google/random-image?query=${encodeURIComponent(query)}`
         );
         setImageUrl(res.data.imageUrl);
       } catch (error) {
@@ -80,7 +81,7 @@ function SignUp({ setIsAuthenticated }) {
     }
 
     try {
-      const validationRes = await Axios.post("http://"+host+":"+port+"/users/validateUser", formData);
+      const validationRes = await Axios.post(`${backendUrl}/users/validateUser`, formData);
       if (!validationRes.data.success) {
         setMessage(validationRes.data.message);
         setSuccess(false);
@@ -88,7 +89,7 @@ function SignUp({ setIsAuthenticated }) {
         return;
       }
 
-      await Axios.post("http://"+host+":"+port+"/email/sendVerificationCode", { email: formData.email });
+      await Axios.post(`${backendUrl}/email/sendVerificationCode`, { email: formData.email });
       setSuccess(true);
       setMessage("Имейл с код за верификация е изпратен.");
       setTimeout(() => setMessage(""), 3000);
@@ -113,7 +114,7 @@ function SignUp({ setIsAuthenticated }) {
         userData.phoneNumber = decoded.phone_number; 
     }
 
-      const res = await Axios.post("http://"+host+":"+port+"/users/googleAuth", { userData });
+      const res = await Axios.post(`${backendUrl}/users/googleAuth`, { userData });
       localStorage.setItem("userSession", JSON.stringify(res.data.user));
       localStorage.setItem("loginTime", new Date().getTime());
       setIsAuthenticated(true);
@@ -132,17 +133,17 @@ function SignUp({ setIsAuthenticated }) {
 
   const handleModalSubmit = async () => {
     try {
-      const res = await Axios.post("http://"+host+":"+port+"/email/verifyCode", {
+      const res = await Axios.post(`${backendUrl}/email/verifyCode`, {
         email: formData.email,
         code: verificationCode,
       });
 
       if (res.data.success) {
-        await Axios.post("http://"+host+":"+port+"/users/createUser", formData);
+        await Axios.post(`${backendUrl}/users/createUser`, formData);
         setMessage("Регистрацията е успешна!");
         setSuccess(true);
       
-        const getUser = await Axios.post("http://"+host+":"+port+"/users/getUser", formData);
+        const getUser = await Axios.post(`${backendUrl}/users/getUser`, formData);
         if (getUser.data.success) {
           const user = getUser.data.user;
           localStorage.setItem("userSession", JSON.stringify(user));

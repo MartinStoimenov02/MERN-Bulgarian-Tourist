@@ -9,10 +9,11 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
   const [success, setSuccess] = useState(false);
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleSend = async () => {
     try {
-        const { data: notifData } = await axios.post(`http://${host}:${port}/notifications/addNotification`, {
+        const { data: notifData } = await axios.post(`${backendUrl}/notifications/addNotification`, {
             message: notificationMessage,
             adminId: currentUser.id,
         });
@@ -24,14 +25,14 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
         const notificationId = notifData.data._id; 
     
         for (const userId of selectedUserIds) {
-          await axios.post(`http://${host}:${port}/notifications/addUserNotification`, {
+          await axios.post(`${backendUrl}/notifications/addUserNotification`, {
             adminId: currentUser.id,
             userId: userId,
             notificationId: notificationId,
           });
 
           if(sendEmail){
-            await axios.post(`http://${host}:${port}/email/sendNotificationEmail`, {
+            await axios.post(`${backendUrl}/email/sendNotificationEmail`, {
                 adminId: currentUser.id,
                 userId: userId,
                 notificationMessage: notificationMessage,

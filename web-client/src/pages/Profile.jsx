@@ -19,6 +19,7 @@ const Profile = ({ setIsAuthenticated }) => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     setUserFromSession();
@@ -87,7 +88,7 @@ const Profile = ({ setIsAuthenticated }) => {
     }
 
     try {
-      const res = await Axios.put(`http://`+host+`:`+port+`/users/updateField`, {
+      const res = await Axios.put(`${backendUrl}/users/updateField`, {
         id: user.id,
         field,
         newValue: user[field],

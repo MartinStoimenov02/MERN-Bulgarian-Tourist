@@ -198,3 +198,7 @@
   width: 100px;
   transition: background-color 0.3s ease;
 }
+
+.modal-content .btn-cancel:hover {
+    background-color: #cc0000;
+  }

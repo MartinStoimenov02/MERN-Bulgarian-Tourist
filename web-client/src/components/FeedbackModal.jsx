@@ -11,6 +11,7 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -49,7 +50,7 @@ const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
         };
     
         try {
-            const response = await fetch('http://'+host+':'+port+'/feedback/createFeedback', {
+            const response = await fetch(`${backendUrl}/feedback/createFeedback`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

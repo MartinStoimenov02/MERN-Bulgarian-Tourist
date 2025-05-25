@@ -16,10 +16,11 @@ const AdminLogs = () => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const fetchLogs = async () => {
     try {
-      const res = await axios.get(`http://${host}:${port}/logs/getAllLogs`);
+      const res = await axios.get(`${backendUrl}/logs/getAllLogs`);
       setLogs(res.data.logs);
     } catch (err) {
       console.error('Error fetching logs:', err);
@@ -33,13 +34,13 @@ const AdminLogs = () => {
   const confirmDelete = async () => {
     try {
       if (Array.isArray(deleteTargetId)) {
-        await axios.post(`http://${host}:${port}/logs/deleteMultipleLogs`, {
+        await axios.post(`${backendUrl}/logs/deleteMultipleLogs`, {
           ids: deleteTargetId,
         });
         setSelectedIds([]);
         setSelectAll (false);
       } else {
-        await axios.delete(`http://${host}:${port}/logs/deleteLogById/${deleteTargetId}`);
+        await axios.delete(`${backendUrl}/logs/deleteLogById/${deleteTargetId}`);
       }
       fetchLogs();
     } catch (err) {

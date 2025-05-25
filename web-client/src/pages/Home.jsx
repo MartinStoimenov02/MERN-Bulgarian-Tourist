@@ -16,6 +16,7 @@ function Home({ setIsAuthenticated }) {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -30,7 +31,7 @@ function Home({ setIsAuthenticated }) {
 
       const fetchData = async () => {
         try {
-          await Axios.put(`http://${host}:${port}/users/updateField`, {
+          await Axios.put(`${backendUrl}/users/updateField`, {
             id: user.id,
             field: "firstLogin",
             newValue: false,
@@ -55,7 +56,7 @@ function Home({ setIsAuthenticated }) {
 
   const fetchTopUsers = async () => {
     try {
-      const response = await Axios.get(`http://${host}:${port}/users/getTopUsers`);
+      const response = await Axios.get(`${backendUrl}/users/getTopUsers`);
       
       if (response.data.success) {
         let topUsers = response.data.topUsers;
@@ -86,7 +87,7 @@ function Home({ setIsAuthenticated }) {
     try {
       const prompt = "Дай ми цитат за деня, свързан с красотата на българия и туристическите ѝ дестинации. Но без обяснения, само цитат, защото го ползвам да го показвам на потребители!";
 
-      const res = await Axios.post(`http://${host}:${port}/google/gemini`, { prompt });
+      const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
       if (res.data.response) {
         setGeminiCitat(res.data.response);
       } else {
@@ -117,7 +118,7 @@ function Home({ setIsAuthenticated }) {
     try {
       const prompt = "Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
 
-      const res = await Axios.post(`http://${host}:${port}/google/gemini`, { prompt });
+      const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
       if (res.data.response) {
         setGeminiSuggestion(res.data.response);
       } else {
@@ -129,7 +130,7 @@ function Home({ setIsAuthenticated }) {
   }
 
   const fetchPlaces = async () => {
-    const response = await Axios.get("http://"+host+":"+port+"/places/getUserPlaces", {
+    const response = await Axios.get(`${backendUrl}/places/getUserPlaces`, {
       params: { userId: user.id, visited: true }
     });
     

@@ -26,10 +26,11 @@ const AdminFeedback = () => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const fetchFeedback = async () => {
     try {
-      const res = await axios.get(`http://${host}:${port}/feedback/getAllFeedback`);
+      const res = await axios.get(`${backendUrl}/feedback/getAllFeedback`);
       setFeedbackList(res.data.feedback);
     } catch (err) {
       console.error('Error fetching feedback:', err);
@@ -50,7 +51,7 @@ const AdminFeedback = () => {
     
         if (filteredSelectedIds.length > 0) {
           if (Array.isArray(filteredSelectedIds)) {
-            await axios.post(`http://${host}:${port}/feedback/deleteMultipleFeedback`, {
+            await axios.post(`${backendUrl}/feedback/deleteMultipleFeedback`, {
               ids: filteredSelectedIds,
             });
           }
@@ -58,7 +59,7 @@ const AdminFeedback = () => {
           setSelectAll(false);  
         }
       } else {
-        await axios.delete(`http://${host}:${port}/feedback/deleteFeedbackById/${deleteTargetId}`);
+        await axios.delete(`${backendUrl}/feedback/deleteFeedbackById/${deleteTargetId}`);
       }
       fetchFeedback();
     } catch (err) {

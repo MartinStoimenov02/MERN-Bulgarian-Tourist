@@ -8,6 +8,7 @@ const Notifications = ({ setHasUnreadNotifications }) => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const userSession = localStorage.getItem("userSession");
@@ -20,7 +21,7 @@ const Notifications = ({ setHasUnreadNotifications }) => {
     if (user) {
       const fetchNotifications = async () => {
         try {
-          const response = await axios.get('http://'+host+':'+port+'/notifications/getNotificationsForUser', {
+          const response = await axios.get(`${backendUrl}/notifications/getNotificationsForUser`, {
             params: { userId: user.id }
           }); 
           setNotifications(response.data.data);
@@ -40,7 +41,7 @@ const Notifications = ({ setHasUnreadNotifications }) => {
 
   const handleNotificationClick = async (notificationId) => {
     try {
-      await axios.patch('http://'+host+':'+port+'/notifications/markAsRead', {
+      await axios.patch(`${backendUrl}/notifications/markAsRead`, {
          notificationId: notificationId
       });
       setNotifications((prevNotifications) => {

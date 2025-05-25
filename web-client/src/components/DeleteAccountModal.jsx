@@ -12,6 +12,7 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleDelete = async () => {
     if (confirmEmail !== user.email) {
@@ -35,17 +36,17 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
           email: user.email,
           password: password
         };
-        res = await Axios.post(`http://${host}:${port}/users/getUser`, formData);
+        res = await Axios.post(`${backendUrl}/users/getUser`, formData);
       } else if (!user.hasPassword || user.isGoogleAuth) {
         const userData = { 
           email: user.email
         };
-        res = await Axios.post("http://"+host+":"+port+"/users/googleAuth", { userData });
+        res = await Axios.post(`${backendUrl}/users/googleAuth`, { userData });
       }
 
       if (res.data.success) {
         const deleteRes = await Axios.post(
-          `http://${host}:${port}/users/deleteAccount`,
+          `${backendUrl}/users/deleteAccount`,
           { userId: user.id }
         );
 

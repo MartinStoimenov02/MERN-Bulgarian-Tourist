@@ -16,6 +16,7 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
 
   const host = process.env.REACT_APP_HOST;
   const port = process.env.REACT_APP_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleClose = () => {
     // Clear all fields and messages
@@ -58,10 +59,10 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
     }
     
     try {
-          const res = await Axios.post("http://"+host+":"+port+"/users/getUser", formData);
+          const res = await Axios.post(`${backendUrl}/users/getUser`, formData);
           if (res.data.success) {
             const password = newPassword;
-            const resetPassword = await Axios.post("http://"+host+":"+port+"/users/resetPassword", {
+            const resetPassword = await Axios.post(`${backendUrl}/users/resetPassword`, {
               email,
               password,
             });
