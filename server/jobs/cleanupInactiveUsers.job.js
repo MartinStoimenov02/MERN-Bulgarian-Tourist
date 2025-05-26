@@ -10,11 +10,11 @@ cron.schedule('0 2 * * *', async () => {
   try {
     const users = await UserModel.find();
 
-    const now = dayjs();
+    const now = dayjs().startOf('day');;
 
     for (const user of users) {
       const lastLogin = user.lastLogin || user.createdAt;
-      const lastLoginDate = dayjs(lastLogin);
+      const lastLoginDate = dayjs(lastLogin).startOf('day');
       const monthsInactive = now.diff(lastLoginDate, 'month');
       const daysInactive = now.diff(lastLoginDate, 'day');
       const daysUntilDeletion = 365 - daysInactive;
