@@ -15,10 +15,13 @@ import './jobs/cleanupInactiveUsers.job.js';
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mern-bulgarian-tourist.onrender.com'],
+  origin: [
+    'http://localhost:3000',
+    'https://mern-bulgarian-tourist.onrender.com',
+    'https://mern-bulgarian-tourist.vercel.app'
+  ],
   credentials: true
 }));
-
 
 // const mongoDbKey = process.env.MONGODB_KEY;
 const mongoDbConnection = process.env.MONGODB_CONNECTION;
