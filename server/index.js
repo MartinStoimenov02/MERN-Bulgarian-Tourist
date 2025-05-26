@@ -49,6 +49,10 @@ app.use("/nationalSites", nationalSitesRoutes);
 app.use("/feedback", feedbackRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/logs', logsRoutes);
+app.get('/ping', (req, res) => {
+  console.log("wake up!");
+  res.status(200).send('OK');
+});
 
 app.listen(3001, () => {
     console.log("server runs perfectly!");
