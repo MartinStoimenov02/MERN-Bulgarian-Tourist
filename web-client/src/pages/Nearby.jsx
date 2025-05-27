@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { FaPlus, FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
+import { FaSort, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass } from "react-icons/fa";
 import "../style/MyPlaces.css";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import Modal from "react-modal";
 import SortOrderModal from '../components/SortOrderModal'
+import { useSelector } from 'react-redux';
 
 const Nearby = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [newPlaces, setNewPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,10 +26,8 @@ const Nearby = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [placeToDelete, setPlaceToDelete] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user); 
 
   const userCoordsRef = useRef(null);
 
@@ -77,14 +75,14 @@ const Nearby = () => {
       };
       fetchPlaces();
     }
-  }, [user, host, port]);
+  }, [user]);
   
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1000);
@@ -234,7 +232,7 @@ const Nearby = () => {
     });
 
     if(isVisitSuccess){
-      const updatePoints = await axios.put(`${backendUrl}/users/updatePoints`, {
+      await axios.put(`${backendUrl}/users/updatePoints`, {
          id: user.id, 
          nto100: nto100
       });

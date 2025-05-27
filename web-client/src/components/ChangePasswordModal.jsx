@@ -4,7 +4,7 @@ import Axios from "axios";
 
 import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
-const ChangePasswordModal = ({ isOpen, onClose, email }) => {
+const ChangePasswordModal = ({ isOpen, onClose, email, setChangedPasswordSuccess }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -13,9 +13,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleClose = () => {
@@ -68,9 +65,7 @@ const ChangePasswordModal = ({ isOpen, onClose, email }) => {
             });
       
             if (resetPassword.data.success) {
-              setMessage("Паролата е променена успешно! Пренасочване към вход...");
-              setSuccess(true);
-              setTimeout(() => setMessage(""), 3000);
+              setChangedPasswordSuccess(true);
             } else {
               setMessage("Грешка при промяна на паролата.");
               setSuccess(false);

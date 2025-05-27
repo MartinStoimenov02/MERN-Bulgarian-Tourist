@@ -91,7 +91,7 @@ export const validateUser = async (req, res, next) => {
         res.status(200).json({ success: true, message: "Данните са валидни." });
     } catch (err) {
         next(err);
-        logError(err, req, { className: 'user.controller', functionName: 'validateUser', user: email });
+        logError(err, req, { className: 'user.controller', functionName: 'validateUser', user: req.body?.email });
         console.error("validateUser: ", err);
         await session.abortTransaction(); 
         res.status(500).json({ success: false, message: "Невалидни данни: " + err.message });

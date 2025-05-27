@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaTrash, FaEdit, FaCheck, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaTrash, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import DeleteAccountModal from "../components/DeleteAccountModal";
 import SendMessageModal from '../components/SendMessageModal';
 import '../style/AdminFeedback.css';
+import { useSelector } from 'react-redux';
 
 const AdminUsers = () => {
-  const [currentUser, setCurrentUser] = useState(null);
+  // const [currentUser, setCurrentUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [editUserId, setEditUserId] = useState(null);
   const [editedUser, setEditedUser] = useState({});
@@ -20,22 +21,20 @@ const AdminUsers = () => {
   const [isSendModalOpen, setIsSendModalOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const currentUser = useSelector((state) => state.user.user); 
 
-  useEffect(() => {
-      setUserFromSession();
-    }, []);
+  // useEffect(() => {
+  //     setUserFromSession();
+  //   }, []);
   
-    const setUserFromSession = () => {
-      const session = localStorage.getItem("userSession");
-      if (session) {
-        const parsed = JSON.parse(session);
-        setCurrentUser(parsed);
-      }
-    };
+  //   const setUserFromSession = () => {
+  //     const session = localStorage.getItem("userSession");
+  //     if (session) {
+  //       const parsed = JSON.parse(session);
+  //       setCurrentUser(parsed);
+  //     }
+  //   };
 
   useEffect(() => {
     fetchUsers();
@@ -72,7 +71,7 @@ const AdminUsers = () => {
 
   const handleDeleteClick = (user) => {
     user.id=user._id;
-    user.hasPassword = user.password!=undefined ? true : false;
+    user.hasPassword = user.password!==undefined ? true : false;
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };

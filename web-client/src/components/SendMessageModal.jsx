@@ -7,8 +7,6 @@ const SendMessageModal = ({ currentUser, selectedUserIds, onClose, onSuccess }) 
   const [sendEmail, setSendEmail] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleSend = async () => {

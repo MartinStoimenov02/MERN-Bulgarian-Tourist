@@ -16,8 +16,6 @@ const center = {
   lng: 23.319941,
 };
 
-const host = process.env.REACT_APP_HOST;
-const port = process.env.REACT_APP_PORT;
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {
@@ -64,7 +62,7 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
       controlDiv.appendChild(centerButtonRef.current);
       mapRef.current.controls[window.google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     }
-  }, [mapRef.current]);
+  }, [mapRef]);
 
   useEffect(() => {
     if (editMode && initialData) {
@@ -156,7 +154,7 @@ const AddNationalSiteModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenS
         setIsModalOpen(false);
         setIsModalOpenSuccess(initialData);
       } else {
-        const response = await axios.post(`${backendUrl}/nationalSites/addNationalSite`, {
+        await axios.post(`${backendUrl}/nationalSites/addNationalSite`, {
             adminId: user.id,
             nationalSiteData: payload,
           });

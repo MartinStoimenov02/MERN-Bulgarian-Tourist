@@ -10,8 +10,6 @@ const DeleteAccountModal = ({ isOpen, onClose, onSuccess, user }) => {
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleDelete = async () => {

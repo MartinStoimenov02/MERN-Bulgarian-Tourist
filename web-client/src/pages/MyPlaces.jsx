@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaPlus, FaHeart, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaCompass, FaSort, FaEdit } from "react-icons/fa";
@@ -6,11 +6,12 @@ import "../style/MyPlaces.css";
 import AddPlaceModal from "../components/AddPlaceModal";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
-import Modal from "react-modal";
 import SortOrderModal from '../components/SortOrderModal'
+import { useSelector, useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 
 const MyPlaces = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("name-asc");
@@ -26,12 +27,10 @@ const MyPlaces = () => {
   const [placeToDelete, setPlaceToDelete] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
   const [editData, setEditData] = useState(null);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
-
   const userCoordsRef = useRef(null);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user); 
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -64,12 +63,12 @@ const MyPlaces = () => {
     return () => clearInterval(intervalId);
   }, [places]);
   
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -85,7 +84,7 @@ const MyPlaces = () => {
       };
       fetchPlaces();
     }
-  }, [user, host, port]);
+  }, [user]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1000);
@@ -263,8 +262,9 @@ const MyPlaces = () => {
          nto100: nto100
       });
 
-      user.points = updatePoints.data.totalPoints;
-      localStorage.setItem("userSession", JSON.stringify(user));
+      const updatedUser = { ...user, points: updatePoints.data.totalPoints };
+      // localStorage.setItem("userSession", JSON.stringify(user));
+      dispatch(loginSuccess(updatedUser));
     }
     
     const response = await axios.get(`${backendUrl}/places/getUserPlaces`, {

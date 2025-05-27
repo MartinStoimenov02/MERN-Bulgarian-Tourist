@@ -14,8 +14,6 @@ const AdminLogs = () => {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const fetchLogs = async () => {

@@ -7,8 +7,10 @@ import "../style/SignUpStyle.css";
 import { Link } from "react-router-dom";
 import shipkaImage from "../images/shipka.jpg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 
-function SignUp({ setIsAuthenticated }) {
+function SignUp() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,9 +28,7 @@ function SignUp({ setIsAuthenticated }) {
   const [showPassword, setShowPassword] = useState(false); 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
   const navigate = useNavigate();
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
+  const dispatch = useDispatch();
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
@@ -115,9 +115,10 @@ function SignUp({ setIsAuthenticated }) {
     }
 
       const res = await Axios.post(`${backendUrl}/users/googleAuth`, { userData });
-      localStorage.setItem("userSession", JSON.stringify(res.data.user));
-      localStorage.setItem("loginTime", new Date().getTime());
-      setIsAuthenticated(true);
+      // localStorage.setItem("userSession", JSON.stringify(res.data.user));
+      // localStorage.setItem("loginTime", new Date().getTime());
+      dispatch(loginSuccess(res.data.user));
+      // setIsAuthenticated(true);
       if(res.data.user.isAdmin){
         navigate("/admin/national-sites");
       } else{
@@ -146,9 +147,10 @@ function SignUp({ setIsAuthenticated }) {
         const getUser = await Axios.post(`${backendUrl}/users/getUser`, formData);
         if (getUser.data.success) {
           const user = getUser.data.user;
-          localStorage.setItem("userSession", JSON.stringify(user));
-          localStorage.setItem("loginTime", new Date().getTime());
-          setIsAuthenticated(true);
+          // localStorage.setItem("userSession", JSON.stringify(user));
+          // localStorage.setItem("loginTime", new Date().getTime());
+          dispatch(loginSuccess(user));
+          // setIsAuthenticated(true);
           if (user.isAdmin) { 
             navigate("/admin/national-sites");
           } else {

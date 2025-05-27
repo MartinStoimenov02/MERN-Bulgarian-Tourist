@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../style/NotificationsStyle.css';  
+import { useSelector } from 'react-redux';
 
 const Notifications = ({ setHasUnreadNotifications }) => {
   const [notifications, setNotifications] = useState([]);
-  const [user, setUser] = useState(null);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
+  // const [user, setUser] = useState(null);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user); 
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -32,7 +31,7 @@ const Notifications = ({ setHasUnreadNotifications }) => {
 
       fetchNotifications();
     }
-  }, [user, host, port]);
+  }, [user]);
 
   const formatDate = (date) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };

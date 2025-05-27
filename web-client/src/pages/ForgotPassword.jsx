@@ -19,9 +19,6 @@ function ForgotPassword() {
   const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
@@ -45,7 +42,7 @@ function ForgotPassword() {
       }
     };
     fetchImage();
-  }, [host, port]);
+  }, []);
 
   const validatePassword = (password) => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d\W_]{8,}$/.test(password);

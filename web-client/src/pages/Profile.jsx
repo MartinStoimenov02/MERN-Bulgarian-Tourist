@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash, FaUserCircle } from "react-icons/fa";
 import FeedbackModal from "../components/FeedbackModal";
@@ -6,9 +6,13 @@ import ChangePasswordModal from "../components/ChangePasswordModal";
 import DeleteAccountModal from "../components/DeleteAccountModal";
 import Axios from "axios";
 import "../style/Profile.css";
+import { useSelector, useDispatch } from 'react-redux';
+import { logout, loginSuccess } from '../redux/userSlice';
 
-const Profile = ({ setIsAuthenticated }) => {
-  const [user, setUser] = useState({ email: "", name: "", phoneNumber: "", password: "", isGoogleAuth: "" });
+
+const Profile = () => {
+  // const [user, setUser] = useState({ email: "", name: "", phoneNumber: "", password: "", isGoogleAuth: "" });
+  const [editedUser, setEditedUser] = useState({ email: "", name: "", phoneNumber: "", password: "", isGoogleAuth: "" });
   const [editingField, setEditingField] = useState(null);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -16,38 +20,31 @@ const Profile = ({ setIsAuthenticated }) => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user); 
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setUserFromSession();
+    // setUserFromSession();
+    setEditedUser(user);
   }, []);
 
-  const setUserFromSession = () => {
-    const session = localStorage.getItem("userSession");
-    if (session) {
-      const parsed = JSON.parse(session);
-      setUser(parsed);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("loginTime");
-    setIsAuthenticated(false);
-    navigate("/login");
-  };
+  // const setUserFromSession = () => {
+  //   const session = localStorage.getItem("userSession");
+  //   if (session) {
+  //     const parsed = JSON.parse(session);
+  //     setUser(parsed);
+  //   }
+  // };
 
   const cancelEdit = () => {
-    setUserFromSession();
-    setEditingField(null);
-  };
-  
+  setEditedUser(user);
+  setEditingField(null);
+};
 
   const handleFieldChange = (field, value) => {
-    setUser({ ...user, [field]: value });
+    // setUser({ ...user, [field]: value });
+    setEditedUser({ ...editedUser, [field]: value });
   };
 
   const validateField = (field, value) => {
@@ -79,38 +76,39 @@ const Profile = ({ setIsAuthenticated }) => {
   };
 
   const saveField = async (field) => {
-    const validationError = validateField(field, user[field]);
-    if (validationError) {
-      setMessage(validationError);
-      setSuccess(false);
-      setTimeout(() => setMessage(""), 3000);
-      return;
-    }
-
-    try {
-      const res = await Axios.put(`${backendUrl}/users/updateField`, {
-        id: user.id,
-        field,
-        newValue: user[field],
-      });
-
-      if (res.data.success) {
-        setMessage("Успешно обновяване!");
-        setSuccess(true);
-        localStorage.setItem("userSession", JSON.stringify({ ...user }));
-        setEditingField(null);
-      } else {
-        setMessage("Грешка при обновяване.");
-        setSuccess(false);
-      }
-    } catch (error) {
-      console.error("update error:", error);
-      setMessage(error.response.data.message);
-      setSuccess(false);
-    }
-
+  const validationError = validateField(field, editedUser[field]);
+  if (validationError) {
+    setMessage(validationError);
+    setSuccess(false);
     setTimeout(() => setMessage(""), 3000);
-  };
+    return;
+  }
+
+  try {
+    const res = await Axios.put(`${backendUrl}/users/updateField`, {
+      id: user.id,
+      field,
+      newValue: editedUser[field],
+    });
+
+    if (res.data.success) {
+      setMessage("Успешно обновяване!");
+      setSuccess(true);
+      dispatch(loginSuccess({ ...user, [field]: editedUser[field] }));
+      setEditingField(null);
+    } else {
+      setMessage("Грешка при обновяване.");
+      setSuccess(false);
+    }
+  } catch (error) {
+    console.error("update error:", error);
+    setMessage(error.response?.data?.message || "Грешка.");
+    setSuccess(false);
+  }
+
+  setTimeout(() => setMessage(""), 3000);
+};
+
 
   const handleCloseFeedback = () => {
     setIsFeedbackOpen(false);
@@ -119,10 +117,17 @@ const Profile = ({ setIsAuthenticated }) => {
     setTimeout(() => setMessage(""), 3000);
   };
 
+  const handleChangedPasswordSuccess = () => {
+    setMessage("Паролата е променена успешно!");
+    setSuccess(true);
+    setTimeout(() => setMessage(""), 3000);
+  }
+
   const deleteAccountAndLogout = () => {
-    localStorage.removeItem("userSession");
-    localStorage.removeItem("loginTime");
-    setIsAuthenticated(false);
+    // localStorage.removeItem("userSession");
+    // localStorage.removeItem("loginTime");
+    dispatch(logout());
+    // setIsAuthenticated(false);
     navigate("/login"); 
   };
 
@@ -142,7 +147,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   <>
                     <input
                       input type="email"
-                      value={user.email}
+                      value={editedUser.email}
                       onChange={(e) => handleFieldChange("email", e.target.value)}
                     />
                     <button onClick={() => saveField("email")} className="edit-icon">✔</button>
@@ -150,7 +155,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   </>
                 ) : (
                   <>
-                    {user.email}
+                    {editedUser.email}
                     <FaEdit className="edit-icon" onClick={() => setEditingField("email")} />
                   </>
                 )}
@@ -164,7 +169,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   <>
                     <input
                       type="text"
-                      value={user.name}
+                      value={editedUser.name}
                       onChange={(e) => handleFieldChange("name", e.target.value)}
                     />
                     <button onClick={() => saveField("name")} className="edit-icon">✔</button>
@@ -172,7 +177,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   </>
                 ) : (
                   <>
-                    {user.name}
+                    {editedUser.name}
                     <FaEdit className="edit-icon" onClick={() => setEditingField("name")} />
                   </>
                 )}
@@ -186,7 +191,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   <>
                     <input
                       type="text"
-                      value={user.phoneNumber}
+                      value={editedUser.phoneNumber}
                       onChange={(e) => handleFieldChange("phoneNumber", e.target.value)}
                     />
                     <button onClick={() => saveField("phoneNumber")} className="edit-icon">✔</button>
@@ -194,7 +199,7 @@ const Profile = ({ setIsAuthenticated }) => {
                   </>
                 ) : (
                   <>
-                    {user.phoneNumber || "Без телефон"}
+                    {editedUser.phoneNumber || "Без телефон"}
                     <FaEdit className="edit-icon" onClick={() => setEditingField("phoneNumber")} />
                   </>
                 )}
@@ -234,14 +239,15 @@ const Profile = ({ setIsAuthenticated }) => {
         <ChangePasswordModal
           isOpen={isChangePasswordOpen}
           onClose={() => setIsChangePasswordOpen(false)}
-          email={user.email}
+          email={editedUser.email}
+          setChangedPasswordSuccess={handleChangedPasswordSuccess}
         />
 
         <DeleteAccountModal
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
           onSuccess={() => deleteAccountAndLogout()}
-          user={user}
+          user={editedUser}
         />
       </div>
     </div>

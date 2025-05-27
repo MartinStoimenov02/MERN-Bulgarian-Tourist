@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "../style/FeedbackModal.css";
+import { useSelector } from 'react-redux';
 
 const FeedbackModal = ({ isOpen, onClose, setIsModalOpenSuccess }) => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [feedbackType, setFeedbackType] = useState("");
   const [message, setMessage] = useState("");
   const [rating, setRating] = useState(0);
   const [messageAlert, setMessageAlert] = useState("");
   const [success, setSuccess] = useState(false);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
+  const user = useSelector((state) => state.user.user); 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
     const handleSubmit = async (e) => {
+      if (!user || !user.id) {
+        setMessageAlert("Потребителят не е логнат.");
+        return;
+      }
         e.preventDefault();
         if (!feedbackType) {
             setMessageAlert("Моля, изберете тип обратна връзка!");

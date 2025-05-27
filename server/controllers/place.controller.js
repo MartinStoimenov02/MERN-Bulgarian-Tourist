@@ -151,11 +151,22 @@ export const getRandomImageHelper = async (query) => {
 export const updatePlace = async (req, res) => {
   const { id } = req.params;
   const { name, description, location, google_external_id } = req.body;
-
+  
   try {
+    var imgPath;
+    const imageResponse = await getRandomImageHelper(name);
+    if (!imageResponse || !imageResponse.imageUrl) {
+      imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
+
+    const nationalSites = await NationalSiteModel.find({ isActive: true });
+    const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
+
     const place = await PlaceModel.findByIdAndUpdate(
       id,
-      { name, description, location, google_external_id },
+      { name, description, imgPath, location, google_external_id, nto100: matchingSite ? matchingSite._id : undefined },
       { new: true }
     );
     res.json(place);

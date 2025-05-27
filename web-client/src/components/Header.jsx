@@ -6,6 +6,8 @@ import { FaSignOutAlt, FaSignInAlt } from "react-icons/fa";
 import Notifications from '../pages/Notifications';
 import Help from '../components/Help';
 import '../style/HeaderStyle.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../redux/userSlice';
 
 const Header = () => {
   const location = useLocation();
@@ -14,27 +16,29 @@ const Header = () => {
   const [helpOpen, setHelpOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user.user); 
   const isAuthPage =
     location.pathname === '/login' ||
     location.pathname === '/signup' ||
     location.pathname === '/forgot-password' ||
     location.pathname === '/';
-  const isForgotPasswordPage = location.pathname === '/forgot-password';
+  // const isForgotPasswordPage = location.pathname === '/forgot-password';
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!isAuthPage) {
-      const userSession = localStorage.getItem("userSession");
-      if (userSession) {
-        try {
-          setUser(JSON.parse(userSession));
-        } catch (err) {
-          console.error("Грешка при парсване на userSession:", err);
-        }
-      }
-    }
-  }, [isAuthPage]);
+  // useEffect(() => {
+  //   if (!isAuthPage) {
+  //     const userSession = localStorage.getItem("userSession");
+  //     if (userSession) {
+  //       try {
+  //         setUser(JSON.parse(userSession));
+  //       } catch (err) {
+  //         console.error("Грешка при парсване на userSession:", err);
+  //       }
+  //     }
+  //   }
+  // }, [isAuthPage]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,8 +52,6 @@ const Header = () => {
     const fetchUnreadNotifications = async () => {
       if (!user) return;
       try {
-        const host = process.env.REACT_APP_HOST;
-        const port = process.env.REACT_APP_PORT;
         const backendUrl = process.env.REACT_APP_BACKEND_URL;
         const res = await fetch(`${backendUrl}/notifications/getNotificationsForUser?userId=${user.id}`);
         const data = await res.json();
@@ -94,7 +96,7 @@ const Header = () => {
           </button>
           {menuOpen && (
             <div className="menu-dropdown">
-              {user.isAdmin ? (
+              {user?.isAdmin ? (
                 <>
                   <Link to="/admin/national-sites" className="menu-item" onClick={() => setMenuOpen(false)}>Туристически обекти</Link>
                   <Link to="/admin/users" className="menu-item" onClick={() => setMenuOpen(false)}>Потребители</Link>
@@ -164,9 +166,10 @@ const Header = () => {
 
           <div className="logout-button">
             <button onClick={() => {
-              localStorage.removeItem("userSession");
-              localStorage.removeItem("loginTime");
-              window.location.href = "/login";
+              // localStorage.removeItem("userSession");
+              // localStorage.removeItem("loginTime");
+              dispatch(logout());
+              navigate('/login');
             }} className="small-logout-button">
               <FaSignOutAlt style={{ marginRight: "8px" }} />
               Изход

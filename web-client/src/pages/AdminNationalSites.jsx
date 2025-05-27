@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaPlus, FaTrash, FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaSort, FaEdit, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
@@ -6,9 +6,10 @@ import "../style/MyPlaces.css";
 import AddNationalSiteModal from "../components/AddNationalSiteModal";
 import WorkTimeTable from '../components/WorkTimeTable';
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
+import { useSelector } from 'react-redux';
 
 const AdminNationalSites = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("nto100");
@@ -23,17 +24,15 @@ const AdminNationalSites = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [placeToDelete, setPlaceToDelete] = useState(null);
   const [editData, setEditData] = useState(null);
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user); 
   
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user) {
@@ -47,7 +46,7 @@ const AdminNationalSites = () => {
       };
       fetchPlaces();
     }
-  }, [user, host, port]);
+  }, [user]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 1000);

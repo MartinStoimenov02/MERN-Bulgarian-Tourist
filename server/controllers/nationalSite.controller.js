@@ -121,6 +121,13 @@ export const addNationalSite = async (req, res) => {
       });
     }
 
+    const places = await NationalSiteModel.find();
+    const alreadyExists = places.some(place => place.google_external_id === nationalSiteData.google_external_id);
+
+    if (alreadyExists) {
+      return res.status(400).json({ message: "Мястото вече е добавено." });
+    }
+
     const imageResponse = await getRandomImageHelper(nationalSiteData.name);
     if (!imageResponse || !imageResponse.imageUrl) {
       return res.status(500).json({ message: "Неуспешно извличане на снимка" });
@@ -151,6 +158,14 @@ export const updateNationalSite = async (req, res) => {
   const { name, description, location, google_external_id, numberInNationalList, isActive } = req.body;
 
   try {
+    var imgPath;
+    const imageResponse = await getRandomImageHelper(name);
+    if (!imageResponse || !imageResponse.imageUrl) {
+      imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
+
     const nationalSite = await NationalSiteModel.findByIdAndUpdate(
       id,
       { 
@@ -159,7 +174,8 @@ export const updateNationalSite = async (req, res) => {
         location, 
         google_external_id, 
         numberInNationalList, 
-        isActive 
+        isActive,
+        imgPath
       },
       { new: true }
     );

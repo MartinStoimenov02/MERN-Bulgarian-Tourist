@@ -3,9 +3,11 @@ import Help from '../components/Help';
 import '../style/HomeStyle.css';
 import VisitedPlaces from "../components/VisitedPlaces";
 import Axios from "axios";
+import { useSelector, useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 
-function Home({ setIsAuthenticated }) {
-  const [user, setUser] = useState(null);
+function Home() {
+  // const [user, setUser] = useState(null);
   const [helpOpen, setHelpOpen] = useState(false);
 
   const [visitedPlaces, setVisitedPlaces] = useState([]);
@@ -13,17 +15,16 @@ function Home({ setIsAuthenticated }) {
   const [foundInTop , setFoundInTop ] = useState(false);
   const [geminiSuggestion, setGeminiSuggestion] = useState("Зареждане...");
   const [geminiCitat, setGeminiCitat] = useState("Зареждане...");
-
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user?.firstLogin) {
@@ -36,8 +37,9 @@ function Home({ setIsAuthenticated }) {
             field: "firstLogin",
             newValue: false,
           });
-          user.firstLogin = false;
-          localStorage.setItem("userSession", JSON.stringify(user));
+          const updatedUser = { ...user, firstLogin: false };
+          // localStorage.setItem("userSession", JSON.stringify(user));
+          dispatch(loginSuccess(updatedUser));
         } catch (error) {
           console.error("Error updating user field:", error);
         }
@@ -52,7 +54,7 @@ function Home({ setIsAuthenticated }) {
       askGemini();
       getCitat();
     }
-  }, [user, host, port]);
+  }, [user]);
 
   const fetchTopUsers = async () => {
     try {
@@ -137,10 +139,10 @@ function Home({ setIsAuthenticated }) {
     setVisitedPlaces(response.data.sort((a, b) => new Date(b.dateOfVisit) - new Date(a.dateOfVisit)));
   }
 
-  const formatDate = (date) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Date(date).toLocaleDateString('bg-BG', options);
-  };
+  // const formatDate = (date) => {
+  //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  //   return new Date(date).toLocaleDateString('bg-BG', options);
+  // };
 
   return (
     <div className="page-style">

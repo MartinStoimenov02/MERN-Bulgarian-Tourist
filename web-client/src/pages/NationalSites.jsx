@@ -4,9 +4,10 @@ import axios from "axios";
 import { FaMapMarkerAlt, FaPhone, FaStar, FaLandmark, FaPlusCircle, FaSort } from "react-icons/fa";
 import "../style/MyPlaces.css";
 import WorkTimeTable from '../components/WorkTimeTable';
+import { useSelector } from 'react-redux';
 
 const NationalSites = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [places, setPlaces] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("nto100");
@@ -17,11 +18,9 @@ const NationalSites = () => {
   const [success, setSuccess] = useState(false);
   const [placeDetails, setPlaceDetails] = useState(null);
   const [placeDistances, setPlaceDistances] = useState({});
-    const [isSortModalOpen, setIsSortModalOpen] = useState(false);
-  
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  const user = useSelector((state) => state.user.user); 
 
   const userCoordsRef = useRef(null);
   
@@ -56,12 +55,12 @@ const NationalSites = () => {
       return () => clearInterval(intervalId);
     }, [places]);
 
-  useEffect(() => {
-    const userSession = localStorage.getItem("userSession");
-    if (userSession) {
-      setUser(JSON.parse(userSession));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userSession = localStorage.getItem("userSession");
+  //   if (userSession) {
+  //     setUser(JSON.parse(userSession));
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (user) {

@@ -16,8 +16,6 @@ const center = {
   lng: 23.319941,
 };
 
-const host = process.env.REACT_APP_HOST;
-const port = process.env.REACT_APP_PORT;
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess, placeId, initialData, editMode }) => {

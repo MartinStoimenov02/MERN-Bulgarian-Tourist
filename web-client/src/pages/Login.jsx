@@ -6,8 +6,10 @@ import { jwtDecode } from "jwt-decode";
 import "../style/LoginStyle.css";
 import shipkaImage from "../images/shipka.jpg";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
 
-function Login({ setIsAuthenticated }) {
+function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
@@ -17,9 +19,8 @@ function Login({ setIsAuthenticated }) {
   const [showModal, setShowModal] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const host = process.env.REACT_APP_HOST;
-  const port = process.env.REACT_APP_PORT;
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
@@ -48,9 +49,10 @@ function Login({ setIsAuthenticated }) {
     try {
       const res = await Axios.post(`${backendUrl}/users/getUser`, formData);
       if (res.data.success) {
-        localStorage.setItem("userSession", JSON.stringify(res.data.user));
-        localStorage.setItem("loginTime", new Date().getTime());
-        setIsAuthenticated(true);
+        // localStorage.setItem("userSession", JSON.stringify(res.data.user));
+        // localStorage.setItem("loginTime", new Date().getTime());
+        // setIsAuthenticated(true);
+        dispatch(loginSuccess(res.data.user));
         if(res.data.user.isAdmin){
           navigate("/admin/national-sites");
         } else{
@@ -82,9 +84,10 @@ function Login({ setIsAuthenticated }) {
     }
 
       const res = await Axios.post(`${backendUrl}/users/googleAuth`, { userData });
-      localStorage.setItem("userSession", JSON.stringify(res.data.user));
-      localStorage.setItem("loginTime", new Date().getTime());
-      setIsAuthenticated(true);
+      // localStorage.setItem("userSession", JSON.stringify(res.data.user));
+      // localStorage.setItem("loginTime", new Date().getTime());
+      // setIsAuthenticated(true);
+      dispatch(loginSuccess(res.data.user)); 
       if(res.data.user.isAdmin){
         navigate("/admin/national-sites");
       } else{
