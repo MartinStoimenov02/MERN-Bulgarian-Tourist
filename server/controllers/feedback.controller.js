@@ -6,7 +6,7 @@ export const createFeedback = async (req, res, next) => {
 
     try {
         const newFeedback = new FeedbackModel({
-            user: userId, // user._id е ID-то на потребителя, който изпраща обратната връзка
+            user: userId, 
             feedbackType,
             message,
             rating,
@@ -32,8 +32,8 @@ export const createFeedback = async (req, res, next) => {
 export const getAllFeedback = async (req, res) => {
     try {
       const feedbackList = await FeedbackModel.find()
-        .populate('user', 'email') // само email от user
-        .sort({ createdAt: 1 }); // по-новите най-отгоре
+        .populate('user', 'email') 
+        .sort({ createdAt: 1 }); 
   
       res.status(200).json({ success: true, feedback: feedbackList });
     } catch (err) {

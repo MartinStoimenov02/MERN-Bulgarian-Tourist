@@ -5,6 +5,9 @@ import VisitedPlaces from "../components/VisitedPlaces";
 import Axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/userSlice';
+import travelPlaces from '../travelPlaces.json';
+import bulgariaQuotes from '../bulgariaQuotes.json';
+
 
 function Home() {
   // const [user, setUser] = useState(null);
@@ -87,14 +90,16 @@ function Home() {
 
   const getCitat = async () => {
     try {
-      const prompt = "Дай ми цитат за деня, свързан с красотата на българия и туристическите ѝ дестинации. Но без обяснения, само цитат, защото го ползвам да го показвам на потребители!";
+      const randomIndex = Math.floor(Math.random() * bulgariaQuotes.length);
+      setGeminiCitat(bulgariaQuotes[randomIndex]);
+      // const prompt = "Дай ми цитат за деня, свързан с красотата на българия и туристическите ѝ дестинации. Но без обяснения, само цитат, защото го ползвам да го показвам на потребители!";
 
-      const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
-      if (res.data.response) {
-        setGeminiCitat(res.data.response);
-      } else {
-        console.error("Не е намерен отговор от модела.");
-      }
+      // const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
+      // if (res.data.response) {
+      //   setGeminiCitat(res.data.response);
+      // } else {
+      //   console.error("Не е намерен отговор от модела.");
+      // }
     } catch (error) {
       console.error(error);
     }
@@ -106,26 +111,31 @@ function Home() {
     const day = today.getDate();
   
     if ((month === 3 && day >= 21) || (month > 3 && month < 6) || (month === 6 && day <= 20)) {
-      return 'Пролет';
+      return 'spring';
     } else if ((month === 6 && day >= 21) || (month > 6 && month < 9) || (month === 9 && day <= 20)) {
-      return 'Лято';
+      return 'summer';
     } else if ((month === 9 && day >= 21) || (month > 9 && month < 12) || (month === 12 && day <= 20)) {
-      return 'Есен';
+      return 'autumn';
     } else {
-      return 'Зима';
+      return 'winter';
     }
   }
 
   const askGemini = async () => {
     try {
-      const prompt = "Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
+      const places = travelPlaces[getCurrentSeason()];
+      if (!places || places.length === 0) return null;
 
-      const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
-      if (res.data.response) {
-        setGeminiSuggestion(res.data.response);
-      } else {
-        console.error("Не е намерен отговор от модела.");
-      }
+      const randomIndex = Math.floor(Math.random() * places.length);
+      setGeminiSuggestion(places[randomIndex]);
+      // const prompt = "Кое е най-хубавото място в България, което да посетя през "+ getCurrentSeason() +"? Искам конкретно място и описание защо да посетя него. Максимум 4-5 изречения! Можеш да даваш идеи от цяла България, дори да се фокусираш въру почти забравени дестинации, за да се популизират пак! СЪЩО ТАКА ОТГОВОРА ТИ ГО СЛАГАМ НА СТРАНИЦА, ПРОСТО УВАЖИТЕЛЕН ОТГОВОР, КАТО ЗА ПОТРЕБИТЕЛИ, МОЛЯ!";
+
+      // const res = await Axios.post(`${backendUrl}/google/gemini`, { prompt });
+      // if (res.data.response) {
+      //   setGeminiSuggestion(res.data.response);
+      // } else {
+      //   console.error("Не е намерен отговор от модела.");
+      // }
     } catch (error) {
       console.error(error);
     }
@@ -198,8 +208,8 @@ function Home() {
 
 
           <div className="gemini-widget widget-box">
-            <h4>Gemini Бот: Препоръка</h4>
-            <p>{geminiSuggestion}</p>
+            <h4>Препоръка да посетите: {geminiSuggestion.name}</h4>
+            <p>{geminiSuggestion.description}</p>
           </div>
         </aside>
       </div>

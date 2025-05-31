@@ -54,31 +54,31 @@ const AdminNationalSites = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (id) {
-      const selectedPlace = places.find((place) => place._id.toString() === id);
-      if (selectedPlace && (!placeDetails || placeDetails._id !== selectedPlace._id)) {
-        fetchPlaceDetails(selectedPlace);
-      }
-    } else {
-      setPlaceDetails(null);
-    }
-  }, [id, places, placeDetails]);
+  // useEffect(() => {
+  //   if (id) {
+  //     const selectedPlace = places.find((place) => place._id.toString() === id);
+  //     if (selectedPlace && (!placeDetails || placeDetails._id !== selectedPlace._id)) {
+  //       fetchPlaceDetails(selectedPlace);
+  //     }
+  //   } else {
+  //     setPlaceDetails(null);
+  //   }
+  // }, [id, places, placeDetails]);
   
   
-  const fetchPlaceDetails = async (place) => {
+  // const fetchPlaceDetails = async (place) => {
 
-    try {
-      const externalId = place.google_external_id;
-      const response = await axios.post(`${backendUrl}/google/place-details`, {
-        externalId
-      });
-      setPlaceDetails(response.data);
-    } catch (error) {
-      setPlaceDetails(null);
-      console.error("Грешка при извличане на детайлите:", error);
-    }
-  };
+  //   try {
+  //     const externalId = place.google_external_id;
+  //     const response = await axios.post(`${backendUrl}/google/place-details`, {
+  //       externalId
+  //     });
+  //     setPlaceDetails(response.data);
+  //   } catch (error) {
+  //     setPlaceDetails(null);
+  //     console.error("Грешка при извличане на детайлите:", error);
+  //   }
+  // };
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
@@ -293,7 +293,7 @@ const AdminNationalSites = () => {
           </div>
     
           <div className="place-info-summary">
-            {placeDetails?.rating && (
+            {/* {placeDetails?.rating && (
               <>
                 <span>
                   {placeDetails.rating} <FaStar className="star-icon" />
@@ -308,7 +308,7 @@ const AdminNationalSites = () => {
                 </span>
               </>
             )}
-                <span>|</span>
+                <span>|</span> */}
                 <span>
                   <FaLandmark className="landmark-icon" /> National 100
                 </span>
@@ -326,24 +326,28 @@ const AdminNationalSites = () => {
                 </span>
           </div>
     
-          {placeDetails?.address && (
-            <div className="place-address">
-              <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">
-                <FaMapMarkerAlt className="icon address-icon" title="Виж на картата" />
-              </a>
-              <span>{placeDetails.address}</span>
-            </div>
-          )}
+          {selectedPlace?.address && (
+                      <div className="place-address">
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${selectedPlace.location.lat},${selectedPlace.location.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <FaMapMarkerAlt className="icon address-icon" title="Виж на картата" />
+                        </a>
+                        <span>{selectedPlace.address}</span>
+                      </div>
+                    )}
     
           <hr></hr>
                 <div className="additional-info">
                   <p>{selectedPlace.description}</p>
-                  <div>{validWorkingHours && (
+                  {/* <div>{validWorkingHours && (
                     <>
                       <WorkTimeTable workTime={validWorkingHours} />
                     </>
                   )}
-                  </div>
+                  </div> */}
                 </div>
                 </>
           ) : (

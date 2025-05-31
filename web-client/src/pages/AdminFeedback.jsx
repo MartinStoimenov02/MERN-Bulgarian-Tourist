@@ -149,7 +149,7 @@ const AdminFeedback = () => {
                 <input
                   type="checkbox"
                   checked={selectAll}
-                  onChange={toggleSelectAll} // Тази функция ще управлява глобалното маркиране
+                  onChange={toggleSelectAll} 
                 />
               </th>
               <th>Потребител</th>

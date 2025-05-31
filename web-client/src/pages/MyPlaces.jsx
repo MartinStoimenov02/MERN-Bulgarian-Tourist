@@ -92,31 +92,31 @@ const MyPlaces = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (id) {
-      const selectedPlace = places.find((place) => place._id.toString() === id);
-      if (selectedPlace && (!placeDetails || placeDetails._id !== selectedPlace._id)) {
-        fetchPlaceDetails(selectedPlace);
-      }
-    } else {
-      setPlaceDetails(null);
-    }
-  }, [id, places, placeDetails]);
+  // useEffect(() => {
+  //   if (id) {
+  //     const selectedPlace = places.find((place) => place._id.toString() === id);
+  //     if (selectedPlace && (!placeDetails || placeDetails._id !== selectedPlace._id)) {
+  //       fetchPlaceDetails(selectedPlace);
+  //     }
+  //   } else {
+  //     setPlaceDetails(null);
+  //   }
+  // }, [id, places, placeDetails]);
   
   
-  const fetchPlaceDetails = async (place) => {
+  // const fetchPlaceDetails = async (place) => {
 
-    try {
-      const externalId = place.google_external_id;
-      const response = await axios.post(`${backendUrl}/google/place-details`, {
-        externalId
-      });
-      setPlaceDetails(response.data);
-    } catch (error) {
-      setPlaceDetails(null);
-      console.error("Грешка при извличане на детайлите:", error);
-    }
-  };
+  //   try {
+  //     const externalId = place.google_external_id;
+  //     const response = await axios.post(`${backendUrl}/google/place-details`, {
+  //       externalId
+  //     });
+  //     setPlaceDetails(response.data);
+  //   } catch (error) {
+  //     setPlaceDetails(null);
+  //     console.error("Грешка при извличане на детайлите:", error);
+  //   }
+  // };
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
@@ -182,7 +182,6 @@ const MyPlaces = () => {
           distances[newPlace._id] = response.data.distance;
         }
         setPlaceDistances(distances);
-
         },
         (error) => {
           console.error("Грешка при взимане на локацията:", error);
@@ -282,9 +281,9 @@ const MyPlaces = () => {
     }
   };
 
-  const validWorkingHours = Array.isArray(placeDetails?.workingHours)
-    ? placeDetails.workingHours
-    : null;
+  // const validWorkingHours = Array.isArray(placeDetails?.workingHours)
+  //   ? placeDetails.workingHours
+  //   : null;
 
   return (
     <div className="my-places-container">
@@ -413,7 +412,7 @@ const MyPlaces = () => {
     
           <div className="place-info-summary">
           {placeDistances[selectedPlace._id] && <span>{placeDistances[selectedPlace._id]} away</span>}
-            {placeDetails?.rating && (
+            {/* {placeDetails?.rating && (
               <>
                 <span>|</span>
                 <span>
@@ -428,7 +427,7 @@ const MyPlaces = () => {
                   {placeDetails.phone} <FaPhone className="phone-icon" />
                 </span>
               </>
-            )}
+            )} */}
             {selectedPlace?.nto100 !==undefined && (
               <>
                 <span>|</span>
@@ -439,24 +438,29 @@ const MyPlaces = () => {
             )}
           </div>
     
-          {placeDetails?.address && (
+          {selectedPlace?.address && (
             <div className="place-address">
-              <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">
+              <a
+                // href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedPlace.address)}`}
+                href={`https://www.google.com/maps/search/?api=1&query=${selectedPlace.location.lat},${selectedPlace.location.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <FaMapMarkerAlt className="icon address-icon" title="Виж на картата" />
               </a>
-              <span>{placeDetails.address}</span>
+              <span>{selectedPlace.address}</span>
             </div>
           )}
     
           <hr></hr>
                 <div className="additional-info">
                   <p>{selectedPlace.description}</p>
-                  <div>{validWorkingHours && (
+                  {/* <div>{validWorkingHours && (
                     <>
                       <WorkTimeTable workTime={validWorkingHours} />
                     </>
                   )}
-                  </div>
+                  </div> */}
                 </div>
                 </>
           ) : (

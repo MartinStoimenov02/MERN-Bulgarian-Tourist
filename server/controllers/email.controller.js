@@ -39,8 +39,7 @@ export const sendVerificationCode = async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: "Verification code sent successfully." });
     } catch (err) {
-      next(err);
-        logError(err, req, { className: 'email.controller', functionName: 'sendVerificationCode', user: id });
+        logError(err, req, { className: 'email.controller', functionName: 'sendVerificationCode' });
         console.error("Error sending email:", err);
         res.status(500).json({ message: "Error sending verification code." });
     }

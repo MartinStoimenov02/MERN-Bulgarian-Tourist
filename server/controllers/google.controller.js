@@ -1,6 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import logError from '../utils/logger.js';
+import * as turf from '@turf/turf';
 
 dotenv.config();
 
@@ -16,10 +17,11 @@ export const getPlaceDetails = async (req, res) => {
             return res.status(400).json({ message: "'place' е задължително." });
         }
 
-        const googleResponse = await axios.get (
-            "https://places.googleapis.com/v1/places/"+google_external_id+"?fields=*&key="+API_KEY
-        );
+        // const googleResponse = await axios.get (
+        //     "https://places.googleapis.com/v1/places/"+google_external_id+"?fields=*&key="+API_KEY
+        // );
 
+        const googleResponse = undefined;
 
         if (!googleResponse.data) {
             return res.status(404).json({ message: "Мястото не е намерено." });
@@ -58,33 +60,41 @@ export const getDistance = async (req, res) => {
         }
 
         // Изчислява разстоянието с Routes API
-        const routesResponse = await axios.post(
-            "https://routes.googleapis.com/directions/v2:computeRoutes",
-            {
-                origin: {
-                    location: {
-                        latLng: { latitude: userLat, longitude: userLng }
-                    }
-                },
-                destination: {
-                    location: {
-                        latLng: { latitude: placeLat, longitude: placeLng }
-                    }
-                },
-                travelMode: "DRIVE"
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Goog-Api-Key": API_KEY,
-                    "X-Goog-FieldMask": "routes.distanceMeters"
-                }
-            }
-        );
+        // const routesResponse = await axios.post(
+        //     "https://routes.googleapis.com/directions/v2:computeRoutes",
+        //     {
+        //         origin: {
+        //             location: {
+        //                 latLng: { latitude: userLat, longitude: userLng }
+        //             }
+        //         },
+        //         destination: {
+        //             location: {
+        //                 latLng: { latitude: placeLat, longitude: placeLng }
+        //             }
+        //         },
+        //         travelMode: "DRIVE"
+        //     },
+        //     {
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "X-Goog-Api-Key": API_KEY,
+        //             "X-Goog-FieldMask": "routes.distanceMeters"
+        //         }
+        //     }
+        // );
 
-        const distance = routesResponse.data.routes?.[0]?.distanceMeters
-            ? `${(routesResponse.data.routes[0].distanceMeters / 1000).toFixed(2)} km`
-            : null;
+        // const routesResponse = undefined;
+
+        // const distance = routesResponse.data.routes?.[0]?.distanceMeters
+        //     ? `${(routesResponse.data.routes[0].distanceMeters / 1000).toFixed(2)} km`
+        //     : null;
+
+        const from = turf.point([userLng, userLat]);
+        const to = turf.point([placeLng, placeLat]);
+        const options = { units: 'kilometers' };
+        const distance = (turf.distance(from, to, options)).toFixed(2) + ' km';
+
         res.json({ distance });
 
     } catch (error) {
@@ -103,9 +113,11 @@ export const getRandomImage = async (req, res) => {
             return res.status(400).json({ message: "Query parameter is required." });
         }
 
-        const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
-        const response = await axios.get(searchUrl);
-        const items = response.data.items;
+        // const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
+        // const response = await axios.get(searchUrl);
+        // const items = response.data.items;
+
+        const items = undefined;
 
         if (items && items.length > 0) {
             const randomIndex = Math.floor(Math.random() * items.length);
@@ -124,21 +136,23 @@ export const gemini = async (req, res) => {
     try {
         const prompt = req.body.prompt || "Кое е най-доброто място за посещение в България?";
 
-        const geminiResponse = await axios.post(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
-            {
-                contents: [
-                    {
-                        parts: [{ text: prompt }]
-                    }
-                ]
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+        // const geminiResponse = await axios.post(
+        //     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
+        //     {
+        //         contents: [
+        //             {
+        //                 parts: [{ text: prompt }]
+        //             }
+        //         ]
+        //     },
+        //     {
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         }
+        //     }
+        // );
+
+        const geminiResponse = undefined;
 
         const text = geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {

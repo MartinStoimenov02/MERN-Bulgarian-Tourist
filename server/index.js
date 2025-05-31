@@ -23,7 +23,6 @@ app.use(cors({
   credentials: true
 }));
 
-// const mongoDbKey = process.env.MONGODB_KEY;
 const mongoDbConnection = process.env.MONGODB_CONNECTION;
 await mongoose.connect(mongoDbConnection);
 

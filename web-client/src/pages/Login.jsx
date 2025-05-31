@@ -14,7 +14,7 @@ function Login() {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [imageUrl, setImageUrl] = useState(shipkaImage);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -23,22 +23,22 @@ function Login() {
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const query = "tourist sites in Bulgaria";
-        const res = await Axios.get(
-          `${backendUrl}/google/random-image?query=${encodeURIComponent(query)}`
-        );
-        setImageUrl(res.data.imageUrl);
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchImage();
-  }, []);
+  // useEffect(() => {
+  //   const fetchImage = async () => {
+  //     try {
+  //       const query = "tourist sites in Bulgaria";
+  //       const res = await Axios.get(
+  //         `${backendUrl}/google/random-image?query=${encodeURIComponent(query)}`
+  //       );
+  //       setImageUrl(res.data.imageUrl);
+  //     } catch (error) {
+  //       console.error("Error fetching image:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchImage();
+  // }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -152,18 +152,18 @@ function Login() {
   };
 
   return (
-    <GoogleOAuthProvider clientId="393053260698-rd9q75m5nlfrqg0h6t3j3v1662lh27m7.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="1035977394524-nlql4nv7m8nhh9h1jlts20nc807fjr12.apps.googleusercontent.com">
     <div className="container-login">
       <table width="80%" border="1">
         <tbody>
           <tr>
             <td width="60%">
               <div className="image-container-login">
-                {loading ? (
+                {/* {loading ? (
                   <p>Loading image...</p>
-                ) : (
+                ) : ( */}
                   <img src={imageUrl} alt="Login" className="login-image loaded" />
-                )}
+                {/* )} */}
               </div>
             </td>
             <td className="form-container-login">

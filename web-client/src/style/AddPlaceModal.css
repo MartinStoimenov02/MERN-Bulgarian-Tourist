@@ -228,3 +228,7 @@
 .error-message {
   background-color: red;
 }
+
+.suggestions-list li:hover {
+  background-color: #eee;
+}

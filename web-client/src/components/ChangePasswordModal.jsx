@@ -16,7 +16,6 @@ const ChangePasswordModal = ({ isOpen, onClose, email, setChangedPasswordSuccess
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const handleClose = () => {
-    // Clear all fields and messages
     setCurrentPassword("");
     setNewPassword("");
     setConfirmNewPassword("");

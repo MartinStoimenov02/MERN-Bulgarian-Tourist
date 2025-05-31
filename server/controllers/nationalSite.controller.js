@@ -128,11 +128,15 @@ export const addNationalSite = async (req, res) => {
       return res.status(400).json({ message: "Мястото вече е добавено." });
     }
 
-    const imageResponse = await getRandomImageHelper(nationalSiteData.name);
-    if (!imageResponse || !imageResponse.imageUrl) {
-      return res.status(500).json({ message: "Неуспешно извличане на снимка" });
-    }
-    nationalSiteData.imgPath = imageResponse.imageUrl;
+    var imgPath;
+    // const imageResponse = await getRandomImageHelper(name);
+    // if (!imageResponse || !imageResponse.imageUrl) {
+      imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
+    // } else{
+    //   imgPath = imageResponse.imageUrl;
+    // }
+
+    nationalSiteData.imgPath = imgPath;
 
     const newNationalSite = new NationalSiteModel(nationalSiteData);
     const savedNationalSite = await newNationalSite.save();
@@ -142,7 +146,6 @@ export const addNationalSite = async (req, res) => {
       site: savedNationalSite,
     });
   } catch (error) {
-    next(err);
     logError(error, req, { className: 'nationalSite.controller', functionName: 'addNationalSite' });
     console.error('Error adding national site:', error);
     res.status(500).json({
@@ -155,16 +158,16 @@ export const addNationalSite = async (req, res) => {
 
 export const updateNationalSite = async (req, res) => {
   const { id } = req.params;
-  const { name, description, location, google_external_id, numberInNationalList, isActive } = req.body;
+  const { name, description, location, google_external_id, numberInNationalList, isActive, address } = req.body;
 
   try {
     var imgPath;
-    const imageResponse = await getRandomImageHelper(name);
-    if (!imageResponse || !imageResponse.imageUrl) {
+    // const imageResponse = await getRandomImageHelper(name);
+    // if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    } else{
-      imgPath = imageResponse.imageUrl;
-    }
+    // } else{
+    //   imgPath = imageResponse.imageUrl;
+    // }
 
     const nationalSite = await NationalSiteModel.findByIdAndUpdate(
       id,
@@ -175,7 +178,8 @@ export const updateNationalSite = async (req, res) => {
         google_external_id, 
         numberInNationalList, 
         isActive,
-        imgPath
+        imgPath, 
+        address
       },
       { new: true }
     );

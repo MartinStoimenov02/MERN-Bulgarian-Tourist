@@ -167,7 +167,6 @@ export const resetPassword = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        // Check if the user exists
         const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(404).json({

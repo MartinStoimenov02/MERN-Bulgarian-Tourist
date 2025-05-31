@@ -90,30 +90,30 @@ const Nearby = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (id) {
-      const selectedPlace = newPlaces.find((place) => place._id.toString() === id);
-      if (selectedPlace) {
-        fetchPlaceDetails(selectedPlace);
-      }
-    } else {
-      setPlaceDetails(null);
-    }
-  }, [id, newPlaces]);
+  // useEffect(() => {
+  //   if (id) {
+  //     const selectedPlace = newPlaces.find((place) => place._id.toString() === id);
+  //     if (selectedPlace) {
+  //       fetchPlaceDetails(selectedPlace);
+  //     }
+  //   } else {
+  //     setPlaceDetails(null);
+  //   }
+  // }, [id, newPlaces]);
   
-  const fetchPlaceDetails = async (place) => {
+  // const fetchPlaceDetails = async (place) => {
 
-    try {
-      const externalId = place.google_external_id;
-      const response = await axios.post(`${backendUrl}/google/place-details`, {
-        externalId
-      });
-      setPlaceDetails(response.data);
-    } catch (error) {
-      setPlaceDetails(null);
-      console.error("Грешка при извличане на детайлите:", error);
-    }
-  };
+  //   try {
+  //     const externalId = place.google_external_id;
+  //     const response = await axios.post(`${backendUrl}/google/place-details`, {
+  //       externalId
+  //     });
+  //     setPlaceDetails(response.data);
+  //   } catch (error) {
+  //     setPlaceDetails(null);
+  //     console.error("Грешка при извличане на детайлите:", error);
+  //   }
+  // };
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
@@ -255,9 +255,9 @@ const Nearby = () => {
     }
   };
 
-  const validWorkingHours = Array.isArray(placeDetails?.workingHours)
-    ? placeDetails.workingHours
-    : null;
+  // const validWorkingHours = Array.isArray(placeDetails?.workingHours)
+  //   ? placeDetails.workingHours
+  //   : null;
 
   return (
     <div className="my-places-container">
@@ -372,7 +372,7 @@ const Nearby = () => {
     
           <div className="place-info-summary">
           {placeDistances[selectedPlace._id] && <span>{placeDistances[selectedPlace._id]} away</span>}
-            {placeDetails?.rating && (
+            {/* {placeDetails?.rating && (
               <>
                 <span>|</span>
                 <span>
@@ -387,7 +387,7 @@ const Nearby = () => {
                   {placeDetails.phone} <FaPhone className="phone-icon" />
                 </span>
               </>
-            )}
+            )} */}
             {selectedPlace?.nto100 !==undefined && (
               <>
                 <span>|</span>
@@ -398,24 +398,28 @@ const Nearby = () => {
             )}
           </div>
     
-          {placeDetails?.address && (
-            <div className="place-address">
-              <a href={placeDetails.googleMapsUri} target="_blank" rel="noopener noreferrer">
-                <FaMapMarkerAlt className="icon address-icon" title="Виж на картата" />
-              </a>
-              <span>{placeDetails.address}</span>
-            </div>
-          )}
+          {selectedPlace?.address && (
+                      <div className="place-address">
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${selectedPlace.location.lat},${selectedPlace.location.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <FaMapMarkerAlt className="icon address-icon" title="Виж на картата" />
+                        </a>
+                        <span>{selectedPlace.address}</span>
+                      </div>
+                    )}
     
           <hr></hr>
                 <div className="additional-info">
                   <p>{selectedPlace.description}</p>
-                  <div>{validWorkingHours && (
+                  {/* <div>{validWorkingHours && (
                     <>
                       <WorkTimeTable workTime={validWorkingHours} />
                     </>
                   )}
-                  </div>
+                  </div> */}
                 </div>
                 </>
           ) : (

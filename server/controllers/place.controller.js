@@ -35,22 +35,20 @@ export const getPlaceById = async (req, res) => {
 
 export const addPlace = async (req, res) => {
   try {
-    const { name, google_external_id, userId, description, location } = req.body; 
-
+    const { name, google_external_id, userId, description, location, address } = req.body; 
     const places = await PlaceModel.find({ user: userId });
-    const alreadyExists = places.some(place => place.google_external_id === google_external_id);
-
+    const alreadyExists = places.some(place => place.google_external_id === String(google_external_id));
     if (alreadyExists) {
       return res.status(400).json({ message: "Мястото вече е добавено." });
     }
 
     var imgPath;
-    const imageResponse = await getRandomImageHelper(name);
-    if (!imageResponse || !imageResponse.imageUrl) {
+    // const imageResponse = await getRandomImageHelper(name);
+    // if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    } else{
-      imgPath = imageResponse.imageUrl;
-    }
+    // } else{
+    //   imgPath = imageResponse.imageUrl;
+    // }
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
     const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
@@ -62,7 +60,8 @@ export const addPlace = async (req, res) => {
       user: userId,
       google_external_id: google_external_id, 
       location: location,
-      nto100: matchingSite ? matchingSite._id : undefined
+      nto100: matchingSite ? matchingSite._id : undefined,
+      address: address
     });
 
     await newPlace.save();
@@ -125,9 +124,11 @@ export const updateFavourite = async (req, res) => {
 
 export const getRandomImageHelper = async (query) => {
   try {
-    const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
-    const response = await axios.get(searchUrl);
-    const items = response.data.items;
+    // const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
+    // const response = await axios.get(searchUrl);
+    // const items = response.data.items;
+
+    const items = undefined;
 
     if (items && items.length > 0) {
       // Filter images with landscape orientation (width > height)
@@ -150,23 +151,23 @@ export const getRandomImageHelper = async (query) => {
 
 export const updatePlace = async (req, res) => {
   const { id } = req.params;
-  const { name, description, location, google_external_id } = req.body;
+  const { name, description, location, google_external_id, address } = req.body;
   
   try {
     var imgPath;
-    const imageResponse = await getRandomImageHelper(name);
-    if (!imageResponse || !imageResponse.imageUrl) {
+    // const imageResponse = await getRandomImageHelper(name);
+    // if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    } else{
-      imgPath = imageResponse.imageUrl;
-    }
+    // } else{
+    //   imgPath = imageResponse.imageUrl;
+    // }
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
     const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
 
     const place = await PlaceModel.findByIdAndUpdate(
       id,
-      { name, description, imgPath, location, google_external_id, nto100: matchingSite ? matchingSite._id : undefined },
+      { name, description, imgPath, location, google_external_id, nto100: matchingSite ? matchingSite._id : undefined, address },
       { new: true }
     );
     res.json(place);

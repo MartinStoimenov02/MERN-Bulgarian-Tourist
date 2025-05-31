@@ -4,8 +4,8 @@ import logError from '../utils/logger.js';
 export const getAllLogs = async (req, res) => {
     try {
         const logsList = await LogModel.find()
-            .populate('user', 'email') // само email от user
-            .sort({ createdAt: -1 }); // по-новите най-отгоре
+            .populate('user', 'email')
+            .sort({ createdAt: -1 });
 
         res.status(200).json({ success: true, logs: logsList });
     } catch (err) {

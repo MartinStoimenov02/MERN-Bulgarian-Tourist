@@ -18,6 +18,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminLogs from "./pages/AdminLogs";
 import AdminFeedback from "./pages/AdminFeedback";
 import { logout } from './redux/userSlice';
+import 'leaflet/dist/leaflet.css';
 
 function App() {
   // const [isAuthenticated, setIsAuthenticated] = useState(false);

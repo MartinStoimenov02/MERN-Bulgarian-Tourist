@@ -1,20 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
-import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
+// import { GoogleMap, LoadScriptNext, Marker } from "@react-google-maps/api";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FaSearch } from "react-icons/fa";
 import "../style/AddPlaceModal.css";
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "400px",
-};
+delete L.Icon.Default.prototype._getIconUrl;
 
-const center = {
-  lat: 42.698334,
-  lng: 23.319941,
-};
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+const myLocationIcon  = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
+});
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -22,110 +32,156 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
   const [placeName, setPlaceName] = useState("");
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState("");
   const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const navigate = useNavigate();
+  const [center, setCenter] = useState(null);
   const mapRef = useRef(null);
-  const centerButtonRef = useRef(null);
-
-  const handleCenterToUser = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userCoords = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          setCurrentLocation(userCoords);
-          if (mapRef.current) {
-            mapRef.current.panTo(userCoords);
-            mapRef.current.setZoom(15);
-          }
-        },
-        () => {
-          setMessage("Не може да се получи текущата локация.");
-        }
-      );
-    } else {
-      setMessage("Геолокацията не се поддържа от браузъра.");
-    }
-  };
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
-    if (mapRef.current && centerButtonRef.current) {
-      const controlDiv = document.createElement("div");
-      controlDiv.appendChild(centerButtonRef.current);
-      mapRef.current.controls[window.google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
-    }
-  }, [mapRef.current]);
+    handleLocate();
+  }, [editMode, initialData]);
 
-  useEffect(() => {
+  const handleLocate = async () => {
+    centerToMyLocation();
     if (editMode && initialData) {
       setPlaceName(initialData.name || "");
       setDescription(initialData.description || "");
       setSelectedLocation(initialData.location || null);
       setSelectedPlaceId(initialData.google_external_id || null);
-    }
-  }, [editMode, initialData]);
-  
-  const handleMapClick = async(event) => {
-    setSelectedLocation({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    });
-
-    const externalId = event.placeId;
-
-    setSelectedPlaceId(externalId);
-
-  if (externalId) {
-    try {
-      const response = await axios.post(`${backendUrl}/google/place-details`, {
-        externalId
-      });
-      const placeName = response.data.name;
-      setPlaceName(placeName);
-    } catch (error) {
-      console.error("Error fetching place details", error);
+      setSelectedAddress(initialData.address);
     }
   }
-  };
 
-  const handleSearchPlace = async () => {
-    if (!placeName) {
-      setMessage("Моля, въведете име на място!");
-      setSuccess(false);
-      setTimeout(() => setMessage(""), 3000);
-      return;
-    }
-
-    try {
-      const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
-        params: {
-          address: placeName,
-          key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        },
-      });
-      if (response.data.results.length > 0) {
-        const placeId = response.data.results[0].place_id;
-        const location = response.data.results[0].geometry.location;
-        setSelectedLocation(location);
-        setSelectedPlaceId(placeId);
-      } else {
-        setMessage("Мястото не беше намерено.");
-        setSuccess(false);
-        setTimeout(() => setMessage(""), 3000);
-        return;
+  const centerToMyLocation = async () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const coords = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            };
+            setCenter(coords);
+            if (mapRef.current) {
+              mapRef.current.setView(coords, 14);
+            }
+          },
+          (err) => {
+            setCenter({ lat: 42.698334, lng: 23.319941 });
+            console.warn("Не можа да вземе локацията:", err.message);
+          }
+        );
       }
-    } catch (error) {
-      console.error("Error searching place", error);
+  } 
+
+useEffect(() => {
+  if (selectedLocation && mapRef.current) {
+    mapRef.current.setView(selectedLocation, 14);
+  }
+}, [selectedLocation]);
+
+//   const handleSearchPlace = async () => {
+//   if (!placeName) {
+//     setMessage("Моля, въведете име на място!");
+//     setSuccess(false);
+//     setTimeout(() => setMessage(""), 3000);
+//     return;
+//   }
+
+//   try {
+//     const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+//       params: {
+//         q: placeName,
+//         format: "json",
+//         addressdetails: 1,
+//       },
+//     });
+
+//     const results = response.data; 
+//     const result = results.find(result => 
+//       result.address && result.address.country === "Bulgaria"
+//     ) || results[0];
+
+//     if (response.data && response.data.length > 0) {
+//       const location = {
+//         lat: parseFloat(result.lat),
+//         lng: parseFloat(result.lon),
+//       };
+
+//       setSelectedLocation(location);
+//       setSelectedPlaceId(result.osm_id);
+//       setSelectedAddress(result.display_name);
+//     } else {
+//       setMessage("Мястото не беше намерено.");
+//       setSuccess(false);
+//       setTimeout(() => setMessage(""), 3000);
+//     }
+//   } catch (error) {
+//     console.error("Error searching place", error);
+//     setMessage("Грешка при търсенето на място.");
+//     setSuccess(false);
+//     setTimeout(() => setMessage(""), 3000);
+//   }
+// };
+
+const handleSearchPlace = async () => {
+  if (!placeName) {
+    setMessage("Моля, въведете име на място!");
+    setSuccess(false);
+    setTimeout(() => setMessage(""), 3000);
+    return;
+  }
+
+  try {
+    const response = await axios.get(`https://nominatim.openstreetmap.org/search`, {
+      params: {
+        q: placeName,
+        format: "json",
+        addressdetails: 1
+      },
+    });
+
+    const results = response.data;
+    if (results.length > 0) {
+      setSuggestions(results);
+      setShowSuggestions(true);
+    } else {
+      setMessage("Няма намерени места.");
       setSuccess(false);
+      setSuggestions([]);
+      setShowSuggestions(false);
       setTimeout(() => setMessage(""), 3000);
-      return;
     }
+  } catch (error) {
+    console.error("Error searching place", error);
+    setMessage("Грешка при търсенето на място.");
+    setSuccess(false);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    setTimeout(() => setMessage(""), 3000);
+  }
+};
+
+const handleSelectSuggestion = (suggestion) => {
+  const location = {
+    lat: parseFloat(suggestion.lat),
+    lng: parseFloat(suggestion.lon),
   };
+  setPlaceName(suggestion.display_name.split(",")[0]); 
+  setSelectedLocation(location);
+  setSelectedPlaceId(suggestion.osm_id);
+  setSelectedAddress(suggestion.display_name);
+  setSuggestions([]);
+  setShowSuggestions(false);
+
+  if (mapRef.current) {
+    mapRef.current.setView(location, 14);
+  }
+};
 
   const handleSubmit = async () => {
     if (!placeName || !selectedLocation) {
@@ -141,6 +197,7 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
           description,
           location: selectedLocation,
           google_external_id: selectedPlaceId,
+          address: selectedAddress
         });
   
         const updatedPlacesResponse = await axios.get(`${backendUrl}/places/getUserPlaces`, {
@@ -148,16 +205,18 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
         });
   
         setPlaces(updatedPlacesResponse.data);
+        const newPlace = updatedPlacesResponse.data[updatedPlacesResponse.data.length - 1];
         navigate(`/my-places/${placeId}`);
         setIsModalOpen(false);
-        setIsModalOpenSuccess(initialData);
+        setIsModalOpenSuccess(newPlace);
       } else {
         const response = await axios.post(`${backendUrl}/places/addPlace`, {
           name: placeName,
           google_external_id: selectedPlaceId,
           userId: user.id,
           description: description,
-          location: selectedLocation
+          location: selectedLocation,
+          address: selectedAddress
         });
   
         const updatedPlacesResponse = await axios.get(`${backendUrl}/places/getUserPlaces`, {
@@ -178,6 +237,45 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
     }
   };  
 
+  const ClickHandler = () => {
+  useMapEvents({
+    click: async (e) => {
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+
+      const location = { lat, lng };
+      setSelectedLocation(location);
+
+      try {
+        const response = await axios.get('https://nominatim.openstreetmap.org/reverse', {
+          params: {
+            lat,
+            lon: lng,
+            format: 'json',
+            addressdetails: 1,
+          },
+        });
+
+        const data = response.data;
+
+        if (data) {
+          setPlaceName(data.name || data.display_name.split(',')[0]);
+          setSelectedAddress(data.display_name);
+          setSelectedPlaceId(data.osm_id);
+        }
+      } catch (error) {
+        console.error("Reverse geocoding error:", error);
+        setMessage("Грешка при извличане на адреса.");
+        setSuccess(false);
+        setTimeout(() => setMessage(""), 3000);
+      }
+    }
+  });
+
+  return null;
+};
+
+
   return (
     <Modal
       isOpen
@@ -191,106 +289,89 @@ const AddPlaceModal = ({ setIsModalOpen, user, setPlaces, setIsModalOpenSuccess,
 
         <h2>Добавяне на място</h2>
 
-        <div className="input-wrapper">
-          <input
-            type="text"
-            placeholder="Име на мястото"
-            value={placeName}
-            onChange={(e) => setPlaceName(e.target.value)}
-            className="modal-input"
-          />
-          <div className="search-button" onClick={handleSearchPlace}>
-            <FaSearch />
-          </div>
-        </div>
+        <div className="input-wrapper" style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  placeholder="Име на обекта"
+                  value={placeName}
+                  onChange={(e) => {
+                    setPlaceName(e.target.value);
+                    setSuggestions([]);
+                    setShowSuggestions(false);
+                  }}
+                  className="modal-input"
+                />
+                <div className="search-button" onClick={handleSearchPlace}>
+                  <FaSearch />
+                </div>
+        
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="suggestions-list" style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    background: "white",
+                    border: "1px solid #ccc",
+                    zIndex: 1000,
+                    listStyle: "none",
+                    margin: 0,
+                    padding: 0,
+                  }}>
+                    {suggestions.map((suggestion) => (
+                      <li
+                        key={suggestion.osm_id}
+                        onClick={() => handleSelectSuggestion(suggestion)}
+                        style={{ padding: "8px", cursor: "pointer" }}
+                        onMouseDown={(e) => e.preventDefault()}
+                      >
+                        {suggestion.display_name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
-        <LoadScriptNext googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={selectedLocation || center}
-            zoom={14}
-            onClick={handleMapClick}
-            onLoad={(map) => {
-              mapRef.current = map;
-            
-              // Центриране на картата в editMode или към текуща локация
-              if (editMode && selectedLocation) {
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    const userCoords = {
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude,
-                    };
-                    setCurrentLocation(userCoords);
-                  },
-                  () => {
-                    console.warn("Не може да се получи локацията на потребителя.");
-                  }
-                );
-                map.panTo(selectedLocation);
-                map.setZoom(15);
-              } else if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    const userCoords = {
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude,
-                    };
-                    setCurrentLocation(userCoords);
-                    map.panTo(userCoords);
-                    map.setZoom(15);
-                  },
-                  () => {
-                    console.warn("Не може да се получи локацията на потребителя.");
-                  }
-                );
-              }
-            
-              if (centerButtonRef.current) {
-                const controlDiv = document.createElement("div");
-                controlDiv.appendChild(centerButtonRef.current);
-                map.controls[window.google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
-              }
-            }}
-            
-            options={{
-              zoomControl: true,
-              fullscreenControl: true,
-              streetViewControl: false,
-              mapTypeControl: true,
-            }}
-          >
-            {selectedLocation && <Marker position={selectedLocation} />}
-            {currentLocation && (
-              <Marker
-                position={currentLocation}
-                icon={{
-                  url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                  scaledSize: new window.google.maps.Size(40, 40),
-                }}
+        {center && (
+          <div style={{ position: 'relative', height: '400px', width: '100%' }}>
+            <MapContainer
+              ref={mapRef}
+              center={selectedLocation || center}
+              zoom={14}
+              style={{ height: "100%", width: "100%" }}
+              whenCreated={(mapInstance) => { mapRef.current = mapInstance; }}
+            >
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-            )}
-          </GoogleMap>
+              <ClickHandler />
+              {center && <Marker position={center} icon={myLocationIcon} />}
+              {selectedLocation && <Marker position={selectedLocation} />}
+            </MapContainer>
 
-          {/* Вграден бутон вътре в картата */}
-          <div ref={centerButtonRef}>
             <button
-              onClick={handleCenterToUser}
+              onClick={centerToMyLocation}
               style={{
-                background: "white",
-                border: "1px solid #ccc",
-                borderRadius: "3px",
-                padding: "6px 10px",
-                margin: "10px",
-                fontSize: "14px",
-                cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 1000,
+                padding: '8px 10px',
+                backgroundColor: 'white',
+                border: '1px solid #ccc',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '18px',
+                boxShadow: '0 1px 5px rgba(0,0,0,0.3)'
               }}
             >
               📍
             </button>
           </div>
-        </LoadScriptNext>
+        )}
 
         <textarea
           placeholder="Описание на мястото (не е задължително)"

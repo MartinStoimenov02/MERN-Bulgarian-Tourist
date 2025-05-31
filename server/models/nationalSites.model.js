@@ -24,6 +24,9 @@ const NationalSiteScheme = new mongoose.Schema({
     location: {
         type: Object
     },
+    address: {
+        type: String
+    },
     google_external_id: {
         type: String
     },
