@@ -5,43 +5,43 @@ import * as turf from '@turf/turf';
 
 dotenv.config();
 
-const API_KEY = process.env.GOOGLE_API_KEY;
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const CX = process.env.GOOGLE_CX;
+// const API_KEY = process.env.GOOGLE_API_KEY;
+// const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+// const CX = process.env.GOOGLE_CX;
 
-export const getPlaceDetails = async (req, res) => {
+// export const getPlaceDetails = async (req, res) => {
 
-    try {
-        const google_external_id = req.body.externalId;
-        if (!google_external_id) {
-            return res.status(400).json({ message: "'place' е задължително." });
-        }
+//     try {
+//         const google_external_id = req.body.externalId;
+//         if (!google_external_id) {
+//             return res.status(400).json({ message: "'place' е задължително." });
+//         }
 
-        // const googleResponse = await axios.get (
-        //     "https://places.googleapis.com/v1/places/"+google_external_id+"?fields=*&key="+API_KEY
-        // );
+//         // const googleResponse = await axios.get (
+//         //     "https://places.googleapis.com/v1/places/"+google_external_id+"?fields=*&key="+API_KEY
+//         // );
 
-        const googleResponse = undefined;
+//         const googleResponse = undefined;
 
-        if (!googleResponse.data) {
-            return res.status(404).json({ message: "Мястото не е намерено." });
-        }
-        const placeDetails = googleResponse.data;
-        res.json({
-            name: placeDetails.displayName?.text || null,
-            address: placeDetails.formattedAddress || null,
-            phone: placeDetails.internationalPhoneNumber || null,
-            workingHours: placeDetails.regularOpeningHours?.weekdayDescriptions || null,
-            rating: placeDetails.rating || null,
-            googleMapsUri: placeDetails.googleMapsUri || null
-        });
+//         if (!googleResponse.data) {
+//             return res.status(404).json({ message: "Мястото не е намерено." });
+//         }
+//         const placeDetails = googleResponse.data;
+//         res.json({
+//             name: placeDetails.displayName?.text || null,
+//             address: placeDetails.formattedAddress || null,
+//             phone: placeDetails.internationalPhoneNumber || null,
+//             workingHours: placeDetails.regularOpeningHours?.weekdayDescriptions || null,
+//             rating: placeDetails.rating || null,
+//             googleMapsUri: placeDetails.googleMapsUri || null
+//         });
 
-    } catch (error) {
-        logError(error, req, { className: 'google.controller', functionName: 'getPlaceDetails' });
-        console.error("Грешка при извличане на детайлите за мястото:", error);
-        res.status(500).json({ message: "Грешка при обработката на заявката." });
-    }
-};
+//     } catch (error) {
+//         logError(error, req, { className: 'google.controller', functionName: 'getPlaceDetails' });
+//         console.error("Грешка при извличане на детайлите за мястото:", error);
+//         res.status(500).json({ message: "Грешка при обработката на заявката." });
+//     }
+// };
 
 export const getDistance = async (req, res) => {
     try {
@@ -59,7 +59,6 @@ export const getDistance = async (req, res) => {
             return res.status(400).json({ message: "Липсват координати на дестинацията." });
         }
 
-        // Изчислява разстоянието с Routes API
         // const routesResponse = await axios.post(
         //     "https://routes.googleapis.com/directions/v2:computeRoutes",
         //     {
@@ -113,15 +112,16 @@ export const getRandomImage = async (req, res) => {
             return res.status(400).json({ message: "Query parameter is required." });
         }
 
-        // const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
-        // const response = await axios.get(searchUrl);
-        // const items = response.data.items;
-
-        const items = undefined;
-
-        if (items && items.length > 0) {
-            const randomIndex = Math.floor(Math.random() * items.length);
-            return res.json({ imageUrl: items[randomIndex].link });
+        const res = await Axios.get("https://api.unsplash.com/search/photos", {
+          params: {
+            query: `${query}`,
+            client_id: "qHq1ytJzFs1mGrKLVagNoPSxc__JtazBpxlKfjnALKE"
+          }
+        });
+        const images = res.data.results;
+        if (images.length > 0) {
+          const randomIndex = Math.floor(Math.random() * images.length);
+          return images[randomIndex];
         }
 
         res.status(404).json({ message: "No images found" });
@@ -132,37 +132,37 @@ export const getRandomImage = async (req, res) => {
     }
 };
 
-export const gemini = async (req, res) => {
-    try {
-        const prompt = req.body.prompt || "Кое е най-доброто място за посещение в България?";
+// export const gemini = async (req, res) => {
+//     try {
+//         const prompt = req.body.prompt || "Кое е най-доброто място за посещение в България?";
 
-        // const geminiResponse = await axios.post(
-        //     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
-        //     {
-        //         contents: [
-        //             {
-        //                 parts: [{ text: prompt }]
-        //             }
-        //         ]
-        //     },
-        //     {
-        //         headers: {
-        //             "Content-Type": "application/json"
-        //         }
-        //     }
-        // );
+//         // const geminiResponse = await axios.post(
+//         //     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
+//         //     {
+//         //         contents: [
+//         //             {
+//         //                 parts: [{ text: prompt }]
+//         //             }
+//         //         ]
+//         //     },
+//         //     {
+//         //         headers: {
+//         //             "Content-Type": "application/json"
+//         //         }
+//         //     }
+//         // );
 
-        const geminiResponse = undefined;
+//         const geminiResponse = undefined;
 
-        const text = geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-            res.json({ response: text });
-        } else {
-            res.status(404).json({ message: "Не е намерен отговор от модела." });
-        }
-    } catch (error) {
-        logError(error, req, { className: 'google.controller', functionName: 'gemini' });
-        console.error("Грешка при заявката към Gemini:", error);
-        res.status(500).json({ message: "Грешка при заявката към модела Gemini." });
-    }
-};
+//         const text = geminiResponse.data.candidates?.[0]?.content?.parts?.[0]?.text;
+//         if (text) {
+//             res.json({ response: text });
+//         } else {
+//             res.status(404).json({ message: "Не е намерен отговор от модела." });
+//         }
+//     } catch (error) {
+//         logError(error, req, { className: 'google.controller', functionName: 'gemini' });
+//         console.error("Грешка при заявката към Gemini:", error);
+//         res.status(500).json({ message: "Грешка при заявката към модела Gemini." });
+//     }
+// };

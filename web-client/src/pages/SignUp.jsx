@@ -24,29 +24,38 @@ function SignUp() {
   const [showModal, setShowModal] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [imageUrl, setImageUrl] = useState(shipkaImage); 
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false); 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  // useEffect(() => {
-  //   const fetchImage = async () => {
-  //     try {
-  //       const query = "tourist sites in Bulgaria";
-  //       const res = await Axios.get(
-  //         `${backendUrl}/google/random-image?query=${encodeURIComponent(query)}`
-  //       );
-  //       setImageUrl(res.data.imageUrl);
-  //     } catch (error) {
-  //       console.error("Error fetching image:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchImage();
-  // }, []);
+useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await Axios.get("https://api.unsplash.com/search/photos", {
+          params: {
+            query: "Bulgaria",
+            client_id: "qHq1ytJzFs1mGrKLVagNoPSxc__JtazBpxlKfjnALKE"
+          }
+        });
+        const images = res.data.results;
+        if (images.length > 0) {
+          const randomIndex = Math.floor(Math.random() * images.length);
+          const randomImage = images[randomIndex];
+
+          const imageUrl = randomImage.urls.regular;
+        setImageUrl(imageUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchImage();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -182,11 +191,11 @@ function SignUp() {
           <tr>
             <td width="60%">
               <div className="image-container-signup">
-                {/* {loading ? (
+                {loading ? (
                   <p>Loading image...</p>
-                ) : ( */}
+                ) : (
                   <img src={imageUrl} alt="Sign Up" className="signup-image" />
-                {/* )} */}
+                )}
               </div>
             </td>
             <td className="form-container-signup">

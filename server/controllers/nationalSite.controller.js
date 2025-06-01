@@ -129,12 +129,12 @@ export const addNationalSite = async (req, res) => {
     }
 
     var imgPath;
-    // const imageResponse = await getRandomImageHelper(name);
-    // if (!imageResponse || !imageResponse.imageUrl) {
+    const imageResponse = await getRandomImageHelper(nationalSiteData.name);
+    if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    // } else{
-    //   imgPath = imageResponse.imageUrl;
-    // }
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
 
     nationalSiteData.imgPath = imgPath;
 
@@ -162,12 +162,12 @@ export const updateNationalSite = async (req, res) => {
 
   try {
     var imgPath;
-    // const imageResponse = await getRandomImageHelper(name);
-    // if (!imageResponse || !imageResponse.imageUrl) {
+    const imageResponse = await getRandomImageHelper(name);
+    if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    // } else{
-    //   imgPath = imageResponse.imageUrl;
-    // }
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
 
     const nationalSite = await NationalSiteModel.findByIdAndUpdate(
       id,
@@ -190,7 +190,6 @@ export const updateNationalSite = async (req, res) => {
 
     res.json(nationalSite);
   } catch (err) {
-    next(err);
     logError(err, req, { className: 'nationalSite.controller', functionName: 'updateNationalSite' });
     console.error('Error updateNationalSite:', err);
     res.status(500).json({ message: "Неуспешна редакция на национален обект." });

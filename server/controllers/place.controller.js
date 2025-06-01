@@ -43,15 +43,19 @@ export const addPlace = async (req, res) => {
     }
 
     var imgPath;
-    // const imageResponse = await getRandomImageHelper(name);
-    // if (!imageResponse || !imageResponse.imageUrl) {
+    const imageResponse = await getRandomImageHelper(name);
+    if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    // } else{
-    //   imgPath = imageResponse.imageUrl;
-    // }
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
+
+    console.log("google_external_id: ", google_external_id);
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
-    const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
+    const matchingSite = nationalSites.find(site => site.google_external_id === String(google_external_id));
+    console.log("nationalSites: ", nationalSites);
+    console.log("matchingSite: ", matchingSite);
 
     const newPlace = new PlaceModel({
       name,
@@ -124,26 +128,25 @@ export const updateFavourite = async (req, res) => {
 
 export const getRandomImageHelper = async (query) => {
   try {
-    // const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&searchType=image&rights=cc_publicdomain,cc_attribute&key=${API_KEY}&cx=${CX}`;
-    // const response = await axios.get(searchUrl);
-    // const items = response.data.items;
-
-    const items = undefined;
-
-    if (items && items.length > 0) {
-      // Filter images with landscape orientation (width > height)
-      const landscapeImages = items.filter(item => item.image.width > item.image.height);
-
-      if (landscapeImages.length > 0) {
-        const randomIndex = Math.floor(Math.random() * landscapeImages.length);
-        return { imageUrl: landscapeImages[randomIndex].link };
-      }
-    }
-
+    const res = await axios.get("https://api.unsplash.com/search/photos", {
+          params: {
+            query: `${query}`,
+            // query: "Bulgarian nature and culture",
+            client_id: "qHq1ytJzFs1mGrKLVagNoPSxc__JtazBpxlKfjnALKE"
+          }
+        });
+        const images = res.data.results;
+        if (images.length > 0) {
+          const landscapeImages = images.filter(item => item.width > item.height);
+          if (landscapeImages.length > 0) {
+            const randomIndex = Math.floor(Math.random() * landscapeImages.length);
+            const randomImage = landscapeImages[randomIndex];
+            return { imageUrl: randomImage.urls.regular };
+          }
+        }
     return null;
   } catch (error) {
-    next(err);
-    logError(error, req, { className: 'place.controller', functionName: 'getRandomImageHelper' });
+    logError(error, { className: 'place.controller', functionName: 'getRandomImageHelper' });
     console.error("Error fetching image:", error);
     res.status(500).json({ error: "Error fetching image" });
   }
@@ -155,12 +158,12 @@ export const updatePlace = async (req, res) => {
   
   try {
     var imgPath;
-    // const imageResponse = await getRandomImageHelper(name);
-    // if (!imageResponse || !imageResponse.imageUrl) {
+    const imageResponse = await getRandomImageHelper(name);
+    if (!imageResponse || !imageResponse.imageUrl) {
       imgPath = "https://www.interregeurope.eu/sites/default/files/styles/banner_image/public/good_practices/good_practice__3419__1581074278.jpg?itok=mM0rtKr7";
-    // } else{
-    //   imgPath = imageResponse.imageUrl;
-    // }
+    } else{
+      imgPath = imageResponse.imageUrl;
+    }
 
     const nationalSites = await NationalSiteModel.find({ isActive: true });
     const matchingSite = nationalSites.find(site => site.google_external_id === google_external_id);
