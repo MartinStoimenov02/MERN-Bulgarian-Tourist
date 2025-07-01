@@ -17,8 +17,8 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://mern-bulgarian-tourist.onrender.com',
-    'https://mern-bulgarian-tourist.vercel.app'
+    'https://mern-bulgarian-tourist-indol.vercel.app',
+    'https://mern-bulgarian-tourist-d3w8.onrender.com'
   ],
   credentials: true
 }));
