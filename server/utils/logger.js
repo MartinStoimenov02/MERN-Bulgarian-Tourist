@@ -14,7 +14,6 @@ const logError = async (error, req = null, customInfo = {}) => {
 
         await LogModel.create(logData);
     } catch (logError) {
-        next(err);
         console.error('Failed to save log:', logError);
         throw new error(err);
     }
