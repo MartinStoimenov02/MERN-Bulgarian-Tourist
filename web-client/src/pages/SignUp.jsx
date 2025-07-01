@@ -184,7 +184,7 @@ useEffect(() => {
   };
 
   return (
-    <GoogleOAuthProvider clientId="393053260698-rd9q75m5nlfrqg0h6t3j3v1662lh27m7.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="1035977394524-nlql4nv7m8nhh9h1jlts20nc807fjr12.apps.googleusercontent.com">
     <div className="signup-page container-signup">
       <table width="80%" border="1">
         <tbody>
